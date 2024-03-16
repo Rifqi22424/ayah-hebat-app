@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -24,6 +25,7 @@ class _EditProfilePageState extends State<EditProfilePage>
   TextEditingController namaController = TextEditingController();
   TextEditingController istriController = TextEditingController();
   TextEditingController anakController = TextEditingController();
+  TextEditingController namaKuttabController = TextEditingController();
   TextEditingController tahunController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
@@ -42,6 +44,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         namaController.text = user.profile.nama;
         istriController.text = user.profile.namaIstri;
         anakController.text = user.profile.namaAnak;
+        namaKuttabController.text = user.profile.namaKuttab;
         tahunController.text = user.profile.tahunMasukKuttab.toString();
         bioController.text = user.profile.bio;
       });
@@ -61,6 +64,7 @@ class _EditProfilePageState extends State<EditProfilePage>
       bool success = await ProfileApi().editProfile(
           namaController.text,
           bioController.text,
+          namaKuttabController.text,
           tahunController.text,
           istriController.text,
           anakController.text,
@@ -103,6 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage>
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBarBuilder(
         title: "Profile Anda",
         showBackButton: true,
@@ -257,11 +262,18 @@ class _EditProfilePageState extends State<EditProfilePage>
                 FormBuilder(
                   hintText: "2022",
                   formController: tahunController,
-                  validator: validateNonNull,
+                  validator: validateTahun,
                   isPassword: false,
                   isDescription: false,
                   keyboardType: TextInputType.number,
                 ),
+                SizedBox(height: screenHeight * 0.015),
+                LabelBuilder(text: "Nama Kuttab"),
+                SizedBox(height: screenHeight * 0.015),
+                NamaKuttabForm(
+                    formController: namaKuttabController,
+                    hintText: "nama kuttab",
+                    keyboardType: TextInputType.text),
                 SizedBox(height: screenHeight * 0.015),
                 LabelBuilder(text: "Biodata"),
                 SizedBox(height: screenHeight * 0.015),

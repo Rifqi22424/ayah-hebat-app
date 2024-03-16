@@ -18,6 +18,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   TextEditingController istriController = TextEditingController();
   TextEditingController anakController = TextEditingController();
+  TextEditingController namaKuttabController = TextEditingController();
   TextEditingController tahunController = TextEditingController();
 
   String nama = "";
@@ -31,12 +32,13 @@ class _ProfilePageState extends State<ProfilePage> {
     _fetchUserProfile();
   }
 
-  _fetchUserProfile() {
+  Future<void> _fetchUserProfile() async {
+    print("cek");
     ProfileApi().getUserNProfile().then((user) {
       setState(() {
         istriController.text = user.profile.namaIstri;
-        istriController.text = user.profile.namaIstri;
         anakController.text = user.profile.namaAnak;
+        namaKuttabController.text = user.profile.namaKuttab;
         tahunController.text = user.profile.tahunMasukKuttab.toString();
         nama = user.profile.nama;
         poin = user.totalScoreMonth.toString();
@@ -98,184 +100,214 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBarBuilder(title: "Profile"),
       body: Container(
         padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: RefreshIndicator(
+          color: AppColors.primaryColor,
+          onRefresh: _fetchUserProfile,
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.grey,
-                  radius: 30,
-                  backgroundImage:
-                      NetworkImage("$serverPath/uploads/$linkImage"),
-                ),
-                SizedBox(width: 5),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(nama, style: AppStyles.heading2TextStyle),
-                    Row(
+                    CircleAvatar(
+                      backgroundColor: AppColors.grey,
+                      radius: 30,
+                      backgroundImage:
+                          NetworkImage("$serverPath/uploads/$linkImage"),
+                    ),
+                    SizedBox(width: 5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: AppColors.yellowAccent),
-                          child: Row(
-                            children: [
-                              Image.asset('images/trophy.png',
-                                  height: 20, width: 20),
-                              SizedBox(width: 5),
-                              Text(
-                                '$poin Point',
-                                style: AppStyles.heading3PrimaryTextStyle,
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(24),
-                          onTap: () {
-                            print("test");
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                "Lihat ranking",
-                                style: AppStyles.heading3PrimaryTextStyle,
+                        Text(nama, style: AppStyles.heading2TextStyle),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: AppColors.yellowAccent),
+                              child: Row(
+                                children: [
+                                  Image.asset('images/trophy.png',
+                                      height: 20, width: 20),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    '$poin Point',
+                                    style: AppStyles.heading3PrimaryTextStyle,
+                                  )
+                                ],
                               ),
-                              Icon(
-                                Icons.navigate_next_sharp,
-                                color: AppColors.primaryColor,
-                              )
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 5),
+                            InkWell(
+                              borderRadius: BorderRadius.circular(24),
+                              onTap: () {
+                                print("test");
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Lihat ranking",
+                                    style: AppStyles.heading3PrimaryTextStyle,
+                                  ),
+                                  Icon(
+                                    Icons.navigate_next_sharp,
+                                    color: AppColors.primaryColor,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
                         )
                       ],
                     )
                   ],
-                )
-              ],
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Text(
-              bio,
-              style: AppStyles.hintTextStyle,
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Nama Istri",
-                        style: AppStyles.mediumTextStyle,
-                      ),
-                      SizedBox(height: screenHeight * 0.0125),
-                      TextFormField(
-                        controller: istriController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: "",
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: AppColors.blueColor,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12.0),
-                          hintStyle: AppStyles.hintTextStyle,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Nama Anak", style: AppStyles.mediumTextStyle),
-                      SizedBox(height: screenHeight * 0.0125),
-                      TextFormField(
-                        controller: anakController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: "",
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: AppColors.blueColor,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12.0),
-                          hintStyle: AppStyles.hintTextStyle,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: screenHeight * 0.0125),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Tahun Ajaran Anak",
-                  style: AppStyles.mediumTextStyle,
+                  bio,
+                  style: AppStyles.hintTextStyle,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Nama Istri",
+                            style: AppStyles.mediumTextStyle,
+                          ),
+                          SizedBox(height: screenHeight * 0.0125),
+                          TextFormField(
+                            controller: istriController,
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              hintText: "",
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: AppColors.blueColor,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 12.0),
+                              hintStyle: AppStyles.hintTextStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Nama Anak", style: AppStyles.mediumTextStyle),
+                          SizedBox(height: screenHeight * 0.0125),
+                          TextFormField(
+                            controller: anakController,
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              hintText: "",
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: AppColors.blueColor,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 12.0),
+                              hintStyle: AppStyles.hintTextStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(height: screenHeight * 0.0125),
-                TextFormField(
-                  controller: tahunController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    hintText: "",
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: AppColors.blueColor,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(32),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Tahun Ajaran Anak",
+                      style: AppStyles.mediumTextStyle,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    hintStyle: AppStyles.hintTextStyle,
-                  ),
+                    SizedBox(height: screenHeight * 0.0125),
+                    TextFormField(
+                      controller: tahunController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: "",
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: AppColors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 12.0),
+                        hintStyle: AppStyles.hintTextStyle,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.0125),
+                    Text(
+                      "Nama Kuttab",
+                      style: AppStyles.mediumTextStyle,
+                    ),
+                    SizedBox(height: screenHeight * 0.0125),
+                    TextFormField(
+                      controller: namaKuttabController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: "",
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: AppColors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 12.0),
+                        hintStyle: AppStyles.hintTextStyle,
+                      ),
+                    ),
+                  ],
                 ),
+                SizedBox(height: screenHeight * 0.02),
+                Text("Setting", style: AppStyles.heading2TextStyle),
+                SizedBox(height: screenHeight * 0.03),
+                SettingButtonBuilder(
+                  title: "Edit Profile",
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/editProfile');
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                SettingButtonBuilder(
+                  title: "Ubah Password",
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/changePassword');
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                SettingButtonBuilder(
+                  title: "Log out",
+                  onPressed: () {
+                    _showLogOutAlert();
+                  },
+                )
               ],
             ),
-            SizedBox(height: screenHeight * 0.02),
-            Text("Setting", style: AppStyles.heading2TextStyle),
-            SizedBox(height: screenHeight * 0.03),
-            SettingButtonBuilder(
-              title: "Edit Profile",
-              onPressed: () {
-                Navigator.pushNamed(context, '/editProfile');
-              },
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            SettingButtonBuilder(
-              title: "Ubah Password",
-              onPressed: () {
-                Navigator.pushNamed(context, '/changePassword');
-              },
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            SettingButtonBuilder(
-              title: "Log out",
-              onPressed: () {
-                _showLogOutAlert();
-              },
-            )
-          ],
+          ),
         ),
       ),
     );

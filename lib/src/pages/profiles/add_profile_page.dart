@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../api/profile_api.dart';
@@ -23,6 +25,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   TextEditingController namaController = TextEditingController();
   TextEditingController istriController = TextEditingController();
   TextEditingController anakController = TextEditingController();
+  TextEditingController namaKuttabController = TextEditingController();
   TextEditingController tahunController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
@@ -40,6 +43,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
       bool success = await ProfileApi().addProfile(
           namaController.text,
           bioController.text,
+          namaKuttabController.text,
           tahunController.text,
           istriController.text,
           anakController.text,
@@ -75,6 +79,12 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
         selectedMedia = pickedFile.path;
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    namaKuttabController.text = "Kutab Alfatih Sukabumi";
   }
 
   @override
@@ -214,12 +224,19 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: screenHeight * 0.015),
+                  LabelBuilder(text: "Nama Kuttab"),
+                  SizedBox(height: screenHeight * 0.015),
+                  NamaKuttabForm(
+                      formController: namaKuttabController,
+                      hintText: "Nama Kuttab",
+                      keyboardType: TextInputType.text),
+                  SizedBox(height: screenHeight * 0.015),
                   LabelBuilder(text: "Tahun Masuk Kuttab"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText: "2022",
                     formController: tahunController,
-                    validator: validateNonNull,
+                    validator: validateTahun,
                     isPassword: false,
                     isDescription: false,
                     keyboardType: TextInputType.number,

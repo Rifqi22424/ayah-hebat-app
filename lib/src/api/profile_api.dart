@@ -20,6 +20,7 @@ class ProfileApi {
   Future<bool> addProfile(
     String nama,
     String bio,
+    String namaKuttab,
     String tahunMasukKuttab,
     String namaIstri,
     String namaAnak,
@@ -32,6 +33,7 @@ class ProfileApi {
 
       request.fields['nama'] = nama;
       request.fields['bio'] = bio;
+      request.fields['namaKuttab'] = namaKuttab;
       request.fields['tahunMasukKuttab'] = tahunMasukKuttab;
       request.fields['namaIstri'] = namaIstri;
       request.fields['namaAnak'] = namaAnak;
@@ -67,6 +69,7 @@ class ProfileApi {
   Future<bool> editProfile(
     String nama,
     String bio,
+    String namaKuttab,
     String tahunMasukKuttab,
     String namaIstri,
     String namaAnak,
@@ -79,6 +82,7 @@ class ProfileApi {
 
       request.fields['nama'] = nama;
       request.fields['bio'] = bio;
+      request.fields['namaKuttab'] = namaKuttab;
       request.fields['tahunMasukKuttab'] = tahunMasukKuttab;
       request.fields['namaIstri'] = namaIstri;
       request.fields['namaAnak'] = namaAnak;

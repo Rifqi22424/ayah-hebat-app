@@ -61,6 +61,25 @@ mixin ValidationMixin {
     return null;
   }
 
+   String? validateTahun(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Tahun tidak boleh kosong';
+    }
+
+    int? tahun;
+    try {
+      tahun = int.parse(value);
+    } catch (e) {
+      return 'Tahun harus berupa angka';
+    }
+
+    if (tahun < 1900 || tahun > 2050) {
+      return 'Masukan tahun yang valid';
+    }
+
+    return null;
+  }
+
   String? validateAlamat(String? value) {
     if (value == null || value.isEmpty) {
       return 'Alamat tidak boleh kosong';

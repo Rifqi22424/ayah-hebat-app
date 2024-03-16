@@ -4,6 +4,7 @@ class Profile {
   final String bio;
   final String namaIstri;
   final String namaAnak;
+  final String namaKuttab;
   final int tahunMasukKuttab;
   final int userId;
   final String photo;
@@ -11,6 +12,7 @@ class Profile {
   Profile({
     required this.id,
     required this.bio,
+    required this.namaKuttab,
     required this.namaIstri,
     required this.namaAnak,
     required this.tahunMasukKuttab,
@@ -24,6 +26,7 @@ class Profile {
       id: json['id'] ?? 0,
       nama: json['nama'] ?? "",
       bio: json['bio'] ?? "",
+      namaKuttab: json['namaKuttab'] ?? "",
       namaIstri: json['namaIstri'] ?? "",
       namaAnak: json['namaAnak'] ?? "",
       tahunMasukKuttab: json['tahunMasukKuttab'] ?? 0,
@@ -37,6 +40,7 @@ class Profile {
       id: json['profile']['id'] ?? 0,
       nama: json['profile']['nama'] ?? "",
       bio: json['profile']['bio'] ?? "",
+      namaKuttab: json['profile']['namaKuttab'] ?? "",
       namaIstri: json['profile']['namaIstri'] ?? "",
       namaAnak: json['profile']['namaAnak'] ?? "",
       tahunMasukKuttab: json['profile']['tahunMasukKuttab'] ?? 0,
