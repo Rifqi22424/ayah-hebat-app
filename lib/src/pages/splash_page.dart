@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
     final String? email = await SharedPreferencesHelper.getEmail();
     final String? pass = await SharedPreferencesHelper.getPassword();
 
-    if (email != null && email != "" && pass != null && pass != "" ) {
+    if (email != null && email != "" && pass != null && pass != "") {
       try {
         LoginResponse login = await authApi.login(email, pass);
         SharedPreferencesHelper.saveId(login.id);
@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _delayAndPush(BuildContext context) async {
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       _getToken();
     });
   }

@@ -325,7 +325,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText:
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                      "Seorang pengusaha yang bersemangat, ayah dari dua anak, dan ingin memastikan bahwa keluarganya hidup dalam lingkungan yang penuh dengan nilai-nilai Islami.",
                   formController: bioController,
                   validator: validateNonNull,
                   isPassword: false,

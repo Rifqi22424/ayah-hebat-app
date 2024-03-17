@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -14,21 +16,37 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-  // final TextEditingController _verificationCodeController =
-  //     TextEditingController();
   AuthApi authApi = AuthApi();
   List<String> verificationValues = List.filled(6, '');
+  int _countdownSeconds = 30;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    // _verificationCodeController.addListener(checkVerificationCode);
+    startCountdown();
+  }
+
+  void startCountdown() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_countdownSeconds > 0) {
+          _countdownSeconds--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void checkVerificationCode() {
     final String verificationCode = verificationValues.join();
-
-    // final String verificationCode = _verificationCodeController.text;
 
     print(verificationCode.length);
     if (verificationCode.length == 6) {
@@ -37,8 +55,6 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void submitVerification() async {
-    // final String verificationCode = _verificationCodeController.text;
-
     final String verificationCode = verificationValues.join();
 
     bool verificationResult =
@@ -87,14 +103,10 @@ class _VerificationPageState extends State<VerificationPage> {
             Text("Masukkan Kode", style: AppStyles.headingTextStyle),
             SizedBox(height: screenHeight * 0.01875),
             Text(
-              "Kode verifikasi telah dikirimkan melalui email Anda, Mohon periksa email Anda.",
+              "Kode verifikasi telah dikirimkan melalui email ${widget.email}, Mohon periksa email Anda.",
               style: AppStyles.hintTextStyle,
             ),
             SizedBox(height: screenHeight * 0.0625),
-            // TextFormField(
-            //   controller: _verificationCodeController,
-            //   maxLength: 6,
-            // ),
             SizedBox(
               height: 50,
               width: 270,
@@ -107,17 +119,6 @@ class _VerificationPageState extends State<VerificationPage> {
                     child: SizedBox(
                       width: 40,
                       child: TextField(
-                        // controller: TextEditingController.fromValue(
-                        //   TextEditingValue(
-                        //     text:
-                        //         _verificationCodeController.text.length > index
-                        //             ? _verificationCodeController.text[index]
-                        //             : '',
-                        //     selection: TextSelection.collapsed(
-                        //       offset: _verificationCodeController.text.length,
-                        //     ),
-                        //   ),
-                        // ),
                         textAlign: TextAlign.center,
                         maxLength: 1,
                         decoration: const InputDecoration(
@@ -139,20 +140,30 @@ class _VerificationPageState extends State<VerificationPage> {
               ),
             ),
             SizedBox(height: screenHeight * 0.03125),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                      text: "Tidak mendapatkan kode? ",
-                      style: AppStyles.labelTextStyle),
-                  TextSpan(
-                    text: "Kirim ulang",
-                    style: AppStyles.heading3PrimaryTextStyle,
-                    recognizer: TapGestureRecognizer()..onTap = () {},
+            _countdownSeconds > 0
+                ? Text(
+                    "Menunggu $_countdownSeconds detik untuk mengirim ulang kode...")
+                : Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "Tidak mendapatkan kode? ",
+                            style: AppStyles.labelTextStyle),
+                        TextSpan(
+                          text: "Kirim ulang",
+                          style: AppStyles.heading3PrimaryTextStyle,
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              authApi.resendVerif(widget.email);
+                              setState(() {
+                                _countdownSeconds = 30;
+                              });
+                              startCountdown();
+                            },
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

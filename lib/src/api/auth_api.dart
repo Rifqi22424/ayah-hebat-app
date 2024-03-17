@@ -66,4 +66,23 @@ class AuthApi {
       return false;
     }
   }
+
+  Future<bool> resendVerif(String email) async {
+    print(email);
+    final response = await http.post(
+      Uri.parse('$serverPath/user/resend-verification'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw (Exception(response.body));
+    }
+  }
 }

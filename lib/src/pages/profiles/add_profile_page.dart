@@ -40,16 +40,16 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
 
       File? photo;
       if (selectedMedia != null) {
-      photo = File(selectedMedia!);
-    } else {
-      ByteData byteData = await rootBundle.load('images/empty-profile.png');
-      List<int> imageData = byteData.buffer.asUint8List();
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      File tempFile = File('$tempPath/empty-profile.png');
-      await tempFile.writeAsBytes(imageData);
-      photo = tempFile;
-    }
+        photo = File(selectedMedia!);
+      } else {
+        ByteData byteData = await rootBundle.load('images/empty-profile.png');
+        List<int> imageData = byteData.buffer.asUint8List();
+        Directory tempDir = await getTemporaryDirectory();
+        String tempPath = tempDir.path;
+        File tempFile = File('$tempPath/empty-profile.png');
+        await tempFile.writeAsBytes(imageData);
+        photo = tempFile;
+      }
       print("$photo");
 
       bool success = await ProfileApi().addProfile(
@@ -258,7 +258,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText:
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        "Seorang pengusaha yang bersemangat, ayah dari dua anak, dan ingin memastikan bahwa keluarganya hidup dalam lingkungan yang penuh dengan nilai-nilai Islami.",
                     formController: bioController,
                     validator: validateNonNull,
                     isPassword: false,

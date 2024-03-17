@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
-import '../widgets/image_cover_builder.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -16,26 +15,26 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: Center(
-      //   child: Column(
-      //     mainAxisSize: MainAxisSize.max,
-      //     crossAxisAlignment: CrossAxisAlignment.center,
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text("Under Maintanance", style: AppStyles.heading2TextStyle),
-      //       SizedBox(height: 10),
-      //       CircularProgressIndicator(color: AppColors.primaryColor),
-      //     ],
-      //   ),
-      // ),
-      body: GestureDetector(
-          onTap: () {
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Under Maintanance", style: AppStyles.heading2TextStyle),
+            SizedBox(height: 10),
+            CircularProgressIndicator(color: AppColors.primaryColor),
+          ],
+        ),
+      ),
+      // body: GestureDetector(
+      //     onTap: () {
 
-            setState(() {
-              Navigator.pushNamed(context, '/newsContent');
-            });
-          },
-          child: ImageCoverBuilder(imagePath: 'images/news.png')),
+      //       setState(() {
+      //         Navigator.pushNamed(context, '/newsContent');
+      //       });
+      //     },
+      //     child: ImageCoverBuilder(imagePath: 'images/news.png')),
     );
   }
 }
