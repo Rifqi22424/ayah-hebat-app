@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _delayAndPush(BuildContext context) async {
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       _getToken();
     });
   }

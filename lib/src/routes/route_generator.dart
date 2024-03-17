@@ -1,3 +1,4 @@
+import 'package:ayahhebat/src/pages/announcement_page.dart';
 import 'package:ayahhebat/src/pages/change_password_page.dart';
 import 'package:ayahhebat/src/pages/news_content_page.dart';
 import 'package:ayahhebat/src/pages/profiles/edit_profile.dart';
@@ -35,6 +36,9 @@ class RouteGenerator {
       case "/changePassword":
         return MaterialPageRoute(
             builder: (context) => const ChangePasswordPage());
+      case "/announcement":
+        return MaterialPageRoute(
+            builder: (context) => const AnnouncementPage());
       case "/home":
         return MaterialPageRoute(
             builder: (context) => const MainPage(

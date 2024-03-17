@@ -1,7 +1,7 @@
-import 'package:ayahhebat/src/widgets/image_cover_builder.dart';
 import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
+import '../widgets/image_cover_builder.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -30,7 +30,7 @@ class _NewsPageState extends State<NewsPage> {
       // ),
       body: GestureDetector(
           onTap: () {
-            
+
             setState(() {
               Navigator.pushNamed(context, '/newsContent');
             });

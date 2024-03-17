@@ -10,7 +10,7 @@ class SettingButtonBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(

@@ -4,6 +4,7 @@ import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
@@ -37,7 +38,18 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
       String userId = id.toString();
       print(userId);
 
-      File? photo = selectedMedia != null ? File(selectedMedia!) : null;
+      File? photo;
+      if (selectedMedia != null) {
+      photo = File(selectedMedia!);
+    } else {
+      ByteData byteData = await rootBundle.load('images/empty-profile.png');
+      List<int> imageData = byteData.buffer.asUint8List();
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      File tempFile = File('$tempPath/empty-profile.png');
+      await tempFile.writeAsBytes(imageData);
+      photo = tempFile;
+    }
       print("$photo");
 
       bool success = await ProfileApi().addProfile(
@@ -113,7 +125,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                   SizedBox(height: screenHeight * 0.01875),
                   Text("Profile Anda", style: AppStyles.headingTextStyle),
                   SizedBox(height: screenHeight * 0.0075),
-                  Text("Mohon isi data dengan teliti dan benar",
+                  Text("Mohon isi data profile anda terlebih dahulu",
                       style: AppStyles.hintTextStyle),
                   SizedBox(height: screenHeight * 0.015),
                   Row(

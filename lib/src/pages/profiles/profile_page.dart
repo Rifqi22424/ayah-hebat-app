@@ -236,12 +236,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Tahun Ajaran Anak",
+                      "Nama Kuttab",
                       style: AppStyles.mediumTextStyle,
                     ),
                     SizedBox(height: screenHeight * 0.0125),
                     TextFormField(
-                      controller: tahunController,
+                      controller: namaKuttabController,
                       readOnly: true,
                       decoration: InputDecoration(
                         hintText: "",
@@ -259,12 +259,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: screenHeight * 0.0125),
                     Text(
-                      "Nama Kuttab",
+                      "Tahun Ajaran Anak",
                       style: AppStyles.mediumTextStyle,
                     ),
                     SizedBox(height: screenHeight * 0.0125),
                     TextFormField(
-                      controller: namaKuttabController,
+                      controller: tahunController,
                       readOnly: true,
                       decoration: InputDecoration(
                         hintText: "",

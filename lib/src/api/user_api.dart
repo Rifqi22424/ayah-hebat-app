@@ -21,9 +21,7 @@ class UserApi {
     if (response.statusCode == 200) {
       return true;
     } else {
-      print(response.statusCode);
-      print(response.body);
-      return false;
+      throw (Exception(response.body));
     }
   }
 }

@@ -6,6 +6,7 @@ import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
 import '../models/user_profile_model.dart';
 import '../utils/shared_preferences.dart';
+// import '../widgets/audio_player_widget.dart';
 import '../widgets/image_cover_builder.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -25,13 +26,19 @@ class _HomePageState extends State<HomePage> {
   List<String> selectedMedia = [];
   int timeIndex = 1;
   List<UserProfile> topUsers = [];
+  bool loadingUpload = false;
 
   Future<void> _pickVidMedia() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video
-    );
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.video);
 
-    if (result != null && result.files.isNotEmpty) {
+    final f = File(result!.files.first.path!);
+    int sizeInBytes = f.lengthSync();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    if (sizeInMb > 10) {
+      _showMaxMediaAlert("Batas Ukuran Tercapai",
+          "Anda mengupload file yang lebih dari 10 mb");
+    } else if (result.files.isNotEmpty) {
       setState(() {
         selectedMedia.add(result.files.first.path!);
       });
@@ -42,17 +49,35 @@ class _HomePageState extends State<HomePage> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
 
-    if (pickedFile != null) {
+    var maxFileSizeInBytes = 10 * 1048576;
+    var imagePath = await pickedFile!.readAsBytes();
+    var fileSize = imagePath.length;
+
+    if (maxFileSizeInBytes <= fileSize) {
+      _showMaxMediaAlert("Batas Ukuran Tercapai",
+          "Anda mengupload file yang lebih dari 10 mb");
+    } else {
       setState(() {
         selectedMedia.add(pickedFile.path);
       });
     }
   }
 
+  // Future<void> _pickAudioMedia() async {
+  //   FilePickerResult? result =
+  //       await FilePicker.platform.pickFiles(type: FileType.audio);
+
+  //   if (result != null && result.files.isNotEmpty) {
+  //     setState(() {
+  //       selectedMedia.add(result.files.first.path!);
+  //     });
+  //   }
+  // }
+
   Future<void> _sendKegiatanData() async {
     if (descController.text.isEmpty) {
       final snackBar = SnackBar(
-        content: Text('Descripsi tidak boleh kosong'),
+        content: Text('Nama Kegiatan tidak boleh kosong'),
         backgroundColor: AppColors.accentColor,
       );
 
@@ -71,6 +96,10 @@ class _HomePageState extends State<HomePage> {
       File? file3 = selectedMedia.length > 2 ? File(selectedMedia[2]) : null;
       print("$file1, $file2, $file3");
 
+      setState(() {
+        loadingUpload = true;
+      });
+
       bool success =
           await KegiatanApi().postKegiatan(title, userId, file1, file2, file3);
 
@@ -86,23 +115,24 @@ class _HomePageState extends State<HomePage> {
       if (success) {
         descController.clear();
         setState(() {
+          loadingUpload = false;
           selectedMedia.clear();
         });
+      } else {
+        loadingUpload = false;
       }
     });
   }
 
-  void _showMaxMediaAlert() {
+  void _showMaxMediaAlert(String title, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          title: Text('Batas Media Terpilih', style: AppStyles.mediumTextStyle),
-          content: Text(
-              'Anda sudah mencapai batas maksimal media yang dapat dipilih.',
-              style: AppStyles.heading3TextStyle),
+          title: Text(title, style: AppStyles.mediumTextStyle),
+          content: Text(message, style: AppStyles.heading3TextStyle),
           actions: [
             TextButton(
               onPressed: () {
@@ -236,6 +266,31 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  mediaTypeWidget(String selectedMedia) {
+    if (selectedMedia.endsWith('.mp4')) {
+      return VideoPlayerWidget(videoPath: selectedMedia);
+    }
+    // else if (selectedMedia.endsWith('.mp3') ||
+    //     selectedMedia.endsWith('.m4a')) {
+    //   return AudioPlayerWidget(audioPath: selectedMedia);
+    // }
+
+    else if (selectedMedia.endsWith('.jpg') ||
+        selectedMedia.endsWith('.png') ||
+        selectedMedia.endsWith('.jpeg')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.file(
+          File(selectedMedia),
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      _showMaxMediaAlert("Type File Tidak Valid",
+          "Kirimkan file yang sesuai, jpg, png, jpeg, mp4, mp3 atau m4a");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -264,13 +319,19 @@ class _HomePageState extends State<HomePage> {
                             style: AppStyles.hintTextStyle),
                       ],
                     ),
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.grey)),
-                        child: Image.asset('images/speaker.png',
-                            width: 25, height: 25)),
+                    InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {
+                        Navigator.pushNamed(context, '/announcement');
+                      },
+                      child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.grey)),
+                          child: Image.asset('images/speaker.png',
+                              width: 25, height: 25)),
+                    ),
                   ],
                 ),
                 SizedBox(height: screenHeight * 0.02),
@@ -442,7 +503,8 @@ class _HomePageState extends State<HomePage> {
                         GestureDetector(
                           onTap: () async {
                             if (selectedMedia.length == 3) {
-                              _showMaxMediaAlert();
+                              _showMaxMediaAlert("Batas Media Terpilih",
+                                  "Anda sudah mencapai batas maksimal media yang dapat dipilih.");
                             } else {
                               showModalBottomSheet(
                                 context: context,
@@ -466,6 +528,14 @@ class _HomePageState extends State<HomePage> {
                                           Navigator.pop(context);
                                         },
                                       ),
+                                      // ListTile(
+                                      //   leading: Icon(Icons.audio_file),
+                                      //   title: Text('Pilih Audio'),
+                                      //   onTap: () {
+                                      //     _pickAudioMedia();
+                                      //     Navigator.pop(context);
+                                      //   },
+                                      // ),
                                     ],
                                   );
                                 },
@@ -495,7 +565,7 @@ class _HomePageState extends State<HomePage> {
                                               height: 50),
                                           SizedBox(height: 10),
                                           Text(
-                                            "Upload Video atau JPG",
+                                            "Upload Foto atau Video",
                                             style: AppStyles.hintTextStyle,
                                           ),
                                         ],
@@ -540,24 +610,8 @@ class _HomePageState extends State<HomePage> {
                                                   SizedBox(
                                                     height: 100,
                                                     width: 100,
-                                                    child: selectedMedia[index]
-                                                            .endsWith('.mp4')
-                                                        ? VideoPlayerWidget(
-                                                            videoPath:
-                                                                selectedMedia[
-                                                                    index])
-                                                        : ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                            child: Image.file(
-                                                              File(
-                                                                  selectedMedia[
-                                                                      index]),
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
+                                                    child: mediaTypeWidget(
+                                                        selectedMedia[index]),
                                                   ),
                                                   Positioned(
                                                       right: 0,
@@ -616,12 +670,17 @@ class _HomePageState extends State<HomePage> {
                                         borderSide: BorderSide.none,
                                         borderRadius:
                                             BorderRadius.circular(24)),
-                                    hintText: "Deskripsi kegiatan keluargamu",
+                                    hintText: "Nama kegiatan keluargamu",
                                     filled: true,
                                     fillColor: AppColors.whiteColor,
-                                    suffixIcon: Icon(
-                                      Icons.mic,
-                                      color: AppColors.textColor,
+                                    suffixIcon: InkWell(
+                                      onTap: () {
+                                        _showDropdown(context);
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: AppColors.textColor,
+                                      ),
                                     )),
                                 controller: descController,
                               ),
@@ -637,10 +696,22 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(24),
                                     color: AppColors.primaryColor),
-                                child: Icon(
-                                  Icons.send,
-                                  color: AppColors.whiteColor,
-                                ),
+                                child: loadingUpload
+                                    ? Center(
+                                        child: SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.white),
+                                          ),
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.send,
+                                        color: AppColors.whiteColor,
+                                      ),
                               ),
                             )
                           ],
@@ -653,6 +724,51 @@ class _HomePageState extends State<HomePage> {
               ))
         ],
       ),
+    );
+  }
+
+  void _showDropdown(BuildContext context) {
+    List<String> options = [
+      'Sajarah (Satu jam bersama ayah)',
+      'Diari (Dialog iman sekali sehari)',
+      'MasaIyah (Magrib sampai Isya ditemanI ayah)',
+      'Berkisah'
+    ];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Text(
+            'Pilih Nama Kegiatan',
+            style: AppStyles.mediumTextStyle,
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: (BuildContext context, int index) {
+                final option = options[index];
+                return ListTile(
+                  title: Text(
+                    option,
+                    style: AppStyles.heading3TextStyle,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      descController.text = option;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

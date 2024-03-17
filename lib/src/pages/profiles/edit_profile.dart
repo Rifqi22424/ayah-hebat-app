@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:ayahhebat/main.dart';
 import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../api/profile_api.dart';
@@ -12,6 +14,9 @@ import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
 import '../../widgets/label_builder.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -47,6 +52,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         namaKuttabController.text = user.profile.namaKuttab;
         tahunController.text = user.profile.tahunMasukKuttab.toString();
         bioController.text = user.profile.bio;
+        downloadImageAndSaveLocally(user.profile.photo);
       });
     }).catchError((error) {
       print("Error: $error");
@@ -99,6 +105,46 @@ class _EditProfilePageState extends State<EditProfilePage>
       setState(() {
         selectedMedia = pickedFile.path;
       });
+    }
+  }
+
+  Future<void> downloadImageAndSaveLocally(String linkImage) async {
+    String imageUrl = '$serverPath/uploads/$linkImage';
+    final http.Client client = http.Client();
+
+    try {
+      final http.Response response = await client.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        final Directory directory = await getApplicationDocumentsDirectory();
+        final File file = File('${directory.path}/profile_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+        setState(() {
+          selectedMedia = file.path;
+        });
+      } else {
+        throw Exception('Failed to load image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error downloading image: $e');
+      // Jika unduhan gagal, ambil gambar dari asset
+      ByteData byteData = await rootBundle.load('images/empty-profile.png');
+      List<int> imageData = byteData.buffer.asUint8List();
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      File tempFile = File('$tempPath/empty-profile.png');
+      await tempFile.writeAsBytes(imageData);
+      setState(() {
+        selectedMedia = tempFile.path;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load image. Using default image.'),
+          backgroundColor: AppColors.redColor,
+        ),
+      );
+    } finally {
+      client.close();
     }
   }
 
@@ -216,7 +262,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                   validator: validateNonNull,
                   isPassword: false,
                   isDescription: false,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: screenHeight * 0.015),
                 Row(children: [

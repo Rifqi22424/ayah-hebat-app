@@ -23,24 +23,37 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _sendNewPassword() async {
-    String? email = await SharedPreferencesHelper.getEmail();
-    bool sendPass = await UserApi().changePassword(
-        email!,
-        oldPasswordController.text,
-        newConfirmPasswordController.text,
-        newConfirmPasswordController.text);
+    try {
+      String? email = await SharedPreferencesHelper.getEmail();
+      bool sendPass = await UserApi().changePassword(
+          email!,
+          oldPasswordController.text,
+          newConfirmPasswordController.text,
+          newConfirmPasswordController.text);
+      if (sendPass) {
+        Navigator.pop(context);
+        SharedPreferencesHelper.savePassword(newPasswordController.text);
 
-    final snackBar = SnackBar(
-      content:
-          Text(sendPass ? 'Change password success' : 'Change password failed'),
-      backgroundColor: sendPass ? AppColors.greenColor : AppColors.redColor,
-    );
+        final snackBar = SnackBar(
+          content: Text('Change password success'),
+          backgroundColor: AppColors.greenColor,
+        );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } catch (e) {
+      String errorString = e.toString();
+      String errorMessage = errorString
+          .split(":")[2]
+          .replaceAll('"', '')
+          .replaceAll('}', '')
+          .trim();
+      final snackBar = SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: AppColors.redColor,
+      );
 
-    if (sendPass) {
-      Navigator.pop(context);
-      SharedPreferencesHelper.savePassword(newPasswordController.text);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -76,7 +89,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                   hintText: "oldpassword",
                   formController: oldPasswordController,
                   validator: validateNonNull,
-                  isPassword: false,
+                  isPassword: true,
                   isDescription: false,
                   keyboardType: TextInputType.text,
                 ),
@@ -87,7 +100,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                   hintText: "newPassword",
                   formController: newPasswordController,
                   validator: validateNonNull,
-                  isPassword: false,
+                  isPassword: true,
                   isDescription: false,
                   keyboardType: TextInputType.text,
                 ),
@@ -95,10 +108,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                 LabelBuilder(text: "Ulang Kata Sandi"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
-                  hintText: "ulangsandi",
+                  hintText: "ulang newPassword",
                   formController: newConfirmPasswordController,
                   validator: validateNonNull,
-                  isPassword: false,
+                  isPassword: true,
                   isDescription: false,
                   keyboardType: TextInputType.text,
                 ),
@@ -108,17 +121,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                       if (_formKey.currentState?.validate() ?? false) {
                         try {
                           _sendNewPassword();
-
-                          print("Login berhasil");
-                        } catch (e) {
-                          final snackBar = SnackBar(
-                            content: Text('Invalid email or password'),
-                            backgroundColor: AppColors.redColor,
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          print("Gagal login: $e");
-                        }
+                        } catch (e) {}
                       }
                     },
                     child: Text("Save"))

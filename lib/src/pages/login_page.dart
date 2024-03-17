@@ -107,6 +107,8 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
                           SharedPreferencesHelper.saveId(login.id);
                           SharedPreferencesHelper.saveToken(login.token);
                           SharedPreferencesHelper.saveEmail(login.email);
+                          SharedPreferencesHelper.savePassword(
+                              passwordController.text);
                         }
                         if (login.profile.nama != "") {
                           Navigator.pushNamed(context, '/home');
@@ -165,7 +167,9 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
   GestureDetector forgotPass(
       {required String text, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () => () {},
+      onTap: () => () {
+        
+      },
       child: Text("Lupa kata sandi anda?", style: AppStyles.heading3TextStyle),
     );
   }
