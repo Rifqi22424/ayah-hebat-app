@@ -6,7 +6,6 @@ import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
 import '../models/user_profile_model.dart';
 import '../utils/shared_preferences.dart';
-// import '../widgets/audio_player_widget.dart';
 import '../widgets/image_cover_builder.dart';
 
 import 'package:image_picker/image_picker.dart';

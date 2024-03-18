@@ -110,7 +110,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                 FormBuilder(
                   hintText: "ulang newPassword",
                   formController: newConfirmPasswordController,
-                  validator: validateNonNull,
+                  validator: (value) => validateConfirmPassword(
+                      value, newPasswordController.text),
                   isPassword: true,
                   isDescription: false,
                   keyboardType: TextInputType.text,
