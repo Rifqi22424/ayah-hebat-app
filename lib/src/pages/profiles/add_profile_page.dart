@@ -114,7 +114,6 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(height: screenHeight * 0.0875),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

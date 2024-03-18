@@ -23,7 +23,14 @@ class _NewsPageState extends State<NewsPage> {
           children: [
             Text("Under Maintanance", style: AppStyles.heading2TextStyle),
             SizedBox(height: 10),
-            CircularProgressIndicator(color: AppColors.primaryColor),
+            SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+              ),
+            ),
           ],
         ),
       ),

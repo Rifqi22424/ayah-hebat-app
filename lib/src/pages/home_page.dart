@@ -486,16 +486,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Row(
-                                children: [
-                                  Image.asset("images/time.png",
-                                      width: 20, height: 20),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "Story kegiatan",
-                                    style: AppStyles.heading3WhiteTextStyle,
-                                  )
-                                ],
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/story');
+                                },
+                                child: Row(
+                                  children: [
+                                    Image.asset("images/time.png",
+                                        width: 20, height: 20),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      "Story kegiatan",
+                                      style: AppStyles.heading3WhiteTextStyle,
+                                    )
+                                  ],
+                                ),
                               ),
                             )
                           ],

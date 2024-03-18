@@ -144,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             InkWell(
                               borderRadius: BorderRadius.circular(24),
                               onTap: () {
-                                print("test");
+                                Navigator.pushNamed(context, '/ranking');
                               },
                               child: Row(
                                 children: [

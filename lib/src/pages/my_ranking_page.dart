@@ -4,15 +4,15 @@ import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
 import '../widgets/app_bar_builder.dart';
 
-class AnnouncementPage extends StatelessWidget {
-  const AnnouncementPage({super.key});
+class MyRangkingPage extends StatelessWidget {
+  const MyRangkingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBarBuilder(
-        title: "Pengumuman",
+        title: "Ranking Saya",
         showBackButton: true,
         showCancelButton: true,
         onBackButtonPressed: () {

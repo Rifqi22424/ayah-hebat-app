@@ -1,7 +1,9 @@
 import 'package:ayahhebat/src/pages/announcement_page.dart';
 import 'package:ayahhebat/src/pages/change_password_page.dart';
+import 'package:ayahhebat/src/pages/my_ranking_page.dart';
 import 'package:ayahhebat/src/pages/news_content_page.dart';
-import 'package:ayahhebat/src/pages/profiles/edit_profile.dart';
+import 'package:ayahhebat/src/pages/profiles/edit_profile_page.dart';
+import 'package:ayahhebat/src/pages/story_activities_page.dart';
 import 'package:flutter/material.dart';
 import '../pages/login_page.dart';
 import '../pages/main_page.dart';
@@ -39,6 +41,10 @@ class RouteGenerator {
       case "/announcement":
         return MaterialPageRoute(
             builder: (context) => const AnnouncementPage());
+      case "/story":
+        return MaterialPageRoute(builder: (context) => const StoryActivitiesPage());
+      case "/ranking":
+        return MaterialPageRoute(builder: (context) => const MyRangkingPage());
       case "/home":
         return MaterialPageRoute(
             builder: (context) => const MainPage(
