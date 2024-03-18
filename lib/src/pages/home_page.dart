@@ -154,6 +154,7 @@ class _HomePageState extends State<HomePage> {
       required String poin}) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    String shortName = name.length > 10 ? "${name.substring(0, 10)}.." : name;
 
     return Column(
       children: [
@@ -163,7 +164,7 @@ class _HomePageState extends State<HomePage> {
           backgroundImage: NetworkImage('$serverPath/uploads/$image'),
         ),
         SizedBox(height: screenHeight * 0.00625),
-        Text(name, style: AppStyles.heading2TextStyle),
+        Text(shortName, style: AppStyles.heading2TextStyle),
         SizedBox(height: screenHeight * 0.00625),
         Row(
           children: [
