@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../widgets/video_player_widget.dart';
+import 'package:image/image.dart' as img;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,15 +32,21 @@ class _HomePageState extends State<HomePage> {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.video);
 
-    final f = File(result!.files.first.path!);
+    if (result == null) return;
+
+    final f = File(result.files.first.path!);
     int sizeInBytes = f.lengthSync();
     double sizeInMb = sizeInBytes / (1024 * 1024);
-    if (sizeInMb > 10) {
+    if (sizeInMb > 20) {
       _showMaxMediaAlert("Batas Ukuran Tercapai",
-          "Anda mengupload file yang lebih dari 10 mb");
+          "Anda mengupload file yang lebih dari 20 mb");
+    } else if (selectedMedia.any((media) => media.endsWith('.mp4'))) {
+      _showMaxMediaAlert("Batas Upload Video Tercapai",
+          "Anda mengupload file video lebih dari 1");
     } else if (result.files.isNotEmpty) {
       setState(() {
         selectedMedia.add(result.files.first.path!);
+        print("cek ${result.files.first.path!}");
       });
     }
   }
@@ -48,18 +55,20 @@ class _HomePageState extends State<HomePage> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
 
-    var maxFileSizeInBytes = 10 * 1048576;
-    var imagePath = await pickedFile!.readAsBytes();
-    var fileSize = imagePath.length;
+    if (pickedFile == null) return;
 
-    if (maxFileSizeInBytes <= fileSize) {
-      _showMaxMediaAlert("Batas Ukuran Tercapai",
-          "Anda mengupload file yang lebih dari 10 mb");
-    } else {
-      setState(() {
-        selectedMedia.add(pickedFile.path);
-      });
+    var imagePath = File(pickedFile.path);
+    var fileSize = await imagePath.length();
+
+    if (fileSize > 5 * 1048576) {
+      img.Image image = img.decodeImage(await imagePath.readAsBytes())!;
+      var compressedImage = img.encodeJpg(image, quality: 85);
+      await imagePath.writeAsBytes(compressedImage);
     }
+
+    setState(() {
+      selectedMedia.add(pickedFile.path);
+    });
   }
 
   // Future<void> _pickAudioMedia() async {
@@ -99,26 +108,44 @@ class _HomePageState extends State<HomePage> {
         loadingUpload = true;
       });
 
-      bool success =
-          await KegiatanApi().postKegiatan(title, userId, file1, file2, file3);
+      try {
+        bool success = await KegiatanApi()
+            .postKegiatan(title, userId, file1, file2, file3);
 
-      final snackBar = SnackBar(
-        content: Text(success
-            ? 'Kegiatan data posted successfully'
-            : 'Failed to post kegiatan data'),
-        backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
-      );
+        if (success) {
+          descController.clear();
+          setState(() {
+            loadingUpload = false;
+            selectedMedia.clear();
+          });
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          final snackBar = SnackBar(
+            content: Text('Kegiatan data posted successfully'),
+            backgroundColor: AppColors.greenColor,
+          );
 
-      if (success) {
-        descController.clear();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          setState(() {
+            loadingUpload = false;
+          });
+        }
+      } catch (e) {
         setState(() {
           loadingUpload = false;
-          selectedMedia.clear();
         });
-      } else {
-        loadingUpload = false;
+        String errorString = e.toString();
+        String errorMessage = errorString
+            .split(":")[2]
+            .replaceAll('"', '')
+            .replaceAll('}', '')
+            .trim();
+        final snackBar = SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: AppColors.redColor,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     });
   }
@@ -268,7 +295,9 @@ class _HomePageState extends State<HomePage> {
 
   mediaTypeWidget(String selectedMedia) {
     if (selectedMedia.endsWith('.mp4')) {
-      return VideoPlayerWidget(videoPath: selectedMedia);
+      return ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: VideoPlayerWidget(videoPath: selectedMedia));
     }
     // else if (selectedMedia.endsWith('.mp3') ||
     //     selectedMedia.endsWith('.m4a')) {

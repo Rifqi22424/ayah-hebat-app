@@ -28,59 +28,53 @@ class KegiatanApi {
     File? file2,
     File? file3,
   ) async {
-    try {
-      final url = Uri.parse('$serverPath/kegiatan');
-      final request = http.MultipartRequest('POST', url);
-      String? token = await SharedPreferencesHelper.getToken();
+    final url = Uri.parse('$serverPath/kegiatan');
+    final request = http.MultipartRequest('POST', url);
+    String? token = await SharedPreferencesHelper.getToken();
 
-      request.fields['title'] = title;
-      request.fields['userId'] = userId;
-      request.headers['Authorization'] = 'Bearer $token';
-      print(token);
+    request.fields['title'] = title;
+    request.fields['userId'] = userId;
+    request.headers['Authorization'] = 'Bearer $token';
+    print(token);
 
-      if (file1 != null) {
-        final fotoPart = await http.MultipartFile.fromPath(
-          'file1',
-          file1.path,
-          contentType:
-              MediaType(getMediaType(file1.path), file1.path.split('.').last),
-        );
-        request.files.add(fotoPart);
-      }
+    if (file1 != null) {
+      final fotoPart = await http.MultipartFile.fromPath(
+        'file1',
+        file1.path,
+        contentType:
+            MediaType(getMediaType(file1.path), file1.path.split('.').last),
+      );
+      request.files.add(fotoPart);
+    }
 
-      if (file2 != null) {
-        final videoPart = await http.MultipartFile.fromPath(
-          'file2',
-          file2.path,
-          contentType:
-              MediaType(getMediaType(file2.path), file2.path.split('.').last),
-        );
-        request.files.add(videoPart);
-      }
+    if (file2 != null) {
+      final videoPart = await http.MultipartFile.fromPath(
+        'file2',
+        file2.path,
+        contentType:
+            MediaType(getMediaType(file2.path), file2.path.split('.').last),
+      );
+      request.files.add(videoPart);
+    }
 
-      if (file3 != null) {
-        final audioPart = await http.MultipartFile.fromPath(
-          'file3',
-          file3.path,
-          contentType:
-              MediaType(getMediaType(file3.path), file3.path.split('.').last),
-        );
-        request.files.add(audioPart);
-      }
+    if (file3 != null) {
+      final audioPart = await http.MultipartFile.fromPath(
+        'file3',
+        file3.path,
+        contentType:
+            MediaType(getMediaType(file3.path), file3.path.split('.').last),
+      );
+      request.files.add(audioPart);
+    }
 
-      final response = await request.send();
+    final response = await request.send();
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        print('Failed to upload data. Status code: ${response.statusCode}');
-        print('Response body: ${await response.stream.bytesToString()}');
-
-        return false;
-      }
-    } catch (error) {
-      print('Error posting data: $error');
-      return false;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      String responseBody = await response.stream.bytesToString();
+      print(responseBody);
+      throw Exception(responseBody);
     }
   }
 
@@ -95,9 +89,8 @@ class KegiatanApi {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);
-      List<UserProfile> topUsers = jsonResponse
-          .map((data) => UserProfile.fromJson(data))
-          .toList();
+      List<UserProfile> topUsers =
+          jsonResponse.map((data) => UserProfile.fromJson(data)).toList();
       return topUsers;
     } else {
       print(response.statusCode);
