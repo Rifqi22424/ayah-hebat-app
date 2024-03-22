@@ -37,9 +37,9 @@ class _HomePageState extends State<HomePage> {
     final f = File(result.files.first.path!);
     int sizeInBytes = f.lengthSync();
     double sizeInMb = sizeInBytes / (1024 * 1024);
-    if (sizeInMb > 20) {
+    if (sizeInMb > 10) {
       _showMaxMediaAlert("Batas Ukuran Tercapai",
-          "Anda mengupload file yang lebih dari 20 mb");
+          "Anda mengupload file yang lebih dari 10 mb");
     } else if (selectedMedia.any((media) => media.endsWith('.mp4'))) {
       _showMaxMediaAlert("Batas Upload Video Tercapai",
           "Anda mengupload file video lebih dari 1");
