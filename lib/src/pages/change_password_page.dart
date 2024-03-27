@@ -23,9 +23,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController newConfirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isLoadingWidget = false;
 
   _sendNewPassword() async {
     try {
+      setState(() {
+        isLoadingWidget = true;
+      });
       String? email = await SharedPreferencesHelper.getEmail();
       bool sendPass = await UserApi().changePassword(
           email!,
@@ -120,9 +124,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                 ),
                 const Spacer(),
                 ButtonBuilder(
+                    isLoadingWidget: isLoadingWidget,
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                          _sendNewPassword();
+                        _sendNewPassword();
                       }
                     },
                     child: const Text("Save"))

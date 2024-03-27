@@ -29,6 +29,21 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
 
   AuthApi authApi = AuthApi();
 
+  showFeatureNotWorking(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Text('Fitur belum tersedia', style: AppStyles.mediumTextStyle),
+          content:
+              Text('Mohon untuk lakukan login/ registrasi secara langsung', style: AppStyles.heading3TextStyle,),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -151,14 +166,26 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
                 ],
               ),
               SizedBox(height: screenHeight * 0.025),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LogoBuilder(image: 'images/google-logo.png'),
-                  SizedBox(width: 10),
-                  LogoBuilder(image: 'images/facebook-logo.png'),
-                  SizedBox(width: 10),
-                  LogoBuilder(image: 'images/x-logo.png'),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/google-logo.png'),
+                  const SizedBox(width: 10),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/facebook-logo.png'),
+                  const SizedBox(width: 10),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/x-logo.png'),
                 ],
               ),
               SizedBox(height: screenHeight * 0.05625),

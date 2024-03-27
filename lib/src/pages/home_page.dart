@@ -118,6 +118,8 @@ class _HomePageState extends State<HomePage> {
             selectedMedia.clear();
           });
 
+          _fetchTopUsers();
+
           final snackBar = SnackBar(
             content: const Text('Kegiatan data posted successfully'),
             backgroundColor: AppColors.greenColor,
@@ -256,13 +258,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchTopUsers() async {
-      String? token = await SharedPreferencesHelper.getToken();
-      String timePeriod = _getTimePeriod();
-      List<UserProfile> users =
-          await KegiatanApi().getTopUsers(timePeriod, token!);
-      setState(() {
-        topUsers = users;
-      });
+    String? token = await SharedPreferencesHelper.getToken();
+    String timePeriod = _getTimePeriod();
+    List<UserProfile> users =
+        await KegiatanApi().getTopUsers(timePeriod, token!);
+    setState(() {
+      topUsers = users;
+    });
   }
 
   String _getTimePeriod() {
@@ -639,8 +641,8 @@ class _HomePageState extends State<HomePage> {
                                     bottom: 0,
                                     right: 0,
                                     child: Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 5, right: 5),
+                                      padding:
+                                          EdgeInsets.only(bottom: 5, right: 5),
                                       child: Icon(
                                         Icons.info_outline,
                                         color: AppColors.whiteColor,
@@ -673,8 +675,8 @@ class _HomePageState extends State<HomePage> {
                                     bottom: 0,
                                     right: 0,
                                     child: Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 5, right: 5),
+                                      padding:
+                                          EdgeInsets.only(bottom: 5, right: 5),
                                       child: Icon(
                                         Icons.info_outline,
                                         color: AppColors.whiteColor,

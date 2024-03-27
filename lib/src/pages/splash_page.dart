@@ -26,15 +26,15 @@ class _SplashPageState extends State<SplashPage> {
         SharedPreferencesHelper.saveId(login.id);
         SharedPreferencesHelper.saveToken(login.token);
         if (login.profile.nama != "") {
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/home');
         } else {
-          Navigator.pushNamed(context, '/addProfile');
+          Navigator.pushReplacementNamed(context, '/addProfile');
         }
       } catch (e) {
-        Navigator.pushNamed(context, "/login");
+        Navigator.pushReplacementNamed(context, "/login");
       }
     } else {
-      Navigator.pushNamed(context, "/login");
+      Navigator.pushReplacementNamed(context, "/login");
     }
   }
 

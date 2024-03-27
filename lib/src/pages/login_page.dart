@@ -43,6 +43,21 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
     });
   }
 
+  showFeatureNotWorking(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Text('Fitur belum tersedia', style: AppStyles.mediumTextStyle),
+          content:
+              Text('Mohon untuk lakukan login/ registrasi secara langsung', style: AppStyles.heading3TextStyle,),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -93,10 +108,7 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: screenHeight * 0.015),
-              forgotPass(
-                  text: 'Lupa Password',
-                  onTap: () {
-                  }),
+              forgotPass(text: 'Lupa Password', onTap: () {}),
               SizedBox(height: screenHeight * 0.03),
               ButtonBuilder(
                   onPressed: () async {
@@ -112,9 +124,9 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
                               passwordController.text);
                         }
                         if (login.profile.nama != "") {
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
                         } else {
-                          Navigator.pushNamed(context, '/addProfile');
+                          Navigator.pushNamedAndRemoveUntil(context, '/addProfile', (route) => false);
                         }
                       } catch (e) {
                         String errorString = e.toString();
@@ -145,14 +157,26 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
                 ],
               ),
               SizedBox(height: screenHeight * 0.025),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LogoBuilder(image: 'images/google-logo.png'),
-                  SizedBox(width: 10),
-                  LogoBuilder(image: 'images/facebook-logo.png'),
-                  SizedBox(width: 10),
-                  LogoBuilder(image: 'images/x-logo.png'),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/google-logo.png'),
+                  const SizedBox(width: 10),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/facebook-logo.png'),
+                  const SizedBox(width: 10),
+                  LogoBuilder(
+                      onTap: () {
+                        showFeatureNotWorking(context);
+                      },
+                      image: 'images/x-logo.png'),
                 ],
               ),
               SizedBox(height: screenHeight * 0.05625),
@@ -167,9 +191,7 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
   GestureDetector forgotPass(
       {required String text, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () => () {
-        
-      },
+      onTap: () => () {},
       child: Text("Lupa kata sandi anda?", style: AppStyles.heading3TextStyle),
     );
   }
