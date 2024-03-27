@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
@@ -28,7 +30,7 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void startCountdown() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_countdownSeconds > 0) {
           _countdownSeconds--;
@@ -48,7 +50,6 @@ class _VerificationPageState extends State<VerificationPage> {
   void checkVerificationCode() {
     final String verificationCode = verificationValues.join();
 
-    print(verificationCode.length);
     if (verificationCode.length == 6) {
       submitVerification();
     }
@@ -64,7 +65,7 @@ class _VerificationPageState extends State<VerificationPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
+          return const AlertDialog(
             title: Text('Verification Successful'),
             content: Text('Verification successful!'),
           );
@@ -72,7 +73,7 @@ class _VerificationPageState extends State<VerificationPage> {
       );
       Navigator.pushNamed(context, "/login");
       final snackBar = SnackBar(
-        content: Text("Verification Successful"),
+        content: const Text("Verification Successful"),
         backgroundColor: AppColors.greenColor,
       );
 
@@ -81,7 +82,7 @@ class _VerificationPageState extends State<VerificationPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
+          return const AlertDialog(
             title: Text('Verification Failed'),
             content: Text('Verification failed. Please try again.'),
           );
@@ -129,8 +130,6 @@ class _VerificationPageState extends State<VerificationPage> {
                             FocusScope.of(context).nextFocus();
                           }
                           verificationValues[index] = value;
-                          print(verificationValues);
-                          print(verificationValues.join());
                           checkVerificationCode();
                         },
                       ),

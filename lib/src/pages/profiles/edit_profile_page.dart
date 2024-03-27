@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:ayahhebat/main.dart';
@@ -55,17 +57,13 @@ class _EditProfilePageState extends State<EditProfilePage>
         downloadImageAndSaveLocally(user.profile.photo);
       });
     }).catchError((error) {
-      print("Error: $error");
     });
   }
 
   Future<void> _sendProfileData() async {
     SharedPreferencesHelper.getId().then((id) async {
-      String userId = id.toString();
-      print(userId);
 
       File? photo = selectedMedia != null ? File(selectedMedia!) : null;
-      print("$photo");
 
       bool success = await ProfileApi().editProfile(
           namaController.text,
@@ -125,7 +123,6 @@ class _EditProfilePageState extends State<EditProfilePage>
         throw Exception('Failed to load image: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error downloading image: $e');
       // Jika unduhan gagal, ambil gambar dari asset
       ByteData byteData = await rootBundle.load('images/empty-profile.png');
       List<int> imageData = byteData.buffer.asUint8List();
@@ -139,7 +136,7 @@ class _EditProfilePageState extends State<EditProfilePage>
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to load image. Using default image.'),
+          content: const Text('Failed to load image. Using default image.'),
           backgroundColor: AppColors.redColor,
         ),
       );
@@ -169,7 +166,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         child: Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: screenHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,8 +190,8 @@ class _EditProfilePageState extends State<EditProfilePage>
                               children: [
                                 (selectedMedia != null)
                                     ? ListTile(
-                                        leading: Icon(Icons.delete),
-                                        title: Text('Hapus Profile'),
+                                        leading: const Icon(Icons.delete),
+                                        title: const Text('Hapus Profile'),
                                         onTap: () {
                                           _removeProfilePhoto();
                                           Navigator.pop(context);
@@ -202,8 +199,8 @@ class _EditProfilePageState extends State<EditProfilePage>
                                       )
                                     : Container(),
                                 ListTile(
-                                  leading: Icon(Icons.photo),
-                                  title: Text('Pilih Foto'),
+                                  leading: const Icon(Icons.photo),
+                                  title: const Text('Pilih Foto'),
                                   onTap: () {
                                     _pickImageMedia(ImageSource.gallery);
                                     Navigator.pop(context);
@@ -238,11 +235,11 @@ class _EditProfilePageState extends State<EditProfilePage>
                             right: 0,
                             bottom: 0,
                             child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: AppColors.primaryColor),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.camera_alt,
                                 color: AppColors.textColor,
                                 size: 20,
@@ -254,7 +251,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                     ),
                   ],
                 ),
-                LabelBuilder(text: "Nama Lengkap"),
+                const LabelBuilder(text: "Nama Lengkap"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText: "asep",
@@ -270,7 +267,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LabelBuilder(text: "Nama Istri"),
+                        const LabelBuilder(text: "Nama Istri"),
                         SizedBox(height: screenHeight * 0.015),
                         FormBuilder(
                           hintText: "Aisyah",
@@ -283,12 +280,12 @@ class _EditProfilePageState extends State<EditProfilePage>
                       ],
                     ),
                   ),
-                  SizedBox(width: 25),
+                  const SizedBox(width: 25),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LabelBuilder(text: "Nama Anak"),
+                        const LabelBuilder(text: "Nama Anak"),
                         SizedBox(height: screenHeight * 0.015),
                         FormBuilder(
                           hintText: "Ujang",
@@ -303,7 +300,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                   )
                 ]),
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Tahun Masuk Kuttab"),
+                const LabelBuilder(text: "Tahun Masuk Kuttab"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText: "2022",
@@ -314,14 +311,14 @@ class _EditProfilePageState extends State<EditProfilePage>
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Nama Kuttab"),
+                const LabelBuilder(text: "Nama Kuttab"),
                 SizedBox(height: screenHeight * 0.015),
                 NamaKuttabForm(
                     formController: namaKuttabController,
                     hintText: "nama kuttab",
                     keyboardType: TextInputType.text),
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Biodata"),
+                const LabelBuilder(text: "Biodata"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText:
@@ -332,26 +329,24 @@ class _EditProfilePageState extends State<EditProfilePage>
                   isDescription: true,
                   keyboardType: TextInputType.text,
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(height: screenHeight * 0.015),
                 ButtonBuilder(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         try {
                           _sendProfileData();
-                          print("Login berhasil");
                         } catch (e) {
                           final snackBar = SnackBar(
-                            content: Text('Invalid email or password'),
+                            content: const Text('Invalid email or password'),
                             backgroundColor: AppColors.redColor,
                           );
 
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          print("Gagal login: $e");
                         }
                       }
                     },
-                    child: Text("Save"))
+                    child: const Text("Save"))
               ],
             ),
           ),

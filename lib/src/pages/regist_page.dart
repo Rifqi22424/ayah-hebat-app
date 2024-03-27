@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
@@ -35,7 +37,7 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
         body: Form(
       key: _formKey,
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +113,6 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
                           confirmPasswordController.text,
                         );
                         if (registResponse) {
-                          print("regist berhasil");
                           SharedPreferencesHelper.saveEmail(
                               emailController.text);
                           SharedPreferencesHelper.savePassword(
@@ -122,14 +123,14 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
                               });
                         }
                       } catch (e) {
-                        String error_string = e.toString();
-                        String error_message = error_string
+                        String errorString = e.toString();
+                        String errorMessage = errorString
                             .split(":")[2]
                             .replaceAll('"', '')
                             .replaceAll('}', '')
                             .trim();
                         final snackBar = SnackBar(
-                          content: Text(error_message),
+                          content: Text(errorMessage),
                           backgroundColor: AppColors.redColor,
                         );
 
@@ -141,16 +142,16 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
               SizedBox(height: screenHeight * 0.01875),
               Row(
                 children: [
-                  Expanded(child: Divider(color: AppColors.accentColor)),
+                  const Expanded(child: Divider(color: AppColors.accentColor)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text("Atau", style: AppStyles.heading3TextStyle),
                   ),
-                  Expanded(child: Divider(color: AppColors.accentColor)),
+                  const Expanded(child: Divider(color: AppColors.accentColor)),
                 ],
               ),
               SizedBox(height: screenHeight * 0.025),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   LogoBuilder(image: 'images/google-logo.png'),
@@ -162,7 +163,7 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
               ),
               SizedBox(height: screenHeight * 0.05625),
               alreadyHaveAcc(context: context),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
             ],
           ),
         ),

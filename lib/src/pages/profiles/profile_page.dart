@@ -33,7 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchUserProfile() async {
-    print("cek");
     ProfileApi().getUserNProfile().then((user) {
       setState(() {
         istriController.text = user.profile.namaIstri;
@@ -46,7 +45,6 @@ class _ProfilePageState extends State<ProfilePage> {
         linkImage = user.profile.photo;
       });
     }).catchError((error) {
-      print("Error: $error");
     });
   }
 
@@ -69,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Tidak'),
+              child: const Text('Tidak'),
             ),
             TextButton(
               style: TextButton.styleFrom(
@@ -84,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SharedPreferencesHelper.saveEmail("");
                 SharedPreferencesHelper.savePassword("");
               },
-              child: Text('Ya'),
+              child: const Text('Ya'),
             ),
           ],
         );
@@ -97,14 +95,14 @@ class _ProfilePageState extends State<ProfilePage> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBarBuilder(title: "Profile"),
+      appBar: const AppBarBuilder(title: "Profile"),
       body: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: RefreshIndicator(
           color: AppColors.primaryColor,
           onRefresh: _fetchUserProfile,
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -116,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       backgroundImage:
                           NetworkImage("$serverPath/uploads/$linkImage"),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -124,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   color: AppColors.yellowAccent),
@@ -132,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   Image.asset('images/trophy.png',
                                       height: 20, width: 20),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     '$poin Point',
                                     style: AppStyles.heading3PrimaryTextStyle,
@@ -140,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 5),
+                            const SizedBox(width: 5),
                             InkWell(
                               borderRadius: BorderRadius.circular(24),
                               onTap: () {
@@ -152,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     "Lihat ranking",
                                     style: AppStyles.heading3PrimaryTextStyle,
                                   ),
-                                  Icon(
+                                  const Icon(
                                     Icons.navigate_next_sharp,
                                     color: AppColors.primaryColor,
                                   )
@@ -202,7 +200,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

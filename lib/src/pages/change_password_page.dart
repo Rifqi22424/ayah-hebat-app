@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ayahhebat/src/api/user_api.dart';
 import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
@@ -35,7 +37,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
         SharedPreferencesHelper.savePassword(newPasswordController.text);
 
         final snackBar = SnackBar(
-          content: Text('Change password success'),
+          content: const Text('Change password success'),
           backgroundColor: AppColors.greenColor,
         );
 
@@ -77,13 +79,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
         child: Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             height: screenHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Kata Sandi Lama"),
+                const LabelBuilder(text: "Kata Sandi Lama"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText: "oldpassword",
@@ -94,7 +96,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                   keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Kata Sandi Baru"),
+                const LabelBuilder(text: "Kata Sandi Baru"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText: "newPassword",
@@ -105,7 +107,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                   keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: screenHeight * 0.015),
-                LabelBuilder(text: "Ulang Kata Sandi"),
+                const LabelBuilder(text: "Ulang Kata Sandi"),
                 SizedBox(height: screenHeight * 0.015),
                 FormBuilder(
                   hintText: "ulang newPassword",
@@ -116,16 +118,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
                   isDescription: false,
                   keyboardType: TextInputType.text,
                 ),
-                Spacer(),
+                const Spacer(),
                 ButtonBuilder(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        try {
                           _sendNewPassword();
-                        } catch (e) {}
                       }
                     },
-                    child: Text("Save"))
+                    child: const Text("Save"))
               ],
             ),
           ),

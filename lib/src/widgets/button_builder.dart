@@ -45,7 +45,7 @@ class _ButtonBuilderState extends State<ButtonBuilder> {
         }
       },
       child: isLoading
-          ? SizedBox(
+          ? const SizedBox(
               height: 15,
               width: 15,
               child: CircularProgressIndicator(

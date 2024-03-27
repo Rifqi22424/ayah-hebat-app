@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 class AudioPlayerWidget extends StatefulWidget {
   final String audioPath;
 
-  AudioPlayerWidget({required this.audioPath});
+  const AudioPlayerWidget({super.key, required this.audioPath});
 
   @override
   _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();

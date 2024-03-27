@@ -31,7 +31,7 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       leading: showBackButton
           ? Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.grey)),
@@ -47,7 +47,7 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
       actions: showCancelButton
           ? [
               Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.grey)),
@@ -65,5 +65,5 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

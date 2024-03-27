@@ -26,7 +26,7 @@ class _NewsContentPageState extends State<NewsContentPage> {
       // ),
       body: GestureDetector(
           onTap: () {},
-          child: ImageCoverBuilder(imagePath: 'images/news-content.png')),
+          child: const ImageCoverBuilder(imagePath: 'images/news-content.png')),
     );
   }
 }

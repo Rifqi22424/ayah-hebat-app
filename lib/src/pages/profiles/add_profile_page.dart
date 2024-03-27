@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
@@ -35,8 +37,6 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
 
   Future<void> _sendProfileData() async {
     SharedPreferencesHelper.getId().then((id) async {
-      String userId = id.toString();
-      print(userId);
 
       File? photo;
       if (selectedMedia != null) {
@@ -50,7 +50,6 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
         await tempFile.writeAsBytes(imageData);
         photo = tempFile;
       }
-      print("$photo");
 
       bool success = await ProfileApi().addProfile(
           namaController.text,
@@ -108,7 +107,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
         child: Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: SingleChildScrollView(
               padding: EdgeInsets.zero,
               child: Column(
@@ -140,8 +139,8 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                                 children: [
                                   (selectedMedia != null)
                                       ? ListTile(
-                                          leading: Icon(Icons.delete),
-                                          title: Text('Hapus Profile'),
+                                          leading: const Icon(Icons.delete),
+                                          title: const Text('Hapus Profile'),
                                           onTap: () {
                                             _removeProfilePhoto();
                                             Navigator.pop(context);
@@ -149,8 +148,8 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                                         )
                                       : Container(),
                                   ListTile(
-                                    leading: Icon(Icons.photo),
-                                    title: Text('Pilih Foto'),
+                                    leading: const Icon(Icons.photo),
+                                    title: const Text('Pilih Foto'),
                                     onTap: () {
                                       _pickImageMedia(ImageSource.gallery);
                                       Navigator.pop(context);
@@ -185,11 +184,11 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                               right: 0,
                               bottom: 0,
                               child: Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: AppColors.primaryColor),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.camera_alt,
                                   color: AppColors.textColor,
                                   size: 20,
@@ -202,7 +201,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Nama Lengkap"),
+                  const LabelBuilder(text: "Nama Lengkap"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText: "Jhon Doe",
@@ -213,7 +212,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Nama Istri"),
+                  const LabelBuilder(text: "Nama Istri"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText: "Aisyah",
@@ -224,7 +223,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Nama Anak"),
+                  const LabelBuilder(text: "Nama Anak"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText: "Ujang",
@@ -235,14 +234,14 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Nama Kuttab"),
+                  const LabelBuilder(text: "Nama Kuttab"),
                   SizedBox(height: screenHeight * 0.015),
                   NamaKuttabForm(
                       formController: namaKuttabController,
                       hintText: "Nama Kuttab",
                       keyboardType: TextInputType.text),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Tahun Masuk Kuttab"),
+                  const LabelBuilder(text: "Tahun Masuk Kuttab"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText: "2022",
@@ -253,7 +252,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                     keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                  LabelBuilder(text: "Biodata"),
+                  const LabelBuilder(text: "Biodata"),
                   SizedBox(height: screenHeight * 0.015),
                   FormBuilder(
                     hintText:
@@ -271,20 +270,18 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                         if (_formKey.currentState?.validate() ?? false) {
                           try {
                             _sendProfileData();
-                            print("Login berhasil");
                           } catch (e) {
                             final snackBar = SnackBar(
-                              content: Text('Invalid email or password'),
+                              content: const Text('Invalid email or password'),
                               backgroundColor: AppColors.redColor,
                             );
 
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                            print("Gagal login: $e");
                           }
                         }
                       },
-                      child: Text("Save"))
+                      child: const Text("Save"))
                 ],
               ),
             ),

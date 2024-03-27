@@ -29,8 +29,8 @@ class MyRangkingPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Under Maintanance", style: AppStyles.heading2TextStyle),
-            SizedBox(height: 10),
-            SizedBox(
+            const SizedBox(height: 10),
+            const SizedBox(
               height: 20,
               width: 20,
               child: CircularProgressIndicator(

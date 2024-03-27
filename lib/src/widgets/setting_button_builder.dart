@@ -24,11 +24,11 @@ class SettingButtonBuilder extends StatelessWidget {
           Container(
             height: 35,
             width: 35,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
                 color: AppColors.textColor,
                 borderRadius: BorderRadius.circular(60)),
-            child: Icon(
+            child: const Icon(
               Icons.arrow_forward,
               color: Colors.white,
             ),

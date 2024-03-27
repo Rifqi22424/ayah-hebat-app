@@ -47,8 +47,6 @@ class AuthApi {
   }
 
   Future<bool> verify(String email, String verificationCode) async {
-    print(email);
-    print(verificationCode);
     final response = await http.post(
       Uri.parse('$serverPath/user/verify'),
       headers: <String, String>{
@@ -68,7 +66,6 @@ class AuthApi {
   }
 
   Future<bool> resendVerif(String email) async {
-    print(email);
     final response = await http.post(
       Uri.parse('$serverPath/user/resend-verification'),
       headers: <String, String>{

@@ -23,9 +23,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   final List<Widget> _pages = [
-    HomePage(),
-    NewsPage(),
-    ProfilePage(),
+    const HomePage(),
+    const NewsPage(),
+    const ProfilePage(),
   ];
 
   @override

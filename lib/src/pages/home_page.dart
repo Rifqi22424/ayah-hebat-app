@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../main.dart';
@@ -37,16 +39,15 @@ class _HomePageState extends State<HomePage> {
     final f = File(result.files.first.path!);
     int sizeInBytes = f.lengthSync();
     double sizeInMb = sizeInBytes / (1024 * 1024);
-    if (sizeInMb > 10) {
+    if (sizeInMb > 20) {
       _showMaxMediaAlert("Batas Ukuran Tercapai",
-          "Anda mengupload file yang lebih dari 10 mb");
+          "Anda mengupload file yang lebih dari 20 mb");
     } else if (selectedMedia.any((media) => media.endsWith('.mp4'))) {
       _showMaxMediaAlert("Batas Upload Video Tercapai",
           "Anda mengupload file video lebih dari 1");
     } else if (result.files.isNotEmpty) {
       setState(() {
         selectedMedia.add(result.files.first.path!);
-        print("cek ${result.files.first.path!}");
       });
     }
   }
@@ -84,7 +85,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _sendKegiatanData() async {
     if (descController.text.isEmpty) {
-      final snackBar = SnackBar(
+      const snackBar = SnackBar(
         content: Text('Nama Kegiatan tidak boleh kosong'),
         backgroundColor: AppColors.accentColor,
       );
@@ -97,12 +98,10 @@ class _HomePageState extends State<HomePage> {
 
     SharedPreferencesHelper.getId().then((id) async {
       String userId = id.toString();
-      print(userId);
 
       File? file1 = selectedMedia.isNotEmpty ? File(selectedMedia[0]) : null;
       File? file2 = selectedMedia.length > 1 ? File(selectedMedia[1]) : null;
       File? file3 = selectedMedia.length > 2 ? File(selectedMedia[2]) : null;
-      print("$file1, $file2, $file3");
 
       setState(() {
         loadingUpload = true;
@@ -120,7 +119,7 @@ class _HomePageState extends State<HomePage> {
           });
 
           final snackBar = SnackBar(
-            content: Text('Kegiatan data posted successfully'),
+            content: const Text('Kegiatan data posted successfully'),
             backgroundColor: AppColors.greenColor,
           );
 
@@ -164,7 +163,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -204,10 +203,10 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: screenHeight * 0.00625),
         Container(
-          padding: EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.only(top: 15),
           height: height,
           width: screenWidth * 0.26,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(24), topRight: Radius.circular(24)),
               image: DecorationImage(
@@ -257,20 +256,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchTopUsers() async {
-    try {
       String? token = await SharedPreferencesHelper.getToken();
       String timePeriod = _getTimePeriod();
       List<UserProfile> users =
           await KegiatanApi().getTopUsers(timePeriod, token!);
-      print(timePeriod);
-      print(token);
-      print("fethcingg");
       setState(() {
         topUsers = users;
       });
-    } catch (e) {
-      print('Error fetching top users: $e');
-    }
   }
 
   String _getTimePeriod() {
@@ -330,7 +322,7 @@ class _HomePageState extends State<HomePage> {
       width: screenWidth,
       child: Stack(
         children: [
-          ImageCoverBuilder(imagePath: 'images/home-bg.png'),
+          const ImageCoverBuilder(imagePath: 'images/home-bg.png'),
           Container(
             padding: EdgeInsets.only(
                 top: screenHeight * 0.0625, left: 15, right: 15),
@@ -354,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pushNamed(context, '/announcement');
                       },
                       child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: AppColors.grey)),
@@ -473,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                           num: "2",
                           image: topUsers[1].profile.photo,
                         ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       if (topUsers.isNotEmpty && topUsers.length > 0)
                         rankingContainer(
                           poin: _getScoreTimePeriod(0),
@@ -482,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                           num: "1",
                           image: topUsers[0].profile.photo,
                         ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       if (topUsers.isNotEmpty && topUsers.length > 2)
                         rankingContainer(
                           poin: _getScoreTimePeriod(2),
@@ -494,9 +486,9 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                         top: 15, bottom: 10, left: 10, right: 10),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(24),
                             topLeft: Radius.circular(24)),
@@ -523,7 +515,7 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Image.asset("images/time.png",
                                         width: 20, height: 20),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
                                       "Story kegiatan",
                                       style: AppStyles.heading3WhiteTextStyle,
@@ -547,16 +539,16 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       ListTile(
-                                        leading: Icon(Icons.photo),
-                                        title: Text('Pilih Foto'),
+                                        leading: const Icon(Icons.photo),
+                                        title: const Text('Pilih Foto'),
                                         onTap: () {
                                           _pickImageMedia(ImageSource.gallery);
                                           Navigator.pop(context);
                                         },
                                       ),
                                       ListTile(
-                                        leading: Icon(Icons.videocam),
-                                        title: Text('Pilih Video'),
+                                        leading: const Icon(Icons.videocam),
+                                        title: const Text('Pilih Video'),
                                         onTap: () {
                                           _pickVidMedia();
                                           Navigator.pop(context);
@@ -577,7 +569,7 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                           child: Container(
-                            margin: EdgeInsets.only(
+                            margin: const EdgeInsets.only(
                                 top: 10, right: 10, left: 10, bottom: 15),
                             height: screenHeight * 0.25,
                             decoration: BoxDecoration(
@@ -586,40 +578,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Visibility(
                               visible: selectedMedia.isEmpty,
-                              child: Stack(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset("images/add-button.png",
-                                              height: 50),
-                                          SizedBox(height: 10),
-                                          Text(
-                                            "Upload Foto atau Video",
-                                            style: AppStyles.hintTextStyle,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 5, right: 5),
-                                      child: Icon(
-                                        Icons.info_outline,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
                               replacement: Stack(
                                 children: [
                                   Column(
@@ -647,7 +605,7 @@ class _HomePageState extends State<HomePage> {
                                                     child: mediaTypeWidget(
                                                         selectedMedia[index]),
                                                   ),
-                                                  Positioned(
+                                                  const Positioned(
                                                       right: 0,
                                                       top: 0,
                                                       child: Icon(
@@ -660,7 +618,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                         ],
                                       ),
-                                      SizedBox(height: 10),
+                                      const SizedBox(height: 10),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -670,18 +628,18 @@ class _HomePageState extends State<HomePage> {
                                             "Upload lagi",
                                             style: AppStyles.hintTextStyle,
                                           ),
-                                          SizedBox(width: 5),
+                                          const SizedBox(width: 5),
                                           Image.asset("images/add-button.png",
                                               height: 18),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  Positioned(
+                                  const Positioned(
                                     bottom: 0,
                                     right: 0,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
+                                      padding: EdgeInsets.only(
                                           bottom: 5, right: 5),
                                       child: Icon(
                                         Icons.info_outline,
@@ -691,12 +649,46 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                              child: Stack(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset("images/add-button.png",
+                                              height: 50),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            "Upload Foto atau Video",
+                                            style: AppStyles.hintTextStyle,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: 5, right: 5),
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        color: AppColors.whiteColor,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                         Row(
                           children: [
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: TextFormField(
                                 decoration: InputDecoration(
@@ -711,7 +703,7 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () {
                                         _showDropdown(context);
                                       },
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.arrow_drop_down,
                                         color: AppColors.textColor,
                                       ),
@@ -719,7 +711,7 @@ class _HomePageState extends State<HomePage> {
                                 controller: descController,
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             GestureDetector(
                               onTap: () {
                                 _sendKegiatanData();
@@ -731,7 +723,7 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius: BorderRadius.circular(24),
                                     color: AppColors.primaryColor),
                                 child: loadingUpload
-                                    ? Center(
+                                    ? const Center(
                                         child: SizedBox(
                                           height: 20,
                                           width: 20,
@@ -742,7 +734,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                       )
-                                    : Icon(
+                                    : const Icon(
                                         Icons.send,
                                         color: AppColors.whiteColor,
                                       ),
@@ -750,7 +742,7 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                       ],
                     ),
                   ),

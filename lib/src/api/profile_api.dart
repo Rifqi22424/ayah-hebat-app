@@ -38,7 +38,6 @@ class ProfileApi {
       request.fields['namaIstri'] = namaIstri;
       request.fields['namaAnak'] = namaAnak;
       request.headers['Authorization'] = 'Bearer $token';
-      print(token);
 
       if (photo != null) {
         final fotoPart = await http.MultipartFile.fromPath(
@@ -55,13 +54,10 @@ class ProfileApi {
       if (response.statusCode == 200) {
         return true;
       } else {
-        print('Failed to upload data. Status code: ${response.statusCode}');
-        print('Response body: ${await response.stream.bytesToString()}');
 
         return false;
       }
     } catch (error) {
-      print('Error posting data: $error');
       return false;
     }
   }
@@ -87,7 +83,6 @@ class ProfileApi {
       request.fields['namaIstri'] = namaIstri;
       request.fields['namaAnak'] = namaAnak;
       request.headers['Authorization'] = 'Bearer $token';
-      print(token);
 
       if (photo != null) {
         final fotoPart = await http.MultipartFile.fromPath(
@@ -104,20 +99,16 @@ class ProfileApi {
       if (response.statusCode == 200) {
         return true;
       } else {
-        print('Failed to upload data. Status code: ${response.statusCode}');
-        print('Response body: ${await response.stream.bytesToString()}');
 
         return false;
       }
     } catch (error) {
-      print('Error posting data: $error');
       return false;
     }
   }
 
   Future<Profile> getProfile() async {
     String? token = await SharedPreferencesHelper.getToken();
-    print(token);
     final response = await http.get(
       Uri.parse('$serverPath/profile/get-profile'),
       headers: <String, String>{
@@ -128,7 +119,6 @@ class ProfileApi {
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      print(Profile.getProfilefromJson(responseData));
       return Profile.getProfilefromJson(responseData);
     } else {
       throw Exception(response.statusCode);
@@ -137,7 +127,6 @@ class ProfileApi {
 
   Future<UserProfile> getUserNProfile() async {
     String? token = await SharedPreferencesHelper.getToken();
-    print(token);
     final response = await http.get(
       Uri.parse('$serverPath/profile/get-user'),
       headers: <String, String>{
@@ -148,7 +137,6 @@ class ProfileApi {
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      print(UserProfile.getUserNProfilefromJson(responseData));
       return UserProfile.getUserNProfilefromJson(responseData);
     } else {
       throw Exception(response.statusCode);

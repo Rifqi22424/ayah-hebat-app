@@ -35,7 +35,6 @@ class KegiatanApi {
     request.fields['title'] = title;
     request.fields['userId'] = userId;
     request.headers['Authorization'] = 'Bearer $token';
-    print(token);
 
     if (file1 != null) {
       final fotoPart = await http.MultipartFile.fromPath(
@@ -73,7 +72,6 @@ class KegiatanApi {
       return true;
     } else {
       String responseBody = await response.stream.bytesToString();
-      print(responseBody);
       throw Exception(responseBody);
     }
   }
@@ -93,7 +91,6 @@ class KegiatanApi {
           jsonResponse.map((data) => UserProfile.fromJson(data)).toList();
       return topUsers;
     } else {
-      print(response.statusCode);
       throw Exception(response.statusCode);
     }
   }

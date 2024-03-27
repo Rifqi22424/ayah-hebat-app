@@ -10,7 +10,7 @@ class LogoBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       width: 40,
       height: 40,
       decoration: BoxDecoration(

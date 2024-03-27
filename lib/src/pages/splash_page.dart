@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
 import '../models/login_response_model.dart';
@@ -30,7 +32,6 @@ class _SplashPageState extends State<SplashPage> {
         }
       } catch (e) {
         Navigator.pushNamed(context, "/login");
-        print("Gagal login: $e");
       }
     } else {
       Navigator.pushNamed(context, "/login");
@@ -53,6 +54,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget _splashImages() {
-    return ImageCoverBuilder(imagePath: 'images/splash-images.png');
+    return const ImageCoverBuilder(imagePath: 'images/splash-images.png');
   }
 }
