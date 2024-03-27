@@ -12,7 +12,6 @@ import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../mixins/validation_mixin.dart';
-import '../../utils/shared_preferences.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
 import '../../widgets/label_builder.dart';
@@ -34,45 +33,41 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedMedia;
+  String? selectedMediaEmpty;
+  bool isLoadingWidget = false;
 
   Future<void> _sendProfileData() async {
-    SharedPreferencesHelper.getId().then((id) async {
-
-      File? photo;
-      if (selectedMedia != null) {
-        photo = File(selectedMedia!);
-      } else {
-        ByteData byteData = await rootBundle.load('images/empty-profile.png');
-        List<int> imageData = byteData.buffer.asUint8List();
-        Directory tempDir = await getTemporaryDirectory();
-        String tempPath = tempDir.path;
-        File tempFile = File('$tempPath/empty-profile.png');
-        await tempFile.writeAsBytes(imageData);
-        photo = tempFile;
-      }
-
-      bool success = await ProfileApi().addProfile(
-          namaController.text,
-          bioController.text,
-          namaKuttabController.text,
-          tahunController.text,
-          istriController.text,
-          anakController.text,
-          photo);
-
-      final snackBar = SnackBar(
-        content: Text(success
-            ? 'Profile data posted successfully'
-            : 'Failed to post profile data'),
-        backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      if (success) {
-        Navigator.pushNamed(context, '/home');
-      }
+    setState(() {
+      isLoadingWidget = true;
     });
+    File? photo;
+    if (selectedMedia != null) {
+      photo = File(selectedMedia!);
+    } else {
+      photo = File(selectedMediaEmpty!);
+    }
+
+    bool success = await ProfileApi().addProfile(
+        namaController.text,
+        bioController.text,
+        namaKuttabController.text,
+        tahunController.text,
+        istriController.text,
+        anakController.text,
+        photo);
+
+    final snackBar = SnackBar(
+      content: Text(success
+          ? 'Profile data posted successfully'
+          : 'Failed to post profile data'),
+      backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    if (success) {
+      Navigator.pushNamed(context, '/home');
+    }
   }
 
   _removeProfilePhoto() {
@@ -96,6 +91,17 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   void initState() {
     super.initState();
     namaKuttabController.text = "Kutab Alfatih Sukabumi";
+    downloadLocalPhoto();
+  }
+
+  downloadLocalPhoto() async {
+    ByteData byteData = await rootBundle.load('images/empty-profile.png');
+    List<int> imageData = byteData.buffer.asUint8List();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File tempFile = File('$tempPath/empty-profile.png');
+    await tempFile.writeAsBytes(imageData);
+    selectedMediaEmpty = tempFile.path;
   }
 
   @override
@@ -266,19 +272,10 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                   // Spacer(),
                   SizedBox(height: screenHeight * 0.015),
                   ButtonBuilder(
+                      isLoadingWidget: isLoadingWidget,
                       onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
-                          try {
-                            _sendProfileData();
-                          } catch (e) {
-                            final snackBar = SnackBar(
-                              content: const Text('Invalid email or password'),
-                              backgroundColor: AppColors.redColor,
-                            );
-
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }
+                          _sendProfileData();
                         }
                       },
                       child: const Text("Save"))

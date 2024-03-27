@@ -11,7 +11,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../mixins/validation_mixin.dart';
-import '../../utils/shared_preferences.dart';
 import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
@@ -38,11 +37,14 @@ class _EditProfilePageState extends State<EditProfilePage>
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedMedia;
+  String? selectedMediaEmpty;
+  bool isLoadingWidget = false;
 
   @override
   void initState() {
     super.initState();
     _fetchUserProfile();
+    downloadLocalPhoto();
   }
 
   _fetchUserProfile() {
@@ -56,37 +58,38 @@ class _EditProfilePageState extends State<EditProfilePage>
         bioController.text = user.profile.bio;
         downloadImageAndSaveLocally(user.profile.photo);
       });
-    }).catchError((error) {
-    });
+    }).catchError((error) {});
   }
 
   Future<void> _sendProfileData() async {
-    SharedPreferencesHelper.getId().then((id) async {
-
-      File? photo = selectedMedia != null ? File(selectedMedia!) : null;
-
-      bool success = await ProfileApi().editProfile(
-          namaController.text,
-          bioController.text,
-          namaKuttabController.text,
-          tahunController.text,
-          istriController.text,
-          anakController.text,
-          photo);
-
-      final snackBar = SnackBar(
-        content: Text(success
-            ? 'Profile data posted successfully'
-            : 'Failed to post profile data'),
-        backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      if (success) {
-        Navigator.pop(context);
-      }
+    setState(() {
+      isLoadingWidget = true;
     });
+    File? photo = selectedMedia != null
+        ? File(selectedMedia!)
+        : File(selectedMediaEmpty!);
+
+    bool success = await ProfileApi().editProfile(
+        namaController.text,
+        bioController.text,
+        namaKuttabController.text,
+        tahunController.text,
+        istriController.text,
+        anakController.text,
+        photo);
+
+    final snackBar = SnackBar(
+      content: Text(success
+          ? 'Profile data posted successfully'
+          : 'Failed to post profile data'),
+      backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    if (success) {
+      Navigator.pop(context);
+    }
   }
 
   _removeProfilePhoto() {
@@ -106,6 +109,16 @@ class _EditProfilePageState extends State<EditProfilePage>
     }
   }
 
+  downloadLocalPhoto() async {
+    ByteData byteData = await rootBundle.load('images/empty-profile.png');
+    List<int> imageData = byteData.buffer.asUint8List();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File tempFile = File('$tempPath/empty-profile.png');
+    await tempFile.writeAsBytes(imageData);
+    selectedMediaEmpty = tempFile.path;
+  }
+
   Future<void> downloadImageAndSaveLocally(String linkImage) async {
     String imageUrl = '$serverPath/uploads/$linkImage';
     final http.Client client = http.Client();
@@ -116,23 +129,22 @@ class _EditProfilePageState extends State<EditProfilePage>
         final Directory directory = await getApplicationDocumentsDirectory();
         final File file = File('${directory.path}/profile_image.png');
         await file.writeAsBytes(response.bodyBytes);
-        setState(() {
-          selectedMedia = file.path;
-        });
+        if (mounted) {
+          setState(() {
+            selectedMedia = file.path;
+          });
+        }
       } else {
         throw Exception('Failed to load image: ${response.statusCode}');
       }
     } catch (e) {
-      // Jika unduhan gagal, ambil gambar dari asset
       ByteData byteData = await rootBundle.load('images/empty-profile.png');
       List<int> imageData = byteData.buffer.asUint8List();
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
       File tempFile = File('$tempPath/empty-profile.png');
       await tempFile.writeAsBytes(imageData);
-      setState(() {
-        selectedMedia = tempFile.path;
-      });
+      selectedMediaEmpty = tempFile.path;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -214,7 +226,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                       child: Stack(
                         children: [
                           CircleAvatar(
-                            backgroundColor: AppColors.accentColor,
+                            backgroundColor: AppColors.grey,
                             radius: 45,
                             child: selectedMedia != null
                                 ? ClipOval(
@@ -332,18 +344,10 @@ class _EditProfilePageState extends State<EditProfilePage>
                 const Spacer(),
                 SizedBox(height: screenHeight * 0.015),
                 ButtonBuilder(
+                    isLoadingWidget: isLoadingWidget,
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        try {
-                          _sendProfileData();
-                        } catch (e) {
-                          final snackBar = SnackBar(
-                            content: const Text('Invalid email or password'),
-                            backgroundColor: AppColors.redColor,
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
+                        _sendProfileData();
                       }
                     },
                     child: const Text("Save"))

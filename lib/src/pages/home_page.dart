@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         CircleAvatar(
-          backgroundColor: AppColors.accentColor,
+          backgroundColor: AppColors.grey,
           radius: 40,
           backgroundImage: NetworkImage('$serverPath/uploads/$image'),
         ),

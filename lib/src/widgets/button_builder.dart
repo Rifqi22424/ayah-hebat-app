@@ -4,9 +4,10 @@ import '../consts/app_colors.dart';
 class ButtonBuilder extends StatefulWidget {
   final Future<void> Function() onPressed;
   final Widget child;
+  final bool? isLoadingWidget;
 
   const ButtonBuilder(
-      {super.key, required this.onPressed, required this.child});
+      {super.key, required this.onPressed, required this.child, this.isLoadingWidget});
 
   @override
   _ButtonBuilderState createState() => _ButtonBuilderState();
@@ -44,7 +45,7 @@ class _ButtonBuilderState extends State<ButtonBuilder> {
           });
         }
       },
-      child: isLoading
+      child: isLoading || widget.isLoadingWidget == true
           ? const SizedBox(
               height: 15,
               width: 15,
