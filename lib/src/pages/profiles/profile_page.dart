@@ -139,24 +139,24 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const SizedBox(width: 5),
-                            InkWell(
-                              borderRadius: BorderRadius.circular(24),
-                              onTap: () {
-                                Navigator.pushNamed(context, '/ranking');
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Lihat ranking",
-                                    style: AppStyles.heading3PrimaryTextStyle,
-                                  ),
-                                  const Icon(
-                                    Icons.navigate_next_sharp,
-                                    color: AppColors.primaryColor,
-                                  )
-                                ],
-                              ),
-                            )
+                            // InkWell(
+                            //   borderRadius: BorderRadius.circular(24),
+                            //   onTap: () {
+                            //     Navigator.pushNamed(context, '/ranking');
+                            //   },
+                            //   child: Row(
+                            //     children: [
+                            //       Text(
+                            //         "Lihat ranking",
+                            //         style: AppStyles.heading3PrimaryTextStyle,
+                            //       ),
+                            //       const Icon(
+                            //         Icons.navigate_next_sharp,
+                            //         color: AppColors.primaryColor,
+                            //       )
+                            //     ],
+                            //   ),
+                            // )
                           ],
                         )
                       ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
 import 'home_page.dart';
-import 'news_page.dart';
+import 'news/news_page.dart';
 import 'profiles/profile_page.dart';
 
 class MainPage extends StatefulWidget {

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../consts/app_colors.dart';
+
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
 
@@ -38,7 +40,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           );
         } else {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.primaryColor),
+              ),
+            ),
           );
         }
       },

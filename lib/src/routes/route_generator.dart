@@ -1,10 +1,15 @@
-import 'package:ayahhebat/src/pages/announcement_page.dart';
-import 'package:ayahhebat/src/pages/change_password_page.dart';
-import 'package:ayahhebat/src/pages/my_ranking_page.dart';
-import 'package:ayahhebat/src/pages/news_content_page.dart';
-import 'package:ayahhebat/src/pages/profiles/edit_profile_page.dart';
-import 'package:ayahhebat/src/pages/story_activities_page.dart';
+import 'package:ayahhebat/src/pages/announcement/detail_announcement_page.dart';
+import 'package:ayahhebat/src/pages/detail_story_page.dart';
+import 'package:ayahhebat/src/pages/faq_page.dart';
+import 'package:ayahhebat/src/pages/message_page.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import '../pages/announcement/announcement_page.dart';
+import '../pages/change_password_page.dart';
+import '../pages/my_ranking_page.dart';
+import '../pages/news_content_page.dart';
+import '../pages/profiles/edit_profile_page.dart';
+import '../pages/story_page.dart';
 import '../pages/login_page.dart';
 import '../pages/main_page.dart';
 import '../pages/profiles/add_profile_page.dart';
@@ -41,8 +46,21 @@ class RouteGenerator {
       case "/announcement":
         return MaterialPageRoute(
             builder: (context) => const AnnouncementPage());
+      case "/detailAnnouncement":
+        final args = settings.arguments as Map<String, dynamic>;
+        final int announcementId = args['announcementId'];
+        return MaterialPageRoute(
+            builder: (context) =>
+                DetailAnnouncementPage(announcementId: announcementId));
       case "/story":
-        return MaterialPageRoute(builder: (context) => const StoryActivitiesPage());
+        return MaterialPageRoute(builder: (context) => const StoryPage());
+      case "/detailStory":
+        final args = settings.arguments as Map<String, dynamic>;
+        final int kegiatanId = args['kegiatanId'];
+        return MaterialPageRoute(
+            builder: (context) => DetailStoryPage(
+                  kegiatanId: kegiatanId,
+                ));
       case "/ranking":
         return MaterialPageRoute(builder: (context) => const MyRangkingPage());
       case "/home":
@@ -56,7 +74,17 @@ class RouteGenerator {
                   index: 1,
                 ));
       case "/newsContent":
-        return MaterialPageRoute(builder: (context) => const NewsContentPage());
+      final args = settings.arguments as Map<String, dynamic>;
+        final int newsId = args['newsId'];
+        return MaterialPageRoute(builder: (context) => NewsContentPage(newsId: newsId));
+      case "/faq":
+        return MaterialPageRoute(builder: (context) => const FaqPage());
+      case "/message":
+        final message = settings.arguments as RemoteMessage;
+        return MaterialPageRoute(
+            builder: (context) => MessagePage(
+                  message: message,
+                ));
     }
     return _errorRoute();
   }

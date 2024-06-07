@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   int timeIndex = 1;
   List<UserProfile> topUsers = [];
   bool loadingUpload = false;
+  bool isInfoVisible = false;
 
   Future<void> _pickVidMedia() async {
     FilePickerResult? result =
@@ -241,13 +242,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  MainAxisAlignment _changeAlignment() {
-    if (timeIndex == 0) {
-      return MainAxisAlignment.start;
-    } else if (timeIndex == 1) {
-      return MainAxisAlignment.center;
-    } else {
-      return MainAxisAlignment.end;
+  Alignment _changeAlignment() {
+    switch (timeIndex) {
+      case 0:
+        return Alignment.centerLeft;
+      case 1:
+        return Alignment.center;
+      case 2:
+        return Alignment.centerRight;
+      default:
+        return Alignment.centerLeft;
     }
   }
 
@@ -314,6 +318,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void onInfoTap() {
+    isInfoVisible = !isInfoVisible;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -342,19 +351,48 @@ class _HomePageState extends State<HomePage> {
                             style: AppStyles.hintTextStyle),
                       ],
                     ),
-                    InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () {
-                        Navigator.pushNamed(context, '/announcement');
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.grey)),
-                          child: Image.asset('images/speaker.png',
-                              width: 25, height: 25)),
-                    ),
+                    Row(
+                      children: [
+                        Material(
+                          shape: CircleBorder(),
+                          color: AppColors.primaryColor,
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/faq');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                // border: Border.all(
+                                //     color: const Color.fromRGBO(
+                                //         233, 233, 233, 1))
+                              ),
+                              child: const Icon(
+                                Icons.question_mark,
+                                size: 20,
+                                color: AppColors.whiteColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 3),
+                        InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/announcement');
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: AppColors.grey)),
+                              child: Image.asset('images/speaker.png',
+                                  width: 20, height: 20)),
+                        ),
+                      ],
+                    )
                   ],
                 ),
                 SizedBox(height: screenHeight * 0.02),
@@ -418,31 +456,23 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: _changeAlignment(),
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 100,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        textActive(),
-                                        style: AppStyles.heading3WhiteTextStyle,
-                                      ),
-                                    ),
+                          AnimatedAlign(
+                              alignment: _changeAlignment(),
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                width: 100,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    textActive(),
+                                    style: AppStyles.heading3WhiteTextStyle,
                                   ),
-                                ],
-                              ),
-                            ],
-                          )
+                                ),
+                              ))
                         ],
                       )),
                 ),
@@ -455,6 +485,18 @@ class _HomePageState extends State<HomePage> {
               bottom: 0,
               child: Column(
                 children: [
+                  if (topUsers.isEmpty)
+                    SizedBox(
+                        height: screenHeight * 0.075,
+                        child:
+                            const Center(child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.primaryColor),
+                              ),
+                            ))),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -463,7 +505,7 @@ class _HomePageState extends State<HomePage> {
                         rankingContainer(
                           poin: _getScoreTimePeriod(1),
                           name: topUsers[1].profile.nama,
-                          height: screenHeight * 0.1,
+                          height: screenHeight * 0.075,
                           num: "2",
                           image: topUsers[1].profile.photo,
                         ),
@@ -472,7 +514,7 @@ class _HomePageState extends State<HomePage> {
                         rankingContainer(
                           poin: _getScoreTimePeriod(0),
                           name: topUsers[0].profile.nama,
-                          height: screenHeight * 0.125,
+                          height: screenHeight * 0.1,
                           num: "1",
                           image: topUsers[0].profile.photo,
                         ),
@@ -481,7 +523,7 @@ class _HomePageState extends State<HomePage> {
                         rankingContainer(
                           poin: _getScoreTimePeriod(2),
                           name: topUsers[2].profile.nama,
-                          height: screenHeight * 0.075,
+                          height: screenHeight * 0.05,
                           num: "3",
                           image: topUsers[2].profile.photo,
                         ),
@@ -593,30 +635,37 @@ class _HomePageState extends State<HomePage> {
                                           for (int index = 0;
                                               index < selectedMedia.length;
                                               index++)
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedMedia.removeAt(index);
-                                                });
-                                              },
-                                              child: Stack(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    width: 100,
-                                                    child: mediaTypeWidget(
-                                                        selectedMedia[index]),
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedMedia
+                                                          .removeAt(index);
+                                                    });
+                                                  },
+                                                  child: Stack(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 100,
+                                                        width: 100,
+                                                        child: mediaTypeWidget(
+                                                            selectedMedia[
+                                                                index]),
+                                                      ),
+                                                      const Positioned(
+                                                          right: 0,
+                                                          top: 0,
+                                                          child: Icon(
+                                                            Icons.cancel,
+                                                            color: AppColors
+                                                                .whiteColor,
+                                                          ))
+                                                    ],
                                                   ),
-                                                  const Positioned(
-                                                      right: 0,
-                                                      top: 0,
-                                                      child: Icon(
-                                                        Icons.cancel,
-                                                        color: AppColors
-                                                            .whiteColor,
-                                                      ))
-                                                ],
-                                              ),
+                                                ),
+                                                SizedBox(width: 10)
+                                              ],
                                             ),
                                         ],
                                       ),
@@ -637,18 +686,15 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-                                  const Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.only(bottom: 5, right: 5),
-                                      child: Icon(
-                                        Icons.info_outline,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                    ),
-                                  ),
+                                  // Positioned(
+                                  //   bottom: 0,
+                                  //   right: 0,
+                                  //   child: IconButton(
+                                  //     onPressed: onInfoTap,
+                                  //     icon: Icon(Icons.info_outline),
+                                  //     color: AppColors.whiteColor,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                               child: Stack(
@@ -671,16 +717,42 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-                                  const Positioned(
+                                  Positioned(
                                     bottom: 0,
                                     right: 0,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.only(bottom: 5, right: 5),
-                                      child: Icon(
-                                        Icons.info_outline,
-                                        color: AppColors.whiteColor,
-                                      ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        if (isInfoVisible == true)
+                                          InkWell(
+                                            onTap: onInfoTap,
+                                            child: Container(
+                                              margin: EdgeInsets.only(right: 5),
+                                              padding: const EdgeInsets.only(
+                                                  top: 8,
+                                                  bottom: 12,
+                                                  left: 12,
+                                                  right: 12),
+                                              decoration: const BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          "images/message_container.png"),
+                                                      fit: BoxFit.fill)),
+                                              child: const Text(
+                                                "Bukti foto atau video \nkegiatan yang dilakukan \nbersama anak anda",
+                                                style: TextStyle(
+                                                    color:
+                                                        AppColors.whiteColor),
+                                              ),
+                                            ),
+                                          ),
+                                        IconButton(
+                                          onPressed: onInfoTap,
+                                          icon: Icon(Icons.info_outline),
+                                          color: AppColors.whiteColor,
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
@@ -719,8 +791,8 @@ class _HomePageState extends State<HomePage> {
                                 _sendKegiatanData();
                               },
                               child: Container(
-                                height: 45,
-                                width: 45,
+                                height: 55,
+                                width: 55,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(24),
                                     color: AppColors.primaryColor),
@@ -730,9 +802,8 @@ class _HomePageState extends State<HomePage> {
                                           height: 20,
                                           width: 20,
                                           child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.white),
+                                            valueColor: AlwaysStoppedAnimation<Color>(
+                                                AppColors.primaryColor),
                                           ),
                                         ),
                                       )

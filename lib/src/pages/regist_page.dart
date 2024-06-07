@@ -10,7 +10,6 @@ import '../utils/shared_preferences.dart';
 import '../widgets/button_builder.dart';
 import '../widgets/form_builder.dart';
 import '../widgets/label_builder.dart';
-import '../widgets/logo_builder.dart';
 
 class RegistPage extends StatefulWidget {
   const RegistPage({super.key});
@@ -165,29 +164,29 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
                   const Expanded(child: Divider(color: AppColors.accentColor)),
                 ],
               ),
-              SizedBox(height: screenHeight * 0.025),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LogoBuilder(
-                      onTap: () {
-                        showFeatureNotWorking(context);
-                      },
-                      image: 'images/google-logo.png'),
-                  const SizedBox(width: 10),
-                  LogoBuilder(
-                      onTap: () {
-                        showFeatureNotWorking(context);
-                      },
-                      image: 'images/facebook-logo.png'),
-                  const SizedBox(width: 10),
-                  LogoBuilder(
-                      onTap: () {
-                        showFeatureNotWorking(context);
-                      },
-                      image: 'images/x-logo.png'),
-                ],
-              ),
+              // SizedBox(height: screenHeight * 0.025),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     LogoBuilder(
+              //         onTap: () {
+              //           showFeatureNotWorking(context);
+              //         },
+              //         image: 'images/google-logo.png'),
+              //     const SizedBox(width: 10),
+              //     LogoBuilder(
+              //         onTap: () {
+              //           showFeatureNotWorking(context);
+              //         },
+              //         image: 'images/facebook-logo.png'),
+              //     const SizedBox(width: 10),
+              //     LogoBuilder(
+              //         onTap: () {
+              //           showFeatureNotWorking(context);
+              //         },
+              //         image: 'images/x-logo.png'),
+              //   ],
+              // ),
               SizedBox(height: screenHeight * 0.05625),
               alreadyHaveAcc(context: context),
               const SizedBox(height: 40),

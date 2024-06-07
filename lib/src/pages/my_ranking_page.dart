@@ -22,7 +22,7 @@ class MyRangkingPage extends StatelessWidget {
           Navigator.pop(context);
         },
       ),
-      body: Center(
+      body: Center( 
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,

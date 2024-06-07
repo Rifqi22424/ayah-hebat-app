@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ayahhebat/src/models/kegiatan_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -92,6 +93,46 @@ class KegiatanApi {
       return topUsers;
     } else {
       throw Exception(response.statusCode);
+    }
+  }
+
+  Future<List<Kegiatan>> getKegiatanByUserId() async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$serverPath/kegiatan/user'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = json.decode(response.body);
+      List<Kegiatan> kegiatansUser =
+          jsonResponse.map((data) => Kegiatan.fromJson(data)).toList();
+      return kegiatansUser.reversed.toList();
+    } else {
+      throw Exception(response.body);
+    }
+  }
+
+  Future<Kegiatan> getKegiatanById(int id) async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$serverPath/kegiatan/id/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      Kegiatan kegiatan = Kegiatan.fromJson(jsonResponse);
+      return kegiatan;
+
+    } else {
+      throw Exception(response.body);
     }
   }
 }

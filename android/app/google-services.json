@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747971517846",
+    "project_id": "ayah-hebat-app",
+    "storage_bucket": "ayah-hebat-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747971517846:android:c0d418c409dd243d69d1b7",
+        "android_client_info": {
+          "package_name": "com.mangcoding.ayahhebatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiW96NWFzruBa9xcW-KUnTYIqDjgZg0WU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
