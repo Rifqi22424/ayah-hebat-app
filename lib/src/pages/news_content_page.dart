@@ -58,7 +58,7 @@ class _NewsContentPageState extends State<NewsContentPage> {
                           image: DecorationImage(
                               image: NetworkImage(news.imageUrl),
                               fit: BoxFit.cover)),
-                      height: 300,
+                      height: 500,
                       width: double.maxFinite,
                     ),
                     Positioned(
@@ -96,7 +96,7 @@ class _NewsContentPageState extends State<NewsContentPage> {
                             children: [
                               Text(
                                 news.title,
-                                style: AppStyles.heading2WhiteTextStyle,
+                                style: AppStyles.heading1WhiteTextStyle,
                                 softWrap: true,
                               ),
                               Text(
@@ -114,12 +114,13 @@ class _NewsContentPageState extends State<NewsContentPage> {
                   child: MarkdownBody(
                     data: news.content,
                     styleSheet: MarkdownStyleSheet(
+                      textAlign: WrapAlignment.spaceEvenly,
                       h1: AppStyles.heading2TextStyle,
-                      h2: AppStyles.heading3TextStyle,
+                      h2: AppStyles.labelBoldTextStyle,
                       p: AppStyles.labelTextStyle,
-                      listBullet: AppStyles.labelBoldTextStyle,
-                      strong: AppStyles.heading3TextStyle.copyWith(fontWeight: FontWeight.bold),
-                      img: AppStyles.heading2TextStyle,
+                      listBullet: AppStyles.labelTextStyle,
+                      strong: AppStyles.labelBoldTextStyle,
+                      img: AppStyles.labelTextStyle,
                     ),
                   ),
                 ),

@@ -323,6 +323,16 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  double avoidOverflow() {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    if (screenHeight < 850) {
+      return 50;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -335,8 +345,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           const ImageCoverBuilder(imagePath: 'images/home-bg.png'),
           Container(
-            padding: EdgeInsets.only(
-                top: screenHeight * 0.0625, left: 15, right: 15),
+            padding:
+                EdgeInsets.only(top: screenHeight * 0.05, left: 15, right: 15),
             child: Column(
               children: [
                 Row(
@@ -351,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                             style: AppStyles.hintTextStyle),
                       ],
                     ),
-                    Row(
+                    Column(
                       children: [
                         Material(
                           shape: CircleBorder(),
@@ -377,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 3),
+                        SizedBox(height: 3),
                         InkWell(
                           customBorder: const CircleBorder(),
                           onTap: () {
@@ -392,7 +402,7 @@ class _HomePageState extends State<HomePage> {
                                   width: 20, height: 20)),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(height: screenHeight * 0.02),
@@ -488,15 +498,15 @@ class _HomePageState extends State<HomePage> {
                   if (topUsers.isEmpty)
                     SizedBox(
                         height: screenHeight * 0.075,
-                        child:
-                            const Center(child: SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.primaryColor),
-                              ),
-                            ))),
+                        child: const Center(
+                            child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primaryColor),
+                          ),
+                        ))),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -615,7 +625,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             margin: const EdgeInsets.only(
                                 top: 10, right: 10, left: 10, bottom: 15),
-                            height: screenHeight * 0.25,
+                            height: screenHeight * 0.25 - avoidOverflow(),
                             decoration: BoxDecoration(
                               color: AppColors.white10Color,
                               borderRadius: BorderRadius.circular(24),
@@ -802,8 +812,9 @@ class _HomePageState extends State<HomePage> {
                                           height: 20,
                                           width: 20,
                                           child: CircularProgressIndicator(
-                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                                AppColors.primaryColor),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    AppColors.whiteColor),
                                           ),
                                         ),
                                       )

@@ -8,8 +8,8 @@ import 'firebase_options.dart';
 import 'src/my_app.dart';
 import 'src/services/notification_service.dart';
 
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
-const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 

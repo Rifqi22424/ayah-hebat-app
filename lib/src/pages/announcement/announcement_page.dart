@@ -50,8 +50,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primaryColor),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
                   ),
                 ),
               );
@@ -60,6 +60,11 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 child: Text('Tidak ada data notifikasi'),
               );
             } else if (snapshot.hasData) {
+              if (snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Tidak ada data notifikasi'),
+                );
+              }
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {

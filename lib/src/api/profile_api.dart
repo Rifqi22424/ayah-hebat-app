@@ -54,7 +54,6 @@ class ProfileApi {
       if (response.statusCode == 200) {
         return true;
       } else {
-
         return false;
       }
     } catch (error) {
@@ -75,6 +74,7 @@ class ProfileApi {
       final url = Uri.parse('$serverPath/profile/edit-profile');
       final request = http.MultipartRequest('PUT', url);
       String? token = await SharedPreferencesHelper.getToken();
+      // print(token!);
 
       request.fields['nama'] = nama;
       request.fields['bio'] = bio;
@@ -99,7 +99,6 @@ class ProfileApi {
       if (response.statusCode == 200) {
         return true;
       } else {
-
         return false;
       }
     } catch (error) {

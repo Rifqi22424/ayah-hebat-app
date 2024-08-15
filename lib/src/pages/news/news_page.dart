@@ -148,7 +148,7 @@ class _NewsPageState extends State<NewsPage> {
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24)),
@@ -158,7 +158,7 @@ class _NewsPageState extends State<NewsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Berita Terbaru",
-                            style: AppStyles.heading3PrimaryTextStyle),
+                            style: AppStyles.heading2PrimaryTextStyle),
                         SizedBox(height: 10),
                         Expanded(
                           child: ListView.builder(
@@ -192,7 +192,7 @@ class _NewsPageState extends State<NewsPage> {
                                               BorderRadius.circular(16),
                                           child: Image.network(
                                             news.imageUrl,
-                                            width: 200,
+                                            width: 180,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -212,14 +212,15 @@ class _NewsPageState extends State<NewsPage> {
                                               ),
                                               Text(
                                                 news.subTitle,
-                                                style: AppStyles.hintTextStyle,
+                                                style: AppStyles
+                                                    .smallHintTextStyle,
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                               ),
                                               Text(news.author,
                                                   style: AppStyles
-                                                      .heading3PrimaryTextStyle)
+                                                      .labelPrimaryTextStyle)
                                             ],
                                           ),
                                         )
@@ -257,7 +258,8 @@ class _NewsPageState extends State<NewsPage> {
           borderRadius: BorderRadius.all(Radius.circular(16.0)),
           child: Stack(
             children: <Widget>[
-              Image.network(news.imageUrl, fit: BoxFit.cover, width: screenWidth * 0.8),
+              Image.network(news.imageUrl,
+                  fit: BoxFit.cover, width: screenWidth * 0.8),
               Positioned(
                 bottom: 0.0,
                 left: 0.0,
@@ -275,16 +277,10 @@ class _NewsPageState extends State<NewsPage> {
                   ),
                   padding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  child: Text(
-                    news.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Text(news.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.heading1WhiteTextStyle),
                 ),
               ),
             ],

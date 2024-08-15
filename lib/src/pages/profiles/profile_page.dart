@@ -1,3 +1,5 @@
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../utils/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -44,50 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
         bio = user.profile.bio;
         linkImage = user.profile.photo;
       });
-    }).catchError((error) {
-    });
-  }
-
-  void _showLogOutAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          title: Text('Peringatan', style: AppStyles.mediumTextStyle),
-          content: Text('Apakah anda yakin ingin keluar?',
-              style: AppStyles.heading3TextStyle),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.blueColor,
-                disabledForegroundColor: AppColors.halfBlueColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Tidak'),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.redColor,
-                disabledForegroundColor: AppColors.halfRedColor,
-              ),
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/login', (route) => false);
-                SharedPreferencesHelper.saveToken("");
-                SharedPreferencesHelper.saveId(0);
-                SharedPreferencesHelper.saveEmail("");
-                SharedPreferencesHelper.savePassword("");
-              },
-              child: const Text('Ya'),
-            ),
-          ],
-        );
-      },
-    );
+    }).catchError((error) {});
   }
 
   @override
@@ -284,23 +243,31 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text("Setting", style: AppStyles.heading2TextStyle),
                 SizedBox(height: screenHeight * 0.03),
                 SettingButtonBuilder(
-                  title: "Edit Profile",
+                  title: "Edit profile",
                   onPressed: () {
                     Navigator.pushNamed(context, '/editProfile');
                   },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 SettingButtonBuilder(
-                  title: "Ubah Password",
+                  title: "Ubah password",
                   onPressed: () {
                     Navigator.pushNamed(context, '/changePassword');
                   },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 SettingButtonBuilder(
+                  title: "Ajukan hapus akun",
+                  onPressed: () {
+                    // Navigator.pushNamed(context, '/changePassword');
+                    showAlertDialog(context, "hapusAkun");
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                SettingButtonBuilder(
                   title: "Log out",
                   onPressed: () {
-                    _showLogOutAlert();
+                    showAlertDialog(context, "logOut");
                   },
                 )
               ],
@@ -308,6 +275,96 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _launchURL,
+        child: Icon(Icons.support_agent),
+        backgroundColor: Colors.green,
+      ),
     );
+  }
+
+  Future<dynamic> showAlertDialog(BuildContext context, String type) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        if (type == "logOut") {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            title: Text('Peringatan', style: AppStyles.mediumTextStyle),
+            content: Text('Apakah anda yakin ingin keluar?',
+                style: AppStyles.heading3TextStyle),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.blueColor,
+                  disabledForegroundColor: AppColors.halfBlueColor,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Tidak'),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.redColor,
+                  disabledForegroundColor: AppColors.halfRedColor,
+                ),
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/login', (route) => false);
+                  SharedPreferencesHelper.saveToken("");
+                  SharedPreferencesHelper.saveId(0);
+                  SharedPreferencesHelper.saveEmail("");
+                  SharedPreferencesHelper.savePassword("");
+                },
+                child: const Text('Ya'),
+              ),
+            ],
+          );
+        } else if (type == "hapusAkun") {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            title: Text('Peringatan', style: AppStyles.mediumTextStyle),
+            content: Text('Apakah anda yakin ingin menghapus akun anda?',
+                style: AppStyles.heading3TextStyle),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.blueColor,
+                  disabledForegroundColor: AppColors.halfBlueColor,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Tidak'),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.redColor,
+                  disabledForegroundColor: AppColors.halfRedColor,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/sendVerificationCode");
+                },
+                child: const Text('Ya'),
+              ),
+            ],
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  void _launchURL() async {
+    final url = Uri.parse('https://wa.me/6281936242236');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

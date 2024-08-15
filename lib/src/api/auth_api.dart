@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:ayahhebat/src/api/user_api.dart';
 import 'package:ayahhebat/src/services/notification_service.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import '../../main.dart';
 import '../models/login_response_model.dart';
@@ -96,6 +95,7 @@ class AuthApi {
     if (response.statusCode == 200) {
       return true;
     } else {
+      print(response.body);
       throw (Exception(response.body));
     }
   }

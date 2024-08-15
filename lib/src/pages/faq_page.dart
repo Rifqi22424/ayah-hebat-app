@@ -129,8 +129,10 @@ class FaqPageState extends State<FaqPage> {
                       padding: const EdgeInsets.only(
                           left: 24, right: 24, bottom: 16),
                       child: TextFormField(
+                        style: AppStyles.labelTextStyle,
                         decoration: InputDecoration(
                             hintText: "Ajukan pertanyaan kepada admin",
+                            hintStyle: AppStyles.hintTextStyle,
                             suffixIcon: IconButton(
                               icon: Icon(Icons.send_rounded),
                               color: AppColors.primaryColor,
@@ -203,7 +205,7 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
       child: Column(
         children: [
           ListTile(
-            title: Text(widget.question.question),
+            title: Text(widget.question.question, style: AppStyles.labelBoldTextStyle,),
             trailing: IconButton(
                 onPressed: toggleExpand,
                 icon: Icon(
@@ -213,8 +215,8 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
           ),
           if (isExpanded)
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(widget.question.answer ?? ""),
+              padding: const EdgeInsets.symmetric( vertical: 10, horizontal: 16),
+              child: Text(widget.question.answer ?? "", style: AppStyles.labelTextStyle, textAlign: TextAlign.justify,),
             )
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:ayahhebat/src/consts/app_styles.dart';
 import 'package:ayahhebat/src/models/announcement_model.dart';
 import 'package:ayahhebat/src/widgets/button_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shimmer/shimmer.dart';
@@ -96,7 +97,7 @@ class _DetailAnnouncementPageState extends State<DetailAnnouncementPage> {
                             children: [
                               Text(
                                 announcement.title,
-                                style: AppStyles.heading2WhiteTextStyle,
+                                style: AppStyles.heading1WhiteTextStyle,
                                 softWrap: true,
                               ),
                               Text(
@@ -111,10 +112,18 @@ class _DetailAnnouncementPageState extends State<DetailAnnouncementPage> {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                  child: Text(
-                    announcement.content,
-                    style: AppStyles.labelTextStyle,
-                    textAlign: TextAlign.justify,
+                  child: MarkdownBody(
+                    softLineBreak: true,
+                    data: announcement.content,
+                    styleSheet: MarkdownStyleSheet(
+                      textAlign: WrapAlignment.spaceEvenly,
+                      h1: AppStyles.heading2TextStyle,
+                      h2: AppStyles.labelBoldTextStyle,
+                      p: AppStyles.labelTextStyle,
+                      listBullet: AppStyles.labelTextStyle,
+                      strong: AppStyles.labelBoldTextStyle,
+                      img: AppStyles.labelTextStyle,
+                    ),
                   ),
                 ),
                 if (announcement.routes != "/")

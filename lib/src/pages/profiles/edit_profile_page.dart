@@ -84,6 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           : 'Failed to post profile data'),
       backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
     );
+    
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
@@ -174,7 +175,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           Navigator.pop(context);
         },
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Container(

@@ -17,6 +17,13 @@ class AppStyles {
     color: AppColors.accentColor,
   );
 
+  static TextStyle smallHintTextStyle = const TextStyle(
+    fontSize: 12,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.normal,
+    color: AppColors.accentColor,
+  );
+
   static TextStyle labelTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',
@@ -26,6 +33,13 @@ class AppStyles {
 
   static TextStyle labelBoldTextStyle = const TextStyle(
     fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.bold,
+    color: AppColors.textColor,
+  );
+
+  static TextStyle heading1TextStyle = const TextStyle(
+    fontSize: 18,
     fontFamily: 'Lato',
     fontWeight: FontWeight.bold,
     color: AppColors.textColor,
@@ -73,10 +87,38 @@ class AppStyles {
     color: AppColors.whiteColor,
   );
 
+  static TextStyle heading1WhiteTextStyle = const TextStyle(
+    fontSize: 20,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.bold,
+    color: AppColors.whiteColor,
+  );
+
+  static TextStyle heading2PrimaryTextStyle = const TextStyle(
+    fontSize: 16,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.bold,
+    color: AppColors.primaryColor,
+  );
+
   static TextStyle heading3PrimaryTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',
     fontWeight: FontWeight.bold,
+    color: AppColors.primaryColor,
+  );
+
+  static TextStyle labelPrimaryTextStyle = const TextStyle(
+    fontSize: 12,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.bold,
+    color: AppColors.primaryColor,
+  );
+
+    static TextStyle bodyPrimaryTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.w400,
     color: AppColors.primaryColor,
   );
 }

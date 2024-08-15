@@ -1,4 +1,7 @@
 import 'package:ayahhebat/src/pages/announcement/detail_announcement_page.dart';
+import 'package:ayahhebat/src/pages/deleteAccount/input_verification_code_page.dart';
+import 'package:ayahhebat/src/pages/deleteAccount/send_verification_code_page.dart';
+import 'package:ayahhebat/src/pages/deleteAccount/submit_account_deletion_page.dart';
 import 'package:ayahhebat/src/pages/detail_story_page.dart';
 import 'package:ayahhebat/src/pages/faq_page.dart';
 import 'package:ayahhebat/src/pages/message_page.dart';
@@ -74,9 +77,10 @@ class RouteGenerator {
                   index: 1,
                 ));
       case "/newsContent":
-      final args = settings.arguments as Map<String, dynamic>;
+        final args = settings.arguments as Map<String, dynamic>;
         final int newsId = args['newsId'];
-        return MaterialPageRoute(builder: (context) => NewsContentPage(newsId: newsId));
+        return MaterialPageRoute(
+            builder: (context) => NewsContentPage(newsId: newsId));
       case "/faq":
         return MaterialPageRoute(builder: (context) => const FaqPage());
       case "/message":
@@ -85,6 +89,19 @@ class RouteGenerator {
             builder: (context) => MessagePage(
                   message: message,
                 ));
+      case "/sendVerificationCode":
+        return MaterialPageRoute(
+            builder: (context) => const SendVerificationCodePage());
+      case "/inputVerificationCode":
+        final args = settings.arguments as Map<String, dynamic>;
+        final String email = args['email'];
+        return MaterialPageRoute(
+            builder: (context) => InputVerificationCodePage(
+                  email: email,
+                ));
+      case "/submitAccountDeletion":
+        return MaterialPageRoute(
+            builder: (context) => const SubmitAccountDeletionPage());
     }
     return _errorRoute();
   }

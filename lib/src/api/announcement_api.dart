@@ -7,6 +7,7 @@ import '../utils/shared_preferences.dart';
 class AnnouncementApi {
   Future<List<Announcement>> getUserAnnouncements() async {
     String? token = await SharedPreferencesHelper.getToken();
+    print(token);
     final response = await http.get(
       Uri.parse('$serverPath/notification/user-notifications'),
       headers: <String, String>{

@@ -46,9 +46,9 @@ class StoryPage extends StatelessWidget {
                           AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
                     )));
           } else if (snapshot.hasError) {
-            return const Center(child: Text("No activities found."));
+            return const Center(child: Text("Tidak ada data kegiatan"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No activities found."));
+            return Center(child: Text("Tidak ada data kegiatan"));
           } else {
             List<Kegiatan> kegiatansUser = snapshot.data!;
             return ListView.builder(
