@@ -105,7 +105,8 @@ class UserApi {
     }
   }
 
-  Future<bool> deleteAccount(String email, String password, String reason) async {
+  Future<bool> deleteAccount(
+      String email, String password, String reason) async {
     final String? token = await SharedPreferencesHelper.getToken();
 
     if (token == null) {
@@ -185,6 +186,7 @@ class UserApi {
     );
 
     if (response.statusCode == 200) {
+      print("success save device token");
       return true;
     } else {
       throw (Exception(response.body));

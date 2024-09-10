@@ -38,6 +38,7 @@ class PushNotifications {
         print("for android device token: $token");
       }
       // saveTokentoFirestore(token: token!);
+      print("token $token");
       return token;
     } catch (e) {
       print("failed to get device token");

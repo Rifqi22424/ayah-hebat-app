@@ -127,6 +127,7 @@ class _LoginPageState extends State<LoginPage> with ValidationMixin {
                           SharedPreferencesHelper.saveEmail(login.email);
                           SharedPreferencesHelper.savePassword(
                               passwordController.text);
+                          await authApi.saveDeviceToken();
                         }
                         if (login.profile.nama != "") {
                           Navigator.pushNamedAndRemoveUntil(

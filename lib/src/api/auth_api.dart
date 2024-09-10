@@ -41,7 +41,7 @@ class AuthApi {
     );
 
     if (response.statusCode == 200) {
-      await _saveDeviceToken();
+      // await _saveDeviceToken();
       final responseData = json.decode(response.body);
       return LoginResponse.fromJson(responseData);
     } else {
@@ -49,11 +49,12 @@ class AuthApi {
     }
   }
 
-  Future<void> _saveDeviceToken() async {
+  Future<void> saveDeviceToken() async {
     try {
       String? deviceToken = await PushNotifications.getDeviceToken();
       if (deviceToken != null) {
         await UserApi().saveDeviceToken(deviceToken);
+        print("Success save device token");
       } else {
         print("Failed to obtain device token");
       }
