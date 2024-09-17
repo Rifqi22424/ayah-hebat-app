@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:ayahhebat/src/providers/post_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'src/my_app.dart';
 import 'src/services/notification_service.dart';
@@ -94,5 +96,12 @@ main() async {
     });
   }
 
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PostProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
