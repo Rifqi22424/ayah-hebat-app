@@ -109,13 +109,13 @@ class CommentProvider extends ChangeNotifier {
 
         if (!isCurrentlyLiked) {
           await _commentApi.likeComment(commentId);
-          _comments[index].copyWith(
+          _comments[index] = _comments[index].copyWith(
               isLikedByMe: true,
               count: _comments[index].count.copyWith(
                   commentLikes: _comments[index].count.commentLikes + 1));
         } else {
           await _commentApi.likeComment(commentId);
-          _comments[index].copyWith(
+          _comments[index] = _comments[index].copyWith(
               isLikedByMe: false,
               count: _comments[index].count.copyWith(
                   commentLikes: _comments[index].count.commentLikes - 1));
@@ -141,7 +141,7 @@ class CommentProvider extends ChangeNotifier {
 
       final index = _comments.indexWhere((comment) => comment.id == commentId);
       if (index != -1) {
-        _comments[index].copyWith(
+        _comments[index] = _comments[index].copyWith(
           replies: replies,
         );
       }
@@ -167,7 +167,7 @@ class CommentProvider extends ChangeNotifier {
             .indexWhere((reply) => reply.id == replyId);
         if (replyIndex != -1) {
           bool isCurrentlyLiked =
-              _comments[commentIndex].replies[replyIndex].isLikedByMe;      
+              _comments[commentIndex].replies[replyIndex].isLikedByMe;
           if (!isCurrentlyLiked) {
             _commentApi.likeReply(replyId);
             _comments[commentIndex].replies[replyIndex] =
@@ -202,59 +202,91 @@ class CommentProvider extends ChangeNotifier {
 
   // new feature
 
-  //   Future<void> createReply(String body, int commentId) async {
-  //   _editReplyState = EditReplyState.loading;
-  //   notifyListeners();
+  Future<void> createReply(String body, int commentId) async {
+    _editReplyState = EditReplyState.loading;
+    notifyListeners();
 
-  //   try {
-  //     final newReply = await _commentApi.createReply(body, commentId);
-  //     final
+    try {
+      final newReply = await _commentApi.createReply(body, commentId);
 
-  //     _comments.insert(0, newComment);
-  //     _editReplyState = EditReplyState.loaded;
-  //   } catch (e) {
-  //     _errorMessage = e.toString();
-  //     _editReplyState = EditReplyState.error;
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
+      // cari dulu comment yang bakal diisi sama suatu reply
+      final index = _comments.indexWhere((comment) => comment.id == commentId);
 
-  // Future<void> editComment(String body, int commentId) async {
-  //   _editCommentState = EditCommentState.loading;
-  //   notifyListeners();
+      final newList = _comments[index].replies;
+      newList.insert(0, newReply);
 
-  //   try {
-  //     await _commentApi.editComment(body, commentId);
-  //     final index = _comments.indexWhere((comment) => comment.id == commentId);
-  //     if (index != -1) {
-  //       _comments[index] = _comments[index].copyWith(
-  //         body: body,
-  //         updatedAt: DateTime.now(),
-  //       );
-  //       _editCommentState = EditCommentState.loaded;
-  //     }
-  //   } catch (e) {
-  //     _errorMessage = e.toString();
-  //     _editCommentState = EditCommentState.error;
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
+      // ubah list yang ada di dalam comment menggunakan menthod list
+      _comments[index] = _comments[index].copyWith(
+          replies: newList,
+          count: _comments[index]
+              .count
+              .copyWith(replies: _comments[index].count.replies + 1));
 
-  // Future<void> deleteComment(int commentId) async {
-  //   _editCommentState = EditCommentState.loading;
-  //   notifyListeners();
+      _editReplyState = EditReplyState.loaded;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _editReplyState = EditReplyState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
 
-  //   try {
-  //     await _commentApi.deleteComment(commentId);
-  //     _comments.removeWhere((comment) => comment.id == commentId);
-  //     _editCommentState = EditCommentState.loaded;
-  //   } catch (e) {
-  //     _errorMessage = e.toString();
-  //     _editCommentState = EditCommentState.error;
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
+  Future<void> editReply(String body, int replyId, int commentId) async {
+    _editReplyState = EditReplyState.loading;
+    notifyListeners();
+
+    try {
+      await _commentApi.editReply(body, replyId);
+      final commentIndex =
+          _comments.indexWhere((comment) => comment.id == commentId);
+      // cari dulu commentnya setelah itu baru cari reply di comment tersebut
+
+      if (commentIndex != -1) {
+        final replyIndex = _comments[commentIndex]
+            .replies
+            .indexWhere((reply) => reply.id == replyId);
+
+        if (replyIndex != -1) {
+          _comments[commentIndex].replies[replyIndex] =
+              _comments[commentIndex].replies[replyIndex].copyWith(body: body);
+        }
+        _editReplyState = EditReplyState.loaded;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _editReplyState = EditReplyState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteReply(int replyId, int commentId) async {
+    _editReplyState = EditReplyState.loading;
+    notifyListeners();
+
+    try {
+      await _commentApi.deleteReply(replyId);
+      final commentIndex =
+          _comments.indexWhere((comment) => comment.id == commentId);
+
+      if (commentIndex != -1) {
+        final replyIndex = _comments[commentIndex]
+            .replies
+            .indexWhere((reply) => reply.id == replyId);
+
+        if (replyIndex != -1) {
+          _comments[commentIndex].replies.removeAt(replyIndex);
+        }
+      }
+
+      _editReplyState = EditReplyState.loaded;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _editReplyState = EditReplyState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // pr tolong untuk setiap error yang jenisnya beda atau dari state yang berbeda maka buatkan message errornya masing masing
 }
