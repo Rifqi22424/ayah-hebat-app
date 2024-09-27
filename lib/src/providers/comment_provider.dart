@@ -18,14 +18,20 @@ class CommentProvider extends ChangeNotifier {
   EditCommentState _editCommentState = EditCommentState.initial;
   ReplyState _replyState = ReplyState.initial;
   EditReplyState _editReplyState = EditReplyState.initial;
-  String? _errorMessage;
+  String? _errorCommentMessage;
+  String? _errorEditCommentMessage;
+  String? _errorReplyMessage;
+  String? _errorEditReplyMessage;
 
   List<Comment> get comment => _comments;
   CommentState get commentState => _commentState;
   EditCommentState get editCommentState => _editCommentState;
   ReplyState get replyState => _replyState;
   EditReplyState get editReplyState => _editReplyState;
-  String? get errorMessage => _errorMessage;
+  String? get errorCommentMessage => _errorCommentMessage;
+  String? get errorEditCommentMessage => _errorEditCommentMessage;
+  String? get errorReplyMessage => _errorReplyMessage;
+  String? get errorEditReplyMessage => _errorEditReplyMessage;
 
   final CommentApi _commentApi = CommentApi();
 
@@ -37,7 +43,7 @@ class CommentProvider extends ChangeNotifier {
       _comments = await _commentApi.getComments(limit: limit, offset: offset);
       _commentState = CommentState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorCommentMessage = e.toString();
       _commentState = CommentState.error;
     } finally {
       notifyListeners();
@@ -53,7 +59,7 @@ class CommentProvider extends ChangeNotifier {
       _comments.insert(0, newComment);
       _editCommentState = EditCommentState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditCommentMessage = e.toString();
       _editCommentState = EditCommentState.error;
     } finally {
       notifyListeners();
@@ -75,7 +81,7 @@ class CommentProvider extends ChangeNotifier {
         _editCommentState = EditCommentState.loaded;
       }
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditCommentMessage = e.toString();
       _editCommentState = EditCommentState.error;
     } finally {
       notifyListeners();
@@ -91,7 +97,7 @@ class CommentProvider extends ChangeNotifier {
       _comments.removeWhere((comment) => comment.id == commentId);
       _editCommentState = EditCommentState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditCommentMessage = e.toString();
       _editCommentState = EditCommentState.error;
     } finally {
       notifyListeners();
@@ -123,7 +129,7 @@ class CommentProvider extends ChangeNotifier {
         _editCommentState = EditCommentState.loaded;
       }
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditCommentMessage = e.toString();
       _editCommentState = EditCommentState.error;
     } finally {
       notifyListeners();
@@ -147,7 +153,7 @@ class CommentProvider extends ChangeNotifier {
       }
       _replyState = ReplyState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorReplyMessage = e.toString();
       _replyState = ReplyState.error;
     } finally {
       notifyListeners();
@@ -193,7 +199,7 @@ class CommentProvider extends ChangeNotifier {
       }
       _editReplyState = EditReplyState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditReplyMessage = e.toString();
       _editReplyState = EditReplyState.error;
     } finally {
       notifyListeners();
@@ -224,7 +230,7 @@ class CommentProvider extends ChangeNotifier {
 
       _editReplyState = EditReplyState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditReplyMessage = e.toString();
       _editReplyState = EditReplyState.error;
     } finally {
       notifyListeners();
@@ -253,7 +259,7 @@ class CommentProvider extends ChangeNotifier {
         _editReplyState = EditReplyState.loaded;
       }
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorEditReplyMessage = e.toString();
       _editReplyState = EditReplyState.error;
     } finally {
       notifyListeners();
@@ -281,12 +287,13 @@ class CommentProvider extends ChangeNotifier {
 
       _editReplyState = EditReplyState.loaded;
     } catch (e) {
-      _errorMessage = e.toString();
-      _editReplyState = EditReplyState.error;
+      _errorEditReplyMessage = e.toString();
+      _editReplyState = EditReplyState.error;   
     } finally {
       notifyListeners();
     }
   }
 
-  // pr tolong untuk setiap error yang jenisnya beda atau dari state yang berbeda maka buatkan message errornya masing masing
+  // pr tolong untuk setiap error yang jenisnya beda atau dari state yang berbeda maka buatkan message errornya masing masing (done)
 }
+    

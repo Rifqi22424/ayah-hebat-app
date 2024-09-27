@@ -4,6 +4,7 @@ import 'package:ayahhebat/src/pages/deleteAccount/send_verification_code_page.da
 import 'package:ayahhebat/src/pages/deleteAccount/submit_account_deletion_page.dart';
 import 'package:ayahhebat/src/pages/detail_story_page.dart';
 import 'package:ayahhebat/src/pages/faq_page.dart';
+import 'package:ayahhebat/src/pages/forum/comments_page.dart';
 import 'package:ayahhebat/src/pages/message_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +77,16 @@ class RouteGenerator {
             builder: (context) => const MainPage(
                   index: 1,
                 ));
+      case "/forum":
+        return MaterialPageRoute(
+            builder: (context) => const MainPage(
+                  index: 2,
+                ));
+      case "/comments":
+        final args = settings.arguments as Map<String, dynamic>;
+        final int postId = args['postId'];
+        return MaterialPageRoute(
+            builder: (context) => CommentsPage(postId: postId));
       case "/newsContent":
         final args = settings.arguments as Map<String, dynamic>;
         final int newsId = args['newsId'];

@@ -52,6 +52,13 @@ class AppStyles {
     color: AppColors.textColor,
   );
 
+  static TextStyle medium2TextStyle = const TextStyle(
+    fontSize: 16,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.w400,
+    color: AppColors.textColor,
+  );
+
   static TextStyle heading3TextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',

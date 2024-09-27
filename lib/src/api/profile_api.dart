@@ -4,6 +4,7 @@ import 'package:ayahhebat/src/models/user_profile_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../../main.dart';
+import '../models/post_model.dart';
 import '../models/profile_model.dart';
 import '../utils/shared_preferences.dart';
 
@@ -137,6 +138,24 @@ class ProfileApi {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       return UserProfile.getUserNProfilefromJson(responseData);
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
+  Future<ProfileData> getNameAndPhoto() async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$serverPath/profile/photo'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      return ProfileData.fromJson(responseData['profile']);
     } else {
       throw Exception(response.statusCode);
     }

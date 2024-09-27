@@ -123,6 +123,7 @@ class PostApi {
 
   Future<bool> likePost(int postId) async {
     String? token = await SharedPreferencesHelper.getToken();
+    print(token);
     final response = await http.post(
       Uri.parse('$serverPath/post/${postId.toString()}/like'),
       headers: <String, String>{
@@ -132,8 +133,10 @@ class PostApi {
     );
 
     if (response.statusCode == 200) {
+      print("berhasil like");
       return true;
     } else {
+      print("gagal like");
       final errorData = json.decode(response.body)['error'];
       throw errorData;
     }

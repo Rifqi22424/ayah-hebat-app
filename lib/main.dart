@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:ayahhebat/src/providers/post_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -8,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'src/my_app.dart';
+import 'src/providers/comment_provider.dart';
+import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 
-const serverPath = "https://backend.ayahhebat.mangcoding.com";
-// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+// const serverPath = "https://backend.ayahhebat.mangcoding.com";
+const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -100,6 +101,7 @@ main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PostProvider()),
+        ChangeNotifierProvider(create: (_) => CommentProvider()),
       ],
       child: MyApp(),
     ),

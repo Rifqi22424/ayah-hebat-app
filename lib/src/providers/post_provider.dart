@@ -24,10 +24,17 @@ class PostProvider with ChangeNotifier {
   Future<void> fetchPosts({int limit = 5, int offset = 0}) async {
     _postState = PostState.loading;
     notifyListeners();
+    print("loading fetching posts");
 
     try {
-      _posts = await _postApi.getPosts(limit: limit, offset: offset);
+      if (offset == 0) {
+        _posts = await _postApi.getPosts(limit: limit, offset: offset);
+      } else {
+        final _newPosts = await _postApi.getPosts(limit: limit, offset: offset);
+        _posts.addAll(_newPosts);
+      }
       _postState = PostState.loaded;
+      print("fetching data posts");
     } catch (e) {
       _errorMessage = e.toString();
       _postState = PostState.error;
@@ -78,7 +85,7 @@ class PostProvider with ChangeNotifier {
       final index = _posts.indexWhere((post) => post.id == postId);
       if (index != -1) {
         _posts[index] = editedPost;
-        _editPostState = EditPostState.loaded;    
+        _editPostState = EditPostState.loaded;
       }
     } catch (e) {
       _editErrorMessage = e.toString();
