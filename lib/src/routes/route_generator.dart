@@ -8,6 +8,7 @@ import 'package:ayahhebat/src/pages/forum/comments_page.dart';
 import 'package:ayahhebat/src/pages/message_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import '../models/post_model.dart';
 import '../pages/announcement/announcement_page.dart';
 import '../pages/change_password_page.dart';
 import '../pages/my_ranking_page.dart';
@@ -84,9 +85,11 @@ class RouteGenerator {
                 ));
       case "/comments":
         final args = settings.arguments as Map<String, dynamic>;
-        final int postId = args['postId'];
+        final int indexPostProvider = args['indexPostProvider'];
+        final Post post = args['post'];
         return MaterialPageRoute(
-            builder: (context) => CommentsPage(postId: postId));
+            builder: (context) =>
+                CommentsPage(indexPostProv: indexPostProvider, post: post));
       case "/newsContent":
         final args = settings.arguments as Map<String, dynamic>;
         final int newsId = args['newsId'];

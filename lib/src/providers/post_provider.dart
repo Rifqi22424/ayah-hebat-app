@@ -111,7 +111,30 @@ class PostProvider with ChangeNotifier {
     }
   }
 
+  Future<void> addCommentsCount(int postId) async {
+    if (_editPostState == EditPostState.loading) return;
+
+    _editPostState = EditPostState.loading;
+    notifyListeners();
+
+    final index = _posts.indexWhere((post) => post.id == postId);
+
+    _posts[index] = _posts[index].copyWith(
+      isLikedByMe: true,
+      count: _posts[index]
+          .count
+          .copyWith(postLikes: _posts[index].count.postLikes + 1),
+    );
+
+    _editPostState = EditPostState.loaded;
+    notifyListeners();
+  }
+
   Future<void> likePost(int postId) async {
+    if (_editPostState == EditPostState.loading) {
+      return;
+    }
+
     _editPostState = EditPostState.loading;
     notifyListeners();
 
@@ -148,6 +171,10 @@ class PostProvider with ChangeNotifier {
   }
 
   Future<void> dislikePost(int postId) async {
+    if (_editPostState == EditPostState.loading) {
+      return;
+    }
+
     _editPostState = EditPostState.loading;
     notifyListeners();
 

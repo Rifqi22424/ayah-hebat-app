@@ -17,6 +17,13 @@ class AppStyles {
     color: AppColors.accentColor,
   );
 
+  static TextStyle miniHintTextStyle = const TextStyle(
+    fontSize: 12,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.normal,
+    color: AppColors.accentColor,
+  );
+
   static TextStyle smallHintTextStyle = const TextStyle(
     fontSize: 12,
     fontFamily: 'Lato',
@@ -29,6 +36,13 @@ class AppStyles {
     fontFamily: 'Lato',
     fontWeight: FontWeight.w400,
     color: AppColors.textColor,
+  );
+
+  static TextStyle labelBlueTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.w400,
+    color: AppColors.blueColor,
   );
 
   static TextStyle labelBoldTextStyle = const TextStyle(
@@ -122,7 +136,7 @@ class AppStyles {
     color: AppColors.primaryColor,
   );
 
-    static TextStyle bodyPrimaryTextStyle = const TextStyle(
+  static TextStyle bodyPrimaryTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',
     fontWeight: FontWeight.w400,

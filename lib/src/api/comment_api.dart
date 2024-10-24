@@ -7,11 +7,16 @@ import '../utils/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class CommentApi {
-  Future<List<Comment>> getComments({int limit = 5, int offset = 0}) async {
-    final uri = Uri.parse('$serverPath/comment').replace(queryParameters: {
+  Future<List<Comment>> getComments(
+      {int limit = 5, int offset = 0, String sort = "likes", required int postId}) async {
+    final uri = Uri.parse('$serverPath/comment/${postId.toString()}')
+        .replace(queryParameters: {
+      'sort': sort,
       'limit': limit.toString(),
       'offset': offset.toString(),
     });
+
+    print(uri);
 
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
@@ -96,7 +101,7 @@ class CommentApi {
   Future<bool> likeComment(int commentId) async {
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.post(
-      Uri.parse('$serverPath/post/${commentId.toString()}/like'),
+      Uri.parse('$serverPath/comment/${commentId.toString()}/like'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -104,6 +109,9 @@ class CommentApi {
     );
 
     if (response.statusCode == 200) {
+      print(response.body);
+      print(token!);
+      print("comment id: " + commentId.toString());
       return true;
     } else {
       final errorData = json.decode(response.body)['error'];
@@ -111,11 +119,19 @@ class CommentApi {
     }
   }
 
-  Future<List<Reply>> getReplies({int limit = 5, int offset = 1}) async {
-    final uri = Uri.parse('$serverPath/reply').replace(queryParameters: {
+  Future<List<Reply>> getReplies(
+      {int limit = 5,
+      int offset = 1,
+      String sort = 'likes',
+      required commentId}) async {
+    final uri =
+        Uri.parse('$serverPath/reply/$commentId').replace(queryParameters: {
+      'sort': sort.toString(),
       'limit': limit.toString(),
       'offset': offset.toString(),
     });
+
+    print(uri);
 
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
@@ -137,7 +153,7 @@ class CommentApi {
     }
   }
 
-    Future<bool> likeReply(int replyId) async {
+  Future<bool> likeReply(int replyId) async {
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.post(
       Uri.parse('$serverPath/reply/${replyId.toString()}/like'),

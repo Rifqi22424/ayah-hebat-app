@@ -2,6 +2,7 @@ import 'package:ayahhebat/main.dart';
 import 'package:ayahhebat/src/api/profile_api.dart';
 import 'package:ayahhebat/src/widgets/app_bar_left_builder.dart';
 import 'package:ayahhebat/src/widgets/button_builder.dart';
+import 'package:ayahhebat/src/widgets/costum_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,6 @@ class _ForumsPageState extends State<ForumsPage> {
   final TextEditingController _postBodyController = TextEditingController();
   int offset = 0;
   final ProfileApi _profileService = ProfileApi();
-  final PostApi _postService = PostApi();
 
   Map<int, String> monthNames = {
     1: 'Jan',
@@ -66,8 +66,23 @@ class _ForumsPageState extends State<ForumsPage> {
     }
   }
 
-  void onSendPostTapped(String body) {
-    
+  Future<void> onSendPostTapped(BuildContext context, String body) async {
+    String formattedBody = body.replaceAll("\n", " ");
+    await Provider.of<PostProvider>(context, listen: false)
+        .createPost(formattedBody);
+
+    final postProvider = Provider.of<PostProvider>(context, listen: false);
+
+    print(postProvider.editPostState);
+
+    if (postProvider.editPostState == EditPostState.error) {
+      showCustomSnackBar(
+          context, "Gagal mengirim postingan", AppColors.redColor!);
+    } else if (postProvider.editPostState == EditPostState.loaded) {
+      print("done");
+      _postBodyController.clear();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -96,91 +111,201 @@ class _ForumsPageState extends State<ForumsPage> {
     super.dispose();
   }
 
-  void onPostTapped(int postId) {
-    Navigator.pushNamed(context, '/comments', arguments: {'postId': postId});
+  void onPostTapped(int index, Post post) {
+    Navigator.pushNamed(context, '/comments',
+        arguments: {'indexPostProvider': index, 'post': post});
   }
 
   void showAddPost(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Container(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Tambahkan Postingan",
-                      style: AppStyles.heading2TextStyle,
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(Icons.close))
-                  ],
-                ),
-                FutureBuilder<ProfileData>(
-                  future: _profileService.getNameAndPhoto(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.primaryColor),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("Error has ocurred");
-                    } else if (snapshot.hasData) {
-                      final data = snapshot.data!;
-
-                      return Row(
+        return ScaffoldMessenger(
+            child: Builder(
+          builder: (context) => Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Navigator.of(context).pop(),
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CircleAvatar(
-                            backgroundColor: AppColors.grey,
-                            radius: 24,
-                            foregroundImage: NetworkImage(
-                                '${serverPath}/uploads/${data.photo}'),
-                          ),
-                          SizedBox(width: 10),
                           Text(
-                            data.nama,
+                            "Tambahkan Postingan",
                             style: AppStyles.heading2TextStyle,
-                            // style: AppStyles.labelBoldTextStyle,
-                          )
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(Icons.close))
                         ],
-                      );
-                    }
-                    return Container();
-                  },
+                      ),
+                      FutureBuilder<ProfileData>(
+                        future: _profileService.getNameAndPhoto(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.primaryColor),
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("Error has ocurred");
+                          } else if (snapshot.hasData) {
+                            final data = snapshot.data!;
+
+                            return Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: AppColors.grey,
+                                  radius: 24,
+                                  foregroundImage: NetworkImage(
+                                      '${serverPath}/uploads/${data.photo}'),
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  data.nama,
+                                  style: AppStyles.heading2TextStyle,
+                                )
+                              ],
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        maxLines: 2,
+                        controller: _postBodyController,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide:
+                                    BorderSide(color: AppColors.primaryColor)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide:
+                                    BorderSide(color: AppColors.lightgrey))),
+                      ),
+                      SizedBox(height: 25),
+                      ButtonBuilder(
+                          onPressed: () async {
+                            try {
+                              await onSendPostTapped(
+                                  context, _postBodyController.text);
+                            } catch (e) {
+                              showCustomSnackBar(
+                                  context, e.toString(), AppColors.redColor!);
+                            }
+                          },
+                          child: Text("Kirim")),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _postBodyController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32),
-                          borderSide: BorderSide(color: AppColors.lightgrey))),
-                ),
-                SizedBox(height: 25),
-                ButtonBuilder(
-                    onPressed: () async {
-                      onSendPostTapped(_postBodyController.text);
-                    },
-                    child: Text("Kirim")),
-              ],
+              ),
             ),
           ),
-        );
+        ));
+
+        // Dialog(
+        //   shape:
+        //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        //   child: Container(
+        //     padding: EdgeInsets.all(16),
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             Text(
+        //               "Tambahkan Postingan",
+        //               style: AppStyles.heading2TextStyle,
+        //             ),
+        //             IconButton(
+        //                 onPressed: () {
+        //                   Navigator.pop(context);
+        //                 },
+        //                 icon: Icon(Icons.close))
+        //           ],
+        //         ),
+        //         FutureBuilder<ProfileData>(
+        //           future: _profileService.getNameAndPhoto(),
+        //           builder: (context, snapshot) {
+        //             if (snapshot.connectionState == ConnectionState.waiting) {
+        //               return SizedBox(
+        //                 height: 20,
+        //                 width: 20,
+        //                 child: CircularProgressIndicator(
+        //                   valueColor: AlwaysStoppedAnimation<Color>(
+        //                       AppColors.primaryColor),
+        //                 ),
+        //               );
+        //             } else if (snapshot.hasError) {
+        //               return Text("Error has ocurred");
+        //             } else if (snapshot.hasData) {
+        //               final data = snapshot.data!;
+
+        //               return Row(
+        //                 children: [
+        //                   CircleAvatar(
+        //                     backgroundColor: AppColors.grey,
+        //                     radius: 24,
+        //                     foregroundImage: NetworkImage(
+        //                         '${serverPath}/uploads/${data.photo}'),
+        //                   ),
+        //                   SizedBox(width: 10),
+        //                   Text(
+        //                     data.nama,
+        //                     style: AppStyles.heading2TextStyle,
+        //                   )
+        //                 ],
+        //               );
+        //             }
+        //             return Container();
+        //           },
+        //         ),
+        //         SizedBox(height: 10),
+        //         TextField(
+        //           maxLines: 2,
+        //           controller: _postBodyController,
+        //           decoration: InputDecoration(
+        //               focusedBorder: OutlineInputBorder(
+        //                   borderRadius: BorderRadius.circular(6),
+        //                   borderSide:
+        //                       BorderSide(color: AppColors.primaryColor)),
+        //               border: OutlineInputBorder(
+        //                   borderRadius: BorderRadius.circular(6),
+        //                   borderSide: BorderSide(color: AppColors.lightgrey))),
+        //         ),
+        //         SizedBox(height: 25),
+        //         ButtonBuilder(
+        //             onPressed: () async {
+        //               try {
+        //                 onSendPostTapped(_postBodyController.text);
+        //               } catch (e) {
+        //                 showCustomSnackBar(
+        //                     context, e.toString(), AppColors.redColor!);
+        //               }
+        //             },
+        //             child: Text("Kirim")),
+        //       ],
+        //     ),
+        //   ),
+        // );
       },
     );
   }
@@ -212,7 +337,6 @@ class _ForumsPageState extends State<ForumsPage> {
             SizedBox(height: 16),
             Expanded(child: Consumer<PostProvider>(
               builder: (context, postProvider, child) {
-                print(postProvider.posts);
                 if (postProvider.postState == PostState.loading &&
                     postProvider.posts.isEmpty) {
                   return const Center(
@@ -268,7 +392,9 @@ class _ForumsPageState extends State<ForumsPage> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      onPostTapped(post.id);
+                                      print("index = $index");
+                                      print("post id=  ${post.id}");
+                                      onPostTapped(index, post);
                                     },
                                     borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(32),
@@ -350,7 +476,10 @@ class _ForumsPageState extends State<ForumsPage> {
                                                                 EdgeInsets.zero,
                                                             constraints:
                                                                 BoxConstraints(),
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              onPostTapped(
+                                                                  index, post);
+                                                            },
                                                             icon: Image.asset(
                                                               "images/comment-icon.png",
                                                               height: 24,
