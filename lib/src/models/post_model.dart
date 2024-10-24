@@ -8,6 +8,7 @@ class Post {
   final PostCount count;
   final bool isLikedByMe;
   final bool isDislikedByMe;
+  final bool isMine;
 
   Post({
     required this.id,
@@ -19,6 +20,7 @@ class Post {
     required this.count,
     required this.isLikedByMe,
     required this.isDislikedByMe,
+    required this.isMine,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,7 @@ class Post {
       count: PostCount.fromJson(json['_count'] ?? {}),
       isLikedByMe: json['isLikedByMe'] ?? false,
       isDislikedByMe: json['isDislikedByMe'] ?? false,
+      isMine: json['isMine'] ?? false,
     );
   }
 
@@ -50,6 +53,7 @@ class Post {
       '_count': count.toJson(),
       'isLikedByMe': isLikedByMe,
       'isDislikedByMe': isDislikedByMe,
+      'isMine': isMine,
     };
   }
 
@@ -63,6 +67,7 @@ class Post {
     PostCount? count,
     bool? isLikedByMe,
     bool? isDislikedByMe,
+    bool? isMine,
   }) {
     return Post(
       id: id ?? this.id,
@@ -74,6 +79,7 @@ class Post {
       count: count ?? this.count,
       isLikedByMe: isLikedByMe ?? this.isLikedByMe,
       isDislikedByMe: isDislikedByMe ?? this.isDislikedByMe,
+      isMine: isMine ?? this.isMine,
     );
   }
 }

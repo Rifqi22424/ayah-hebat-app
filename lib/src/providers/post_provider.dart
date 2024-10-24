@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/post_api.dart';
+import '../api/report_api.dart';
 import '../models/post_model.dart';
 
 enum PostState { inital, loading, error, loaded }
@@ -20,6 +21,7 @@ class PostProvider with ChangeNotifier {
   String? get editErrorMessage => _editErrorMessage;
 
   final PostApi _postApi = PostApi();
+  final ReportApi _reportApi = ReportApi();
 
   Future<void> fetchPosts({int limit = 5, int offset = 0}) async {
     _postState = PostState.loading;
@@ -106,6 +108,26 @@ class PostProvider with ChangeNotifier {
     } catch (e) {
       _editErrorMessage = e.toString();
       _editPostState = EditPostState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> reportPost(int postId) async {
+    _editPostState = EditPostState.loading;
+    notifyListeners();
+    print("masuk loading");
+
+    try {
+      await _reportApi.reportPost(postId);
+      _posts.removeWhere((post) => post.id == postId);
+      _editPostState = EditPostState.loaded;
+      print("berhasil report");
+    } catch (e) {
+      _editErrorMessage = e.toString();
+      _editPostState = EditPostState.error;
+      print("gagal report");
+      print(_editErrorMessage);
     } finally {
       notifyListeners();
     }

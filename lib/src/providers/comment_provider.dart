@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../api/comment_api.dart';
+import '../api/report_api.dart';
 import '../models/comment_model.dart';
 import '../models/reply_model.dart';
 
@@ -43,6 +44,7 @@ class CommentProvider extends ChangeNotifier {
   bool get hasMoreData => _hasMoreData;
 
   final CommentApi _commentApi = CommentApi();
+  final ReportApi _reportApi = ReportApi();
 
   Future<void> fetchComments(
       {int limit = 10,
@@ -173,6 +175,25 @@ class CommentProvider extends ChangeNotifier {
     } catch (e) {
       _errorEditCommentMessage = e.toString();
       _editCommentState = EditCommentState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> reportComment(int commentId) async {
+    _editCommentState = EditCommentState.loading;
+    print("masuk report");
+    notifyListeners();
+
+    try {
+      await _reportApi.reportComment(commentId);
+      _comments.removeWhere((comment) => comment.id == commentId);
+      _editCommentState = EditCommentState.loaded;
+      print("report berhasil");
+    } catch (e) {
+      _errorEditCommentMessage = e.toString();
+      _editCommentState = EditCommentState.error;
+      print("report gagal");
     } finally {
       notifyListeners();
     }
@@ -407,22 +428,80 @@ class CommentProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteReply(int replyId, int commentId) async {
+  Future<void> deleteReply(int replyId) async {
     _editReplyState = EditReplyState.loading;
     notifyListeners();
 
     try {
       await _commentApi.deleteReply(replyId);
-      final commentIndex =
-          _comments.indexWhere((comment) => comment.id == commentId);
 
-      if (commentIndex != -1) {
+      // final commentIndex =
+      //     _comments.indexWhere((comment) => comment.id == commentId);
+
+      // if (commentIndex != -1) {
+      //   final replyIndex = _comments[commentIndex]
+      //       .replies
+      //       .indexWhere((reply) => reply.id == replyId);
+
+      //   if (replyIndex != -1) {
+      //     _comments[commentIndex].replies.removeAt(replyIndex);
+      //   }
+      // }
+
+      for (int commentIndex = 0;
+          commentIndex < _comments.length;
+          commentIndex++) {
         final replyIndex = _comments[commentIndex]
             .replies
             .indexWhere((reply) => reply.id == replyId);
 
+        // If the reply is found, remove it from the list
         if (replyIndex != -1) {
           _comments[commentIndex].replies.removeAt(replyIndex);
+          break;
+        }
+      }
+
+      _editReplyState = EditReplyState.loaded;
+    } catch (e) {
+      _errorEditReplyMessage = e.toString();
+      _editReplyState = EditReplyState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> reportReply(int replyId) async {
+    _editReplyState = EditReplyState.loading;
+    notifyListeners();
+
+    try {
+      await _reportApi.reportReply(replyId);
+
+      // final commentIndex =
+      //     _comments.indexWhere((comment) => comment.id == commentId);
+
+      // if (commentIndex != -1) {
+      //   final replyIndex = _comments[commentIndex]
+      //       .replies
+      //       .indexWhere((reply) => reply.id == replyId);
+
+      //   if (replyIndex != -1) {
+      //     _comments[commentIndex].replies.removeAt(replyIndex);
+      //   }
+      // }
+
+      for (int commentIndex = 0;
+          commentIndex < _comments.length;
+          commentIndex++) {
+        final replyIndex = _comments[commentIndex]
+            .replies
+            .indexWhere((reply) => reply.id == replyId);
+
+        // If the reply is found, remove it from the list
+        if (replyIndex != -1) {
+          _comments[commentIndex].replies.removeAt(replyIndex);
+          break;
         }
       }
 

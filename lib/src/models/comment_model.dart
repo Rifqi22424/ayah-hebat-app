@@ -12,6 +12,7 @@ class Comment {
   final CommentCount count;
   final List<Reply> replies;
   final bool isLikedByMe;
+  final bool isMine;
 
   Comment({
     required this.id,
@@ -24,6 +25,7 @@ class Comment {
     required this.count,
     required this.replies,
     required this.isLikedByMe,
+    required this.isMine,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class Comment {
               ?.map((replyJson) => Reply.fromJson(replyJson))
               .toList() ??
           [],
+      isMine: json['isMine'] ?? false,
     );
   }
 
@@ -60,6 +63,7 @@ class Comment {
       '_count': count.toJson(),
       'isLikedByMe': isLikedByMe,
       'replies': replies.map((reply) => reply.toJson()).toList(),
+      'isMine': isMine,
     };
   }
 
@@ -74,6 +78,7 @@ class Comment {
     CommentCount? count,
     List<Reply>? replies,
     bool? isLikedByMe,
+    bool? isMine,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -86,6 +91,7 @@ class Comment {
       count: count ?? this.count,
       replies: replies ?? this.replies,
       isLikedByMe: isLikedByMe ?? this.isLikedByMe,
+      isMine: isMine ?? this.isMine,
     );
   }
 }

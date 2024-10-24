@@ -6,7 +6,6 @@ import 'package:ayahhebat/src/widgets/costum_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/post_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../models/post_model.dart';
@@ -114,6 +113,109 @@ class _ForumsPageState extends State<ForumsPage> {
   void onPostTapped(int index, Post post) {
     Navigator.pushNamed(context, '/comments',
         arguments: {'indexPostProvider': index, 'post': post});
+  }
+
+  void showReportDialog(BuildContext context, String type, int postId) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          if (type == "report") {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              title: Text("Peringatan", style: AppStyles.mediumTextStyle),
+              content: Text("Apakah anda ingin melaporkan postingan tersebut?",
+                  style: AppStyles.heading3TextStyle),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.blueColor,
+                    disabledForegroundColor: AppColors.halfBlueColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Tidak'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.redColor,
+                    disabledForegroundColor: AppColors.halfRedColor,
+                  ),
+                  onPressed: () {
+                    Provider.of<PostProvider>(context, listen: false)
+                        .reportPost(postId);
+                    print("masuk report tapped");
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ya'),
+                ),
+              ],
+            );
+          } else {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              title: Text("Peringatan", style: AppStyles.mediumTextStyle),
+              content: Text("Apakah anda ingin menghapus postingan tersebut?",
+                  style: AppStyles.heading3TextStyle),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.blueColor,
+                    disabledForegroundColor: AppColors.halfBlueColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Tidak'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.redColor,
+                    disabledForegroundColor: AppColors.halfRedColor,
+                  ),
+                  onPressed: () {
+                    Provider.of<PostProvider>(context, listen: false)
+                        .deletePost(postId);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ya'),
+                ),
+              ],
+            );
+          }
+        });
+  }
+
+  void showMoreDialog(BuildContext context, bool isMine, int postId) {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Laporkan"),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      showReportDialog(context, "report", postId);
+                    },
+                  ),
+                  isMine
+                      ? ListTile(
+                          title: Text("Hapus"),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            showReportDialog(context, "detete", postId);
+                          },
+                        )
+                      : SizedBox(),
+                ],
+              ),
+            ));
   }
 
   void showAddPost(BuildContext context) {
@@ -452,7 +554,10 @@ class _ForumsPageState extends State<ForumsPage> {
                                               child: IconButton(
                                                 padding: EdgeInsets.zero,
                                                 constraints: BoxConstraints(),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  showMoreDialog(context,
+                                                      post.isMine, post.id);
+                                                },
                                                 icon: Image.asset(
                                                   "images/dots-icon.png",
                                                   height: 24,

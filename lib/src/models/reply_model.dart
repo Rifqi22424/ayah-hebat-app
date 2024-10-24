@@ -10,6 +10,7 @@ class Reply {
   final UserData user;
   final int replyLikesCount;
   final bool isLikedByMe;
+  final bool isMine;
 
   Reply({
     required this.id,
@@ -21,6 +22,7 @@ class Reply {
     required this.user,
     required this.replyLikesCount,
     required this.isLikedByMe,
+    required this.isMine,
   });
 
   factory Reply.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class Reply {
       replyLikesCount:
           json['_count'] != null ? json['_count']['replyLikes'] ?? 0 : 0,
       isLikedByMe: json['isLikedByMe'] ?? false,
+      isMine: json['isMine'] ?? false,
     );
   }
 
@@ -55,6 +58,7 @@ class Reply {
         'replyLikes': replyLikesCount,
       },
       'isLikedByMe': isLikedByMe,
+      'isMine': isMine,
     };
   }
 
@@ -68,6 +72,7 @@ class Reply {
     UserData? user,
     int? replyLikesCount,
     bool? isLikedByMe,
+    bool? isMine,
   }) {
     return Reply(
         id: id ?? this.id,
@@ -78,6 +83,7 @@ class Reply {
         updatedAt: updatedAt ?? this.updatedAt,
         user: user ?? this.user,
         replyLikesCount: replyLikesCount ?? this.replyLikesCount,
-        isLikedByMe: isLikedByMe ?? this.isLikedByMe);
+        isLikedByMe: isLikedByMe ?? this.isLikedByMe,
+        isMine: isMine ?? this.isMine);
   }
 }

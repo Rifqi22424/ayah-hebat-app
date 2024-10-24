@@ -56,7 +56,7 @@ class _CommentsPageState extends State<CommentsPage> {
   int replyToReplyId = 0;
   String replyToReplyName = "";
 
-  String filter = "Terbaru";
+  String filter = "Terpopuler";
   String sort = "likes";
   final ScrollController _scrollController = ScrollController();
 
@@ -104,18 +104,18 @@ class _CommentsPageState extends State<CommentsPage> {
           body, commentId!, replyId!, context);
     }
 
-    bool isCommentLoaded = isComment &&
-        commentProvider.editCommentState == EditCommentState.loaded;
-    bool isReplyLoaded =
-        !isComment && commentProvider.editReplyState == EditReplyState.loaded;
+    // bool isCommentLoaded = isComment &&
+    //     commentProvider.editCommentState == EditCommentState.loaded;
+    // bool isReplyLoaded =
+    //     !isComment && commentProvider.editReplyState == EditReplyState.loaded;
 
-    if (isCommentLoaded || isReplyLoaded) {
-      commentController.text = "";
-      replyToCommentId = 0;
-      replyToCommentName = "";
-      this.isReply = false;
-      FocusScope.of(context).unfocus();
-    }
+    // if (isCommentLoaded || isReplyLoaded) {
+    commentController.text = "";
+    replyToCommentId = 0;
+    replyToCommentName = "";
+    this.isReply = false;
+    FocusScope.of(context).unfocus();
+    // }
 
     setState(() {});
   }
@@ -179,6 +179,122 @@ class _CommentsPageState extends State<CommentsPage> {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void showReportDialog(
+      BuildContext context, String type, int contentId, bool isComment) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          if (type == "report") {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              title: Text("Peringatan", style: AppStyles.mediumTextStyle),
+              content: Text("Apakah anda ingin melaporkan comment tersebut?",
+                  style: AppStyles.heading3TextStyle),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.blueColor,
+                    disabledForegroundColor: AppColors.halfBlueColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Tidak'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.redColor,
+                    disabledForegroundColor: AppColors.halfRedColor,
+                  ),
+                  onPressed: () {
+                    if (isComment) {
+                      Provider.of<CommentProvider>(context, listen: false)
+                          .reportComment(contentId);
+                    } else {
+                      Provider.of<CommentProvider>(context, listen: false)
+                          .reportReply(contentId);
+                    }
+                    print("masuk report tapped");
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ya'),
+                ),
+              ],
+            );
+          } else {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              title: Text("Peringatan", style: AppStyles.mediumTextStyle),
+              content: Text("Apakah anda ingin menghapus postingan tersebut?",
+                  style: AppStyles.heading3TextStyle),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.blueColor,
+                    disabledForegroundColor: AppColors.halfBlueColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Tidak'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.redColor,
+                    disabledForegroundColor: AppColors.halfRedColor,
+                  ),
+                  onPressed: () {
+                    if (isComment) {
+                      Provider.of<CommentProvider>(context, listen: false)
+                          .deleteComment(contentId);
+                    } else {
+                      Provider.of<CommentProvider>(context, listen: false)
+                          .deleteReply(contentId);
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ya'),
+                ),
+              ],
+            );
+          }
+        });
+  }
+
+  void showMoreDialog(
+      BuildContext context, bool isMine, int contentId, bool isComment) {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Laporkan"),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      showReportDialog(context, "report", contentId, isComment);
+                    },
+                  ),
+                  isMine
+                      ? ListTile(
+                          title: Text("Hapus"),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            showReportDialog(
+                                context, "detete", contentId, isComment);
+                          },
+                        )
+                      : SizedBox(),
+                ],
+              ),
+            ));
   }
 
   @override
@@ -418,10 +534,6 @@ class _CommentsPageState extends State<CommentsPage> {
                                         : const SizedBox.shrink();
                                   }
                                   Comment comment = commentProv.comments[index];
-                                  // print("comment replies " +
-                                  //     comment.count.replies.toString() +
-                                  //     " with " +
-                                  //     comment.id.toString());
                                   return Column(
                                     children: [
                                       InkWell(
@@ -429,6 +541,11 @@ class _CommentsPageState extends State<CommentsPage> {
                                           Provider.of<CommentProvider>(context,
                                                   listen: false)
                                               .likeComment(comment.id);
+                                        },
+                                        onLongPress: () {
+                                          FocusScope.of(context).unfocus();
+                                          showMoreDialog(context,
+                                              comment.isMine, comment.id, true);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -636,6 +753,14 @@ class _CommentsPageState extends State<CommentsPage> {
                                                       listen: false)
                                                   .likeReply(
                                                       comment.id, reply.id);
+                                            },
+                                            onLongPress: () {
+                                              FocusScope.of(context).unfocus();
+                                              showMoreDialog(
+                                                  context,
+                                                  reply.isMine,
+                                                  reply.id,
+                                                  false);
                                             },
                                             child: Container(
                                               margin: const EdgeInsets.only(

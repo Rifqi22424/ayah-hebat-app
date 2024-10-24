@@ -42,7 +42,7 @@ class _ExpandableTextState extends State<ExpandableText> {
               child: Text(
                 '..persingkat',
                 style:
-                    AppStyles.labelBlueTextStyle, // Ubah warna sesuai kebutuhan
+                    AppStyles.heading3PrimaryTextStyle, 
               ),
             ),
           ),
@@ -59,7 +59,7 @@ class _ExpandableTextState extends State<ExpandableText> {
               child: Text(
                 '..selengkapnya',
                 style:
-                    AppStyles.labelBlueTextStyle, // Ubah warna sesuai kebutuhan
+                    AppStyles.heading3PrimaryTextStyle, 
               ),
             ),
           ),
