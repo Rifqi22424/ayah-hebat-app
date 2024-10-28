@@ -11,8 +11,8 @@ import 'src/providers/comment_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
-const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 

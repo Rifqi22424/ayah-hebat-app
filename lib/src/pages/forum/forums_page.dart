@@ -3,6 +3,7 @@ import 'package:ayahhebat/src/api/profile_api.dart';
 import 'package:ayahhebat/src/widgets/app_bar_left_builder.dart';
 import 'package:ayahhebat/src/widgets/button_builder.dart';
 import 'package:ayahhebat/src/widgets/costum_snack_bar.dart';
+import 'package:ayahhebat/src/widgets/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -110,9 +111,12 @@ class _ForumsPageState extends State<ForumsPage> {
     super.dispose();
   }
 
-  void onPostTapped(int index, Post post) {
-    Navigator.pushNamed(context, '/comments',
-        arguments: {'indexPostProvider': index, 'post': post});
+  void onPostTapped(int index, Post post, bool autoFocus) {
+    Navigator.pushNamed(context, '/comments', arguments: {
+      'indexPostProvider': index,
+      'post': post,
+      'autoFocus': autoFocus
+    });
   }
 
   void showReportDialog(BuildContext context, String type, int postId) {
@@ -428,11 +432,14 @@ class _ForumsPageState extends State<ForumsPage> {
               },
               decoration: InputDecoration(
                   hintText: "Cari disini...",
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32),
+                      borderSide: BorderSide(color: AppColors.primaryColor)),
                   suffixIcon: IconButton(
                       onPressed: () {
                         searchTrigger();
                       },
-                      icon: Icon(Icons.search)),
+                      icon: Icon(Icons.search, color: AppColors.textColor)),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(32))),
             ),
@@ -456,7 +463,12 @@ class _ForumsPageState extends State<ForumsPage> {
                     child: Text(
                         'Error: ${postProvider.errorMessage ?? "An error occurred"}'),
                   );
-                } else {
+                } else if (postProvider.posts.isEmpty) {
+                  return const Center(
+                    child: Text("Belum ada postingan"),
+                  );
+                }
+                else {
                   return RefreshIndicator(
                     color: AppColors.primaryColor,
                     onRefresh: () async {
@@ -496,7 +508,7 @@ class _ForumsPageState extends State<ForumsPage> {
                                     onTap: () {
                                       print("index = $index");
                                       print("post id=  ${post.id}");
-                                      onPostTapped(index, post);
+                                      onPostTapped(index, post, false);
                                     },
                                     borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(32),
@@ -517,20 +529,23 @@ class _ForumsPageState extends State<ForumsPage> {
                                               Text(
                                                 post.user.profile.nama,
                                                 style:
-                                                    AppStyles.heading1TextStyle,
+                                                    AppStyles.heading3BoldTextStyle,
                                               ),
                                               SizedBox(width: 5),
-                                              Text(
-                                                "${monthNames[post.createdAt.month]} ${post.createdAt.day}, ${post.createdAt.year}",
-                                                style: AppStyles.hintTextStyle,
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    "${monthNames[post.createdAt.month]} ${post.createdAt.day}, ${post.createdAt.year}",
+                                                    style:
+                                                        AppStyles.miniHintTextStyle,
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                ],
                                               )
                                             ],
                                           ),
                                           SizedBox(height: 12),
-                                          Text(
-                                            post.body,
-                                            style: AppStyles.medium2TextStyle,
-                                          ),
+                                          ExpandableText(body: post.body, isPost: true),
                                           SizedBox(height: 12),
                                         ],
                                       ),
@@ -583,7 +598,9 @@ class _ForumsPageState extends State<ForumsPage> {
                                                                 BoxConstraints(),
                                                             onPressed: () {
                                                               onPostTapped(
-                                                                  index, post);
+                                                                  index,
+                                                                  post,
+                                                                  true);
                                                             },
                                                             icon: Image.asset(
                                                               "images/comment-icon.png",

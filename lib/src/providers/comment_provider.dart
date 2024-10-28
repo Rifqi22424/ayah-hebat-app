@@ -129,7 +129,8 @@ class CommentProvider extends ChangeNotifier {
     try {
       final newComment = await _commentApi.createComment(body, postId);
       _comments.insert(0, newComment);
-      Provider.of<PostProvider>(context).addCommentsCount(postId);
+      // Provider.of<PostProvider>(context).addCommentsCount(postId);
+      // print("masuk create comment provider");
       _editCommentState = EditCommentState.loaded;
     } catch (e) {
       _errorEditCommentMessage = e.toString();
@@ -349,7 +350,7 @@ class CommentProvider extends ChangeNotifier {
       //     .count
       //     .copyWith(replies: _comments[index].count.replies + 1)
 
-      Provider.of<PostProvider>(context).addCommentsCount(postId);
+      // Provider.of<PostProvider>(context).addCommentsCount(postId);
       _editReplyState = EditReplyState.loaded;
     } catch (e) {
       _errorEditReplyMessage = e.toString();
@@ -384,8 +385,8 @@ class CommentProvider extends ChangeNotifier {
 
       final postId = _comments[index].postId;
 
-      Provider.of<PostProvider>(context, listen: false)
-          .addCommentsCount(postId);
+      // Provider.of<PostProvider>(context, listen: false)
+      //     .addCommentsCount(postId);
 
       _editReplyState = EditReplyState.loaded;
     } catch (e) {

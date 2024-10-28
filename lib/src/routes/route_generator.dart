@@ -87,9 +87,12 @@ class RouteGenerator {
         final args = settings.arguments as Map<String, dynamic>;
         final int indexPostProvider = args['indexPostProvider'];
         final Post post = args['post'];
+        final bool autoFocus = args['autoFocus'];
         return MaterialPageRoute(
-            builder: (context) =>
-                CommentsPage(indexPostProv: indexPostProvider, post: post));
+            builder: (context) => CommentsPage(
+                indexPostProv: indexPostProvider,
+                post: post,
+                autoFocus: autoFocus));
       case "/newsContent":
         final args = settings.arguments as Map<String, dynamic>;
         final int newsId = args['newsId'];

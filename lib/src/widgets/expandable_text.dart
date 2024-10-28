@@ -3,10 +3,12 @@ import '../consts/app_styles.dart';
 
 class ExpandableText extends StatefulWidget {
   final String body;
+  final bool isPost;
 
   const ExpandableText({
     Key? key,
     required this.body,
+    required this.isPost,
   }) : super(key: key);
 
   @override
@@ -25,10 +27,17 @@ class _ExpandableTextState extends State<ExpandableText> {
   Widget build(BuildContext context) {
     if (widget.body.length > 100) {
       return RichText(
+        textAlign: TextAlign.justify,
+        
           text:
               TextSpan(style: AppStyles.labelTextStyle, children: <InlineSpan>[
         TextSpan(
           text: isExpanded ? widget.body : _getShortenedText(widget.body),
+          style: 
+          // widget.isPost
+          //     ? AppStyles.medium2TextStyle
+          //     : 
+              AppStyles.labelTextStyle,
         ),
         if (tappable && isExpanded)
           WidgetSpan(
@@ -41,8 +50,11 @@ class _ExpandableTextState extends State<ExpandableText> {
               },
               child: Text(
                 '..persingkat',
-                style:
-                    AppStyles.heading3PrimaryTextStyle, 
+                style: 
+                // widget.isPost
+                //     ? AppStyles.heading2PrimaryTextStyle
+                //     : 
+                    AppStyles.heading3PrimaryTextStyle,
               ),
             ),
           ),
@@ -58,8 +70,11 @@ class _ExpandableTextState extends State<ExpandableText> {
               },
               child: Text(
                 '..selengkapnya',
-                style:
-                    AppStyles.heading3PrimaryTextStyle, 
+                style: 
+                // widget.isPost
+                //     ? AppStyles.heading2PrimaryTextStyle
+                //     : 
+                    AppStyles.heading3PrimaryTextStyle,
               ),
             ),
           ),
@@ -68,7 +83,11 @@ class _ExpandableTextState extends State<ExpandableText> {
       return Text(
         widget.body,
         softWrap: true,
-        style: AppStyles.labelTextStyle,
+        style: 
+        // widget.isPost
+        //     ? AppStyles.medium2TextStyle
+        //     : 
+            AppStyles.labelTextStyle,
       );
     }
   }

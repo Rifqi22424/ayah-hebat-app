@@ -134,7 +134,7 @@ class PostProvider with ChangeNotifier {
   }
 
   Future<void> addCommentsCount(int postId) async {
-    if (_editPostState == EditPostState.loading) return;
+    // if (_editPostState == EditPostState.loading) return;
 
     _editPostState = EditPostState.loading;
     notifyListeners();
@@ -142,13 +142,13 @@ class PostProvider with ChangeNotifier {
     final index = _posts.indexWhere((post) => post.id == postId);
 
     _posts[index] = _posts[index].copyWith(
-      isLikedByMe: true,
       count: _posts[index]
           .count
-          .copyWith(postLikes: _posts[index].count.postLikes + 1),
+          .copyWith(comments: _posts[index].count.comments + 1),
     );
 
     _editPostState = EditPostState.loaded;
+    print("berhasil add comments");
     notifyListeners();
   }
 

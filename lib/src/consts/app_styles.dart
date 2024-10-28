@@ -80,6 +80,13 @@ class AppStyles {
     color: AppColors.textColor,
   );
 
+  static TextStyle heading3BoldTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.bold,
+    color: AppColors.textColor,
+  );
+
   static TextStyle mediumTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',
