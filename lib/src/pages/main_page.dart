@@ -2,6 +2,7 @@ import 'package:ayahhebat/src/pages/forum/forums_page.dart';
 import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
+import 'book/book_page.dart';
 import 'home_page.dart';
 import 'news/news_page.dart';
 import 'profiles/profile_page.dart';
@@ -27,6 +28,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const NewsPage(),
+    const BookPage(),
     const ForumsPage(),
     const ProfilePage(),
   ];
@@ -61,11 +63,15 @@ class _MainPageState extends State<MainPage> {
             label: 'Berita',
           ),
           BottomNavigationBarItem(
-            icon: _buildIcon(2, 'images/forums-icon.png'),
+            icon: _buildIcon(2, 'images/book.png'),
+            label: 'Buku',
+          ),
+          BottomNavigationBarItem(
+            icon: _buildIcon(3, 'images/forums-icon.png'),
             label: 'Forum',
           ),
           BottomNavigationBarItem(
-            icon: _buildIcon(3, 'images/profile-icon.png'),
+            icon: _buildIcon(4, 'images/profile-icon.png'),
             label: 'Profile',
           ),
         ],

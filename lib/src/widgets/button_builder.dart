@@ -38,7 +38,6 @@ class _ButtonBuilderState extends State<ButtonBuilder> {
         try {
           await widget.onPressed();
         } catch (e) {
-          // Handle error as needed
         } finally {
           setState(() {
             isLoading = false;

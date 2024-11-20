@@ -697,6 +697,7 @@ class _ForumsPageState extends State<ForumsPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "btnAddPost",
         onPressed: () {
           showAddPost(context);
         },

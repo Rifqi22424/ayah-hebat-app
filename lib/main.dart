@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'src/my_app.dart';
+import 'src/providers/book_category_provider.dart';
+import 'src/providers/book_detail_provider.dart';
+import 'src/providers/book_provider.dart';
 import 'src/providers/comment_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 
-const serverPath = "https://backend.ayahhebat.mangcoding.com";
-// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+// const serverPath = "https://backend.ayahhebat.mangcoding.com";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -102,6 +105,9 @@ main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => PostProvider()),
         ChangeNotifierProvider(create: (_) => CommentProvider()),
+        ChangeNotifierProvider(create: (_) => BookProvider()),
+        ChangeNotifierProvider(create: (_) => BookCategoryProvider()),
+        ChangeNotifierProvider(create: (_) => BookDetailProvider()),
       ],
       child: MyApp(),
     ),

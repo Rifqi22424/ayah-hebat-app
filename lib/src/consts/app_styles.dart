@@ -101,6 +101,13 @@ class AppStyles {
     color: AppColors.redColor,
   );
 
+  static TextStyle labelWhiteTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.normal,
+    color: AppColors.whiteColor,
+  );
+
   static TextStyle heading3WhiteTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',
