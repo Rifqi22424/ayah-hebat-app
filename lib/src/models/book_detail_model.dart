@@ -4,6 +4,7 @@ class BookDetail {
   final String name;
   final String description;
   final String imageUrl;
+  final String location;
   final int stock;
   final List<String> categories;
   final List<Review> reviews;
@@ -12,6 +13,7 @@ class BookDetail {
     required this.name,
     required this.description,
     required this.imageUrl,
+    required this.location,
     required this.stock,
     required this.categories,
     required this.reviews,
@@ -22,6 +24,7 @@ class BookDetail {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       imageUrl: json['imageurl'] ?? '',
+      location: json['location'] ?? '',
       stock: json['stock'] ?? '',
       reviews: (json['comment_book'] as List<dynamic>)
           .map((review) => Review.fromJson(review))
@@ -36,6 +39,7 @@ class BookDetail {
     return {
       'name': name,
       'description': description,
+      'location': location,
       'imageurl': imageUrl,
       'stock': stock,
       'categories': reviews.map((category) => {'name': category}).toList(),
@@ -46,6 +50,7 @@ class BookDetail {
   BookDetail copyWith({
     String? name,
     String? description,
+    String? location,
     String? imageUrl,
     int? stock,
     List<String>? categories,
@@ -54,6 +59,7 @@ class BookDetail {
     return BookDetail(
       name: name ?? this.name,
       description: description ?? this.description,
+      location: location ?? this.location,
       imageUrl: imageUrl ?? this.imageUrl,
       stock: stock ?? this.stock,
       categories: categories ?? this.categories,
@@ -63,7 +69,7 @@ class BookDetail {
 
   @override
   String toString() {
-    return 'BookDetail(name: $name, description: $description, imageUrl: $imageUrl, stock: $stock, categories: $categories, reviews: $reviews)';
+    return 'BookDetail(name: $name, description: $description, location: $location, imageUrl: $imageUrl, stock: $stock, categories: $categories, reviews: $reviews)';
   }
 }
 
