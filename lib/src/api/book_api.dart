@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:http_parser/http_parser.dart';
 
 import '../../main.dart';
 import '../models/book_model.dart';
+import '../utils/get_media_type.dart';
 import '../utils/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,6 +42,49 @@ class BookApi {
       return books;
     } else {
       throw json.decode(response.body)['error'];
+    }
+  }
+
+  Future<bool> createBookRequest(
+    String name,
+    String description,
+    String stock,
+    String location,
+    String activeAt,
+    String categoryIds,
+    File photo,
+  ) async {
+    try {
+      final url = Uri.parse('$serverPath/books/request');
+      final request = http.MultipartRequest('POST', url);
+      String? token = await SharedPreferencesHelper.getToken();
+
+      request.fields['name'] = name;
+      request.fields['description'] = description;
+      request.fields['stock'] = stock;
+      request.fields['location'] = location;
+      request.fields['activeAt'] = activeAt;
+      request.fields['categoryIds'] = categoryIds;
+
+      request.headers['Authorization'] = 'Bearer $token';
+
+      final fotoPart = await http.MultipartFile.fromPath(
+        'photo',
+        photo.path,
+        contentType: MediaType(
+            GetMediaType.getMediaType(photo.path), photo.path.split('.').last),
+      );
+      request.files.add(fotoPart);
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw response.stream.bytesToString();
+      }
+    } catch (error) {
+      return false;
     }
   }
 }

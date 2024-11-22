@@ -39,6 +39,7 @@ class RouteGenerator {
             builder: (context) => VerificationPage(
                   email: email,
                 ));
+                
       case "/book":
         return MaterialPageRoute(
             builder: (context) => const MainPage(index: 2));
@@ -46,6 +47,7 @@ class RouteGenerator {
         final args = settings.arguments as Map<String, dynamic>;
         final int bookId = args['bookId'];
         return MaterialPageRoute(builder: (context) => BookDetailPage(bookId: bookId));
+
       case "/profile":
         return MaterialPageRoute(
             builder: (context) => const MainPage(index: 4));

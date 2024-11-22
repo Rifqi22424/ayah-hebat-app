@@ -8,6 +8,7 @@ import '../../providers/book_detail_provider.dart';
 import '../../utils/get_network_image.dart';
 import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
+import '../../widgets/date_picker_row.dart';
 
 class BookDetailPage extends StatefulWidget {
   final int bookId;
@@ -18,20 +19,20 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
-  Future<void> _selectDate(BuildContext context, String title,
-      DateTime? initialDate, void Function(DateTime) onDatePicked) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: initialDate ?? DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100));
+  // Future<void> _selectDate(BuildContext context, String title,
+  //     DateTime? initialDate, void Function(DateTime) onDatePicked) async {
+  //   final DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: initialDate ?? DateTime.now(),
+  //       firstDate: DateTime.now(),
+  //       lastDate: DateTime(2100));
 
-    if (picked != null && picked != initialDate) {
-      setState(() {
-        onDatePicked(picked);
-      });
-    }
-  }
+  //   if (picked != null && picked != initialDate) {
+  //     setState(() {
+  //       onDatePicked(picked);
+  //     });
+  //   }
+  // }
 
   @override
   void initState() {
@@ -68,19 +69,22 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 ),
                 _buildDetailRow('Judul Buku', book.name),
                 _buildDetailRow('Lokasi', book.location),
-                _buildGetDateRow(context, 'Tanggal mengambil buku', getBookDate,
-                    (DateTime pickedDate) {
-                  setState(() {
-                    getBookDate = pickedDate;
-                  });
-                }),
-                _buildGetDateRow(
-                    context, 'Tanggal mengembalikan buku', returnBookDate,
-                    (DateTime pickedDate) {
-                  setState(() {
-                    returnBookDate = pickedDate;
-                  });
-                }),
+                DatePickerRow(
+                    title: 'Tanggal mengambil buku',
+                    date: getBookDate,
+                    onDatePicked: (DateTime pickedDate) {
+                      setState(() {
+                        getBookDate = pickedDate;
+                      });
+                    }),
+                DatePickerRow(
+                    title: 'Tanggal mengembalikan buku',
+                    date: returnBookDate,
+                    onDatePicked: (DateTime pickedDate) {
+                      setState(() {
+                        returnBookDate = pickedDate;
+                      });
+                    }),
                 ButtonBuilder(
                     onPressed: () async {}, child: Text("Ajukan Peminjaman"))
               ],
@@ -91,35 +95,35 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  _buildGetDateRow(BuildContext context, String title, DateTime? date,
-      void Function(DateTime) onDatePicked) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: AppStyles.hintTextStyle),
-        InkWell(
-          onTap: () {
-            _selectDate(context, title, date, onDatePicked);
-          },
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
-            ),
-            child: ListTile(
-              title: Text(
-                date == null
-                    ? 'Pilih tanggal'
-                    : '${date.day}/${date.month}/${date.year}',
-                style: AppStyles.labelTextStyle,
-              ),
-              trailing:
-                  Image.asset('images/calendar.png', width: 24, height: 24),
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // _buildGetDateRow(BuildContext context, String title, DateTime? date,
+  //     void Function(DateTime) onDatePicked) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(title, style: AppStyles.hintTextStyle),
+  //       InkWell(
+  //         onTap: () {
+  //           _selectDate(context, title, date, onDatePicked);
+  //         },
+  //         child: Card(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(32),
+  //           ),
+  //           child: ListTile(
+  //             title: Text(
+  //               date == null
+  //                   ? 'Pilih tanggal'
+  //                   : '${date.day}/${date.month}/${date.year}',
+  //               style: AppStyles.labelTextStyle,
+  //             ),
+  //             trailing:
+  //                 Image.asset('images/calendar.png', width: 24, height: 24),
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   _buildDetailRow(String title, String value) {
     return Column(
@@ -135,7 +139,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final provider = Provider.of<BookDetailProvider>(context);
-    BookDetail _bookDetail = provider.bookDetail!;
+    BookDetail bookDetail = provider.bookDetail!;
 
     if (provider.bookDetailState == BookDetailState.loading ||
         provider.bookDetailState == BookDetailState.initial) {
@@ -161,7 +165,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     height: height * 0.45,
                     padding: EdgeInsets.symmetric(vertical: 16),
                     child: Image.network(
-                      GetNetworkImage.getBooks(_bookDetail.imageUrl),
+                      GetNetworkImage.getBooks(bookDetail.imageUrl),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -169,8 +173,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
-                        Text(_bookDetail.categories.join(', ')),
-                        Text("Stock: ${_bookDetail.stock.toString()}"),
+                        Text(bookDetail.categories.join(', ')),
+                        Text("Stock: ${bookDetail.stock.toString()}"),
                       ],
                     ),
                   ),
@@ -189,7 +193,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(_bookDetail.description),
+                              Text(bookDetail.description),
                             ],
                           ),
                         ),
@@ -198,20 +202,20 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           children: [
                             Expanded(
                               child: ListView.builder(
-                                itemCount: _bookDetail.reviews.length,
+                                itemCount: bookDetail.reviews.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     onTap: () {},
                                     leading: Image.network(
-                                        GetNetworkImage.getUploads(_bookDetail
+                                        GetNetworkImage.getUploads(bookDetail
                                             .reviews[index]
                                             .user
                                             .profile
                                             .photo)),
-                                    title: Text(_bookDetail
+                                    title: Text(bookDetail
                                         .reviews[index].user.profile.nama),
                                     subtitle: Text(
-                                        _bookDetail.reviews[index].description),
+                                        bookDetail.reviews[index].description),
                                   );
                                 },
                               ),
@@ -227,7 +231,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     child: ButtonBuilder(
                       child: Text("Pinjam Buku"),
                       onPressed: () async {
-                        showBorrowBookDialog(context, _bookDetail);
+                        showBorrowBookDialog(context, bookDetail);
                       },
                     ),
                   )

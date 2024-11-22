@@ -11,6 +11,7 @@ import 'src/providers/book_category_provider.dart';
 import 'src/providers/book_detail_provider.dart';
 import 'src/providers/book_provider.dart';
 import 'src/providers/comment_provider.dart';
+import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 
@@ -105,9 +106,12 @@ main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => PostProvider()),
         ChangeNotifierProvider(create: (_) => CommentProvider()),
+
         ChangeNotifierProvider(create: (_) => BookProvider()),
         ChangeNotifierProvider(create: (_) => BookCategoryProvider()),
         ChangeNotifierProvider(create: (_) => BookDetailProvider()),
+
+        ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
       ],
       child: MyApp(),
     ),

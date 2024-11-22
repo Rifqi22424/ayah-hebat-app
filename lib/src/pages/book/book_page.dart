@@ -4,8 +4,11 @@ import 'package:ayahhebat/src/utils/get_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/office_address_model.dart';
 import '../../providers/book_category_provider.dart';
 import '../../providers/book_provider.dart';
+import '../../providers/office_address_provider.dart';
+import '../../widgets/add_book_dialog.dart';
 import '../../widgets/button_builder.dart';
 
 class BookPage extends StatefulWidget {
@@ -26,6 +29,8 @@ class _BookPageState extends State<BookPage> {
       Provider.of<BookCategoryProvider>(context, listen: false)
           .fetchCategories();
       Provider.of<BookProvider>(context, listen: false).fetchBooks();
+      Provider.of<OfficeAddressProvider>(context, listen: false)
+          .fetchOfficeAddresses();
     });
     super.initState();
   }
@@ -126,10 +131,12 @@ class _BookPageState extends State<BookPage> {
     print(Provider.of<BookCategoryProvider>(context, listen: false)
         .bookCategories);
 
-    return Consumer2<BookProvider, BookCategoryProvider>(builder: (context,
-        BookProvider bookProvider,
-        BookCategoryProvider bookCategoryProvider,
-        child) {
+    return Consumer3<BookProvider, BookCategoryProvider, OfficeAddressProvider>(
+        builder: (context,
+            BookProvider bookProvider,
+            BookCategoryProvider bookCategoryProvider,
+            OfficeAddressProvider officeAddressProvider,
+            child) {
       return Scaffold(
         appBar: appBarBook(),
         body: Column(
@@ -296,8 +303,32 @@ class _BookPageState extends State<BookPage> {
             )),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              OfficeAddress officeAddress =
+                  officeAddressProvider.getOfficeAddressByName("ayahhebat") ??
+                      OfficeAddress(
+                          id: 0,
+                          name: "ayahhebat",
+                          address: "JL Griya Karang Asri");
+              showAddBookDialog(context, officeAddress.address);
+            },
+            child: Icon(Icons.add),
+            backgroundColor: AppColors.primaryColor),
       );
     });
+  }
+
+  showAddBookDialog(BuildContext context, String address) async {
+    print("address $address");
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AddBookDialog(
+              address: address,
+            ));
+    if (result != null) {
+      print("result: $result");
+    }
   }
 
   AppBar appBarBook() {
@@ -325,7 +356,7 @@ class _BookPageState extends State<BookPage> {
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.textColor,
+                  color: AppColors.accentColor,
                 )),
             child: IconButton(
               onPressed: () {},
