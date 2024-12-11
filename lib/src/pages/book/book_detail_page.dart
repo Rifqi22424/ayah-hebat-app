@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../api/book_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../models/book_detail_model.dart';
+import '../../models/borrow_books_model.dart';
 import '../../providers/book_detail_provider.dart';
 import '../../utils/get_network_image.dart';
 import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/date_picker_row.dart';
+import '../../widgets/snack_bar_builder.dart';
 
 class BookDetailPage extends StatefulWidget {
   final int bookId;
@@ -33,6 +36,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   //     });
   //   }
   // }
+  final BookApi bookService = BookApi();
 
   @override
   void initState() {
@@ -68,25 +72,69 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   ],
                 ),
                 _buildDetailRow('Judul Buku', book.name),
-                _buildDetailRow('Lokasi', book.location),
+                // _buildDetailRow('Lokasi', book.location),
                 DatePickerRow(
                     title: 'Tanggal mengambil buku',
                     date: getBookDate,
                     onDatePicked: (DateTime pickedDate) {
                       setState(() {
                         getBookDate = pickedDate;
+                        if (returnBookDate != null &&
+                            returnBookDate!.isBefore(getBookDate!)) {
+                          returnBookDate = null;
+                        }
                       });
                     }),
                 DatePickerRow(
                     title: 'Tanggal mengembalikan buku',
                     date: returnBookDate,
+                    minDate: getBookDate, // Tanggal minimum adalah getBookDate
                     onDatePicked: (DateTime pickedDate) {
                       setState(() {
-                        returnBookDate = pickedDate;
+                        if (pickedDate.isAfter(getBookDate!)) {
+                          returnBookDate = pickedDate;
+                        } else {
+                          // Tampilkan pesan kesalahan
+                          showCostumSnackBar(
+                              context: context,
+                              message:
+                                  'Tanggal mengembalikan harus lebih dari tanggal mengambil!',
+                              backgroundColor: AppColors.redColor);
+                        }
                       });
                     }),
                 ButtonBuilder(
-                    onPressed: () async {}, child: Text("Ajukan Peminjaman"))
+                    onPressed: () async {
+                      if (getBookDate == null || returnBookDate == null) {
+                        showCostumSnackBar(
+                            context: context,
+                            message:
+                                "Waktu pengambilan atau waktu pengembalian tidak boleh kosong");
+                        return;
+                      }
+
+                      try {
+                        BorrowBook response = await bookService.borrowABook(
+                          book.id,
+                          getBookDate!.toIso8601String(),
+                          returnBookDate!.toIso8601String(),
+                        );
+
+                        Navigator.pop(context);
+
+                        Navigator.pushNamed(context, '/borrowBookDetail',
+                            arguments: {'borrowBook': response, 'fromPage': '/bookDetail'});
+                      } catch (e) {
+                        print(e.toString());
+                        showCostumSnackBar(
+                          context: context,
+                          message:
+                              'Gagal mengajukan peminjaman: ${e.toString()}',
+                          backgroundColor: AppColors.redColor,
+                        );
+                      }
+                    },
+                    child: Text("Ajukan Peminjaman"))
               ],
             ),
           );
@@ -139,7 +187,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final provider = Provider.of<BookDetailProvider>(context);
-    BookDetail bookDetail = provider.bookDetail!;
+    final bookDetail = provider.bookDetail;
 
     if (provider.bookDetailState == BookDetailState.loading ||
         provider.bookDetailState == BookDetailState.initial) {
@@ -150,99 +198,90 @@ class _BookDetailPageState extends State<BookDetailPage> {
       );
     }
 
-    return provider.bookDetail != null
-        ? DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBarBuilder(
-                title: "Detail Buku",
-                showBackButton: true,
-                onBackButtonPressed: () => Navigator.pop(context),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBarBuilder(
+          title: "Detail Buku",
+          showBackButton: true,
+          onBackButtonPressed: () => Navigator.pop(context),
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: height * 0.45,
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Image.network(
+                GetNetworkImage.getBooks(bookDetail!.imageUrl),
+                fit: BoxFit.contain,
               ),
-              body: Column(
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
                 children: [
-                  Container(
-                    height: height * 0.45,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Image.network(
-                      GetNetworkImage.getBooks(bookDetail.imageUrl),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        Text(bookDetail.categories.join(', ')),
-                        Text("Stock: ${bookDetail.stock.toString()}"),
-                      ],
-                    ),
-                  ),
-                  TabBar(
-                    tabs: [Tab(text: 'Cerita Singkat'), Tab(text: 'Komentar')],
-                    labelColor: AppColors.primaryColor,
-                    unselectedLabelColor: AppColors.accentColor,
-                    indicatorColor: AppColors.primaryColor,
-                    indicatorSize: TabBarIndicatorSize.label,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        SingleChildScrollView(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(bookDetail.description),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: bookDetail.reviews.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {},
-                                    leading: Image.network(
-                                        GetNetworkImage.getUploads(bookDetail
-                                            .reviews[index]
-                                            .user
-                                            .profile
-                                            .photo)),
-                                    title: Text(bookDetail
-                                        .reviews[index].user.profile.nama),
-                                    subtitle: Text(
-                                        bookDetail.reviews[index].description),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 16.0, left: 16.0, right: 16.0, top: 8.0),
-                    child: ButtonBuilder(
-                      child: Text("Pinjam Buku"),
-                      onPressed: () async {
-                        showBorrowBookDialog(context, bookDetail);
-                      },
-                    ),
-                  )
+                  Text(bookDetail.categories.join(', ')),
+                  Text("Stock: ${bookDetail.stock.toString()}"),
                 ],
               ),
             ),
-          )
-        : Scaffold(
-            body: Center(
-              child: Text("Data tidak ditemukan"),
+            TabBar(
+              tabs: [Tab(text: 'Cerita Singkat'), Tab(text: 'Komentar')],
+              labelColor: AppColors.primaryColor,
+              unselectedLabelColor: AppColors.accentColor,
+              indicatorColor: AppColors.primaryColor,
+              indicatorSize: TabBarIndicatorSize.label,
             ),
-          );
+            Expanded(
+              child: TabBarView(
+                children: [
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(bookDetail.description),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: bookDetail.reviews.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () {},
+                              leading: Image.network(GetNetworkImage.getUploads(
+                                  bookDetail
+                                      .reviews[index].user.profile.photo)),
+                              title: Text(
+                                  bookDetail.reviews[index].user.profile.nama),
+                              subtitle:
+                                  Text(bookDetail.reviews[index].description),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  bottom: 16.0, left: 16.0, right: 16.0, top: 8.0),
+              child: ButtonBuilder(
+                child: Text("Pinjam Buku"),
+                onPressed: () async {
+                  showBorrowBookDialog(context, bookDetail);
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

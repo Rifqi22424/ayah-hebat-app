@@ -167,13 +167,13 @@ class _EditProfilePageState extends State<EditProfilePage>
       appBar: AppBarBuilder(
         title: "Profile Anda",
         showBackButton: true,
-        showCancelButton: true,
+        // showCancelButton: true,
         onBackButtonPressed: () {
           Navigator.pop(context);
         },
-        onCancelButtonPressed: () {
-          Navigator.pop(context);
-        },
+        // onCancelButtonPressed: () {
+        //   Navigator.pop(context);
+        // },
       ),
       body: SingleChildScrollView(
         child: Form(

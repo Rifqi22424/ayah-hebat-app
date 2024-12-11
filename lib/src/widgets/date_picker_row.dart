@@ -6,6 +6,7 @@ import '../consts/app_styles.dart';
 class DatePickerRow extends StatelessWidget {
   // final BuildContext context;
   final String title;
+  final DateTime? minDate;
   final DateTime? date;
   final void Function(DateTime) onDatePicked;
 
@@ -13,6 +14,7 @@ class DatePickerRow extends StatelessWidget {
     Key? key,
     // required this.context,
     required this.title,
+    this.minDate,
     required this.date,
     required this.onDatePicked,
   }) : super(key: key);
@@ -21,8 +23,8 @@ class DatePickerRow extends StatelessWidget {
       void Function(DateTime) onDatePicked) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: date ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: date ?? minDate,
+      firstDate: minDate ?? DateTime.now(), // Gunakan minDate jika tersedia
       lastDate: DateTime(2100),
       builder: (context, child) {
         return Theme(

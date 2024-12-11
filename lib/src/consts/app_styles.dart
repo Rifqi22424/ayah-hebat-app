@@ -38,6 +38,12 @@ class AppStyles {
     color: AppColors.textColor,
   );
 
+  static TextStyle plainLabelTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Lato',
+    fontWeight: FontWeight.w400,
+  );
+
   static TextStyle labelBlueTextStyle = const TextStyle(
     fontSize: 14,
     fontFamily: 'Lato',

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
-class SnackBarBuilder extends StatelessWidget {
-  String message;
-  Color? color;
-  SnackBarBuilder({super.key, required this.message, required this.color});
+import '../consts/app_colors.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    return SnackBar(
-      content: Text(message),
-      backgroundColor: color,
-    );
-  }
+void showCostumSnackBar({
+  required BuildContext context,
+  required String message,
+  Color backgroundColor = AppColors.textColor,
+}) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    backgroundColor: backgroundColor,
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

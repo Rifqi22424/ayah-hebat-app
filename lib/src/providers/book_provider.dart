@@ -12,20 +12,22 @@ class BookProvider extends ChangeNotifier {
 
   // Getters
   List<Book> get books => _books;
-  BookState get bookState => _bookState;
+  BookState get bookState => _bookState;  
   String? get errorMessage => _errorMessage;
   bool get hasMoreData => _hasMoreData;
 
-  final BookApi _bookApi = BookApi();
+  late BookApi bookApi = BookApi();
 
   // Fetch books dengan pagination, search, dan category
   Future<void> fetchBooks({
     int limit = 10,
     int offset = 0,
     String? search,
-    String? category,
+    String category = "semua",
     bool refresh = false,
   }) async {
+    if (!hasMoreData) return;
+
     try {
       // Jika refresh true atau initial load, set state ke loading
       if (refresh || _bookState == BookState.initial) {
@@ -34,7 +36,7 @@ class BookProvider extends ChangeNotifier {
       }
 
       // Get books dari API
-      final response = await _bookApi.getAllBooks(
+      final response = await bookApi.getAllBooks(
         limit: limit,
         offset: offset,
         search: search,
@@ -51,7 +53,47 @@ class BookProvider extends ChangeNotifier {
 
       // Update hasMoreData berdasarkan jumlah data yang diterima
       _hasMoreData = response.length >= limit;
-      
+
+      // print("Offset: ${offset}");
+      // print("Books: ${_books.length}");
+      // print("Has more data: $_hasMoreData");
+
+      _bookState = BookState.loaded;
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _bookState = BookState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> searchBooks({
+    int limit = 10,
+    int offset = 0,
+    String? search,
+    String category = "semua",
+  }) async {
+    if (bookState == BookState.loading) return;
+
+    _bookState = BookState.loading;
+    notifyListeners();
+
+    try {
+      // Get books dari API
+      final response = await bookApi.getAllBooks(
+        limit: limit,
+        offset: offset,
+        search: search,
+        category: category,
+      );
+
+      // Clear list lama
+      _books = response;
+
+      // Update hasMoreData berdasarkan jumlah data yang diterima
+      _hasMoreData = response.length >= limit;
+
       _bookState = BookState.loaded;
       _errorMessage = null;
     } catch (e) {
@@ -72,7 +114,7 @@ class BookProvider extends ChangeNotifier {
     await fetchBooks(
       offset: 0,
       search: search,
-      category: category,
+      category: category!,
       refresh: true,
     );
   }

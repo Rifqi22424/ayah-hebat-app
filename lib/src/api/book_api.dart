@@ -5,6 +5,10 @@ import 'package:http_parser/http_parser.dart';
 
 import '../../main.dart';
 import '../models/book_model.dart';
+// import '../models/borrow_book_model.dart';
+import '../models/borrow_book_model.dart';
+import '../models/borrow_books_model.dart';
+import '../models/donation_book.dart';
 import '../utils/get_media_type.dart';
 import '../utils/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -45,11 +49,10 @@ class BookApi {
     }
   }
 
-  Future<bool> createBookRequest(
+  Future<bool> createBookDonation(
     String name,
     String description,
     String stock,
-    String location,
     String activeAt,
     String categoryIds,
     File photo,
@@ -62,7 +65,6 @@ class BookApi {
       request.fields['name'] = name;
       request.fields['description'] = description;
       request.fields['stock'] = stock;
-      request.fields['location'] = location;
       request.fields['activeAt'] = activeAt;
       request.fields['categoryIds'] = categoryIds;
 
@@ -78,13 +80,85 @@ class BookApi {
 
       final response = await request.send();
 
-      if (response.statusCode == 200) {
+      print(response.statusCode);
+
+      if (response.statusCode == 201) {
         return true;
       } else {
         throw response.stream.bytesToString();
       }
     } catch (error) {
       return false;
+    }
+  }
+
+  Future<BorrowBook> borrowABook(
+      int bookId, String plannedPickUpDate, String deadlineDate) async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.post(
+      Uri.parse('$serverPath/pinjam-buku'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'bookId': bookId.toString(),
+        'plannedPickUpDate': plannedPickUpDate,
+        'deadlineDate': deadlineDate,
+      }),
+    );
+
+    if (response.statusCode == 202) {
+      return BorrowBook.fromJson(json.decode(response.body)['data']);
+    } else {
+      final errorData = json.decode(response.body)['error'];
+      throw errorData;
+    }
+  }
+
+  Future<BorrowBooksResponse> getBorrowBooks({int page = 1}) async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$serverPath/pinjam-buku/me?page=$page'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // print(json.decode(response.body)['data']);
+      // print(json.decode(response.body));
+      // print(response.body);
+      return BorrowBooksResponse.fromJson(json.decode(response.body));
+    } else {
+      // print(response.body);
+      // print(json.decode(response.body));
+      final errorData = json.decode(response.body)['error'];
+      throw errorData;
+    }
+  }
+
+  Future<DonationBooksResponse> getDonationBooks({int page = 1}) async {
+    String? token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$serverPath/books/donation?page=$page'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // print(json.decode(response.body)['data']);
+      // print(json.decode(response.body));
+      // print(response.body);
+      return DonationBooksResponse.fromJson(json.decode(response.body));
+    } else {
+      // print(response.body);
+      // print(json.decode(response.body));
+      final errorData = json.decode(response.body)['error'];
+      throw errorData;
     }
   }
 }

@@ -4,10 +4,8 @@ import 'package:ayahhebat/src/utils/get_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/office_address_model.dart';
 import '../../providers/book_category_provider.dart';
 import '../../providers/book_provider.dart';
-import '../../providers/office_address_provider.dart';
 import '../../widgets/add_book_dialog.dart';
 import '../../widgets/button_builder.dart';
 
@@ -20,19 +18,38 @@ class BookPage extends StatefulWidget {
 
 class _BookPageState extends State<BookPage> {
   String selectedCategory = "semua";
+  String searchBooksText = "";
   String? selectedFilterCategory;
   String? selectedBookAge;
+  final ScrollController _scrollController = ScrollController();
+  int offset = 0;
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      offset += 10;
+      Provider.of<BookProvider>(context, listen: false).fetchBooks(
+          category: selectedCategory, offset: offset, refresh: false);
+    }
+  }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<BookCategoryProvider>(context, listen: false)
           .fetchCategories();
-      Provider.of<BookProvider>(context, listen: false).fetchBooks();
-      Provider.of<OfficeAddressProvider>(context, listen: false)
-          .fetchOfficeAddresses();
+      Provider.of<BookProvider>(context, listen: false)
+          .fetchBooks(category: "semua");
+      _scrollController.addListener(_scrollListener);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   showFilterDialog() {
@@ -125,18 +142,27 @@ class _BookPageState extends State<BookPage> {
     );
   }
 
+  void fetchBooksByCategoryAndSearch(
+      {required String category, String? search, bool isSearch = false}) {
+    offset = 0;
+    Provider.of<BookProvider>(context, listen: false).clearBooks();
+    if (isSearch) {
+      Provider.of<BookProvider>(context, listen: false)
+          .searchBooks(category: category, search: search);
+    } else {
+      Provider.of<BookProvider>(context, listen: false)
+          .fetchBooks(category: category, search: search);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<BookCategoryProvider>(context, listen: false).fetchCategories();
     print(Provider.of<BookCategoryProvider>(context, listen: false)
         .bookCategories);
 
-    return Consumer3<BookProvider, BookCategoryProvider, OfficeAddressProvider>(
-        builder: (context,
-            BookProvider bookProvider,
-            BookCategoryProvider bookCategoryProvider,
-            OfficeAddressProvider officeAddressProvider,
-            child) {
+    return Consumer<BookCategoryProvider>(
+        builder: (context, BookCategoryProvider bookCategoryProvider, child) {
       return Scaffold(
         appBar: appBarBook(),
         body: Column(
@@ -179,29 +205,36 @@ class _BookPageState extends State<BookPage> {
                             hintText: "Cari Buku",
                             hintStyle: AppStyles.hintTextStyle,
                             suffixIcon: Icon(Icons.search)),
+                        onChanged: (value) {
+                          searchBooksText = value;
+                          fetchBooksByCategoryAndSearch(
+                              category: selectedCategory,
+                              search: searchBooksText,
+                              isSearch: true);
+                        },
                       ),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      showFilterDialog();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: AppColors.accentColor,
-                          )),
-                      child: Image.asset(
-                        'images/filter.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                  )
+                  // SizedBox(width: 12),
+                  // InkWell(
+                  //   borderRadius: BorderRadius.circular(12),
+                  //   onTap: () {
+                  //     showFilterDialog();
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(12),
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(16),
+                  //         border: Border.all(
+                  //           color: AppColors.accentColor,
+                  //         )),
+                  //     child: Image.asset(
+                  //       'images/filter.png',
+                  //       width: 24,
+                  //       height: 24,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
             ),
@@ -224,7 +257,13 @@ class _BookPageState extends State<BookPage> {
                       selected: isSelected,
                       onSelected: (bool selected) {
                         setState(() {
+                          if (selectedCategory == category.name.toLowerCase()) {
+                            return;
+                          }
                           selectedCategory = category.name.toLowerCase();
+                          fetchBooksByCategoryAndSearch(
+                              category: selectedCategory,
+                              search: searchBooksText);
                         });
                       },
                       backgroundColor: AppColors.grey,
@@ -236,82 +275,125 @@ class _BookPageState extends State<BookPage> {
                 }).toList(),
               ),
             ),
-            Expanded(
-                child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.65,
-                  crossAxisSpacing: 6,
-                  mainAxisSpacing: 6),
-              itemCount: bookProvider.books.length,
-              itemBuilder: (context, index) {
-                final book = bookProvider.books[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bookDetail', arguments: {
-                      'bookId': book.id,
-                    });
-                  },
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(color: AppColors.grey),
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(12)),
-                            child: Image.network(
-                              GetNetworkImage.getBooks(book.imageurl),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                book.categories.join(", "),
-                                style: AppStyles.hintTextStyle,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                book.name,
-                                style: AppStyles.heading2TextStyle,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(height: 6),
-                              Text(
-                                "Stok: ${book.stock}",
-                                style: AppStyles.hintTextStyle,
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+            Expanded(child:
+                Consumer<BookProvider>(builder: (context, bookProvider, child) {
+              if (bookProvider.bookState == BookState.initial ||
+                  bookProvider.bookState == BookState.loading) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            )),
+              }
+              if (bookProvider.books.isEmpty) {
+                return Center(
+                  child: Text("Buku Kosong"),
+                );
+              }
+              return RefreshIndicator(
+                color: AppColors.primaryColor,
+                onRefresh: () async {
+                  fetchBooksByCategoryAndSearch(
+                      category: selectedCategory, search: searchBooksText);
+                },
+                child: GridView.builder(
+                  controller: _scrollController,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.65,
+                      crossAxisSpacing: 6,
+                      mainAxisSpacing: 6),
+                  itemCount: bookProvider.bookState == BookState.loading
+                      ? bookProvider.books.length + 1
+                      : bookProvider.books.length,
+                  itemBuilder: (context, index) {
+                    if (index == bookProvider.books.length) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    final book = bookProvider.books[index];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/bookDetail', arguments: {
+                          'bookId': book.id,
+                        });
+                      },
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: AppColors.grey),
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(12)),
+                                child: Image.network(
+                                  // GetNetworkImage.getBooks(book.imageurl),
+                                  GetNetworkImage.getBooks(book.imageurl),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: double.infinity,
+                                      color: AppColors.grey,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Image not found",
+                                        style: AppStyles.labelTextStyle,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    book.categories.join(", "),
+                                    style: AppStyles.hintTextStyle,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    book.name,
+                                    style: AppStyles.heading2TextStyle,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 6),
+                                  Text(
+                                    "Stok: ${book.stock}",
+                                    style: AppStyles.hintTextStyle,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            })),
           ],
         ),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              OfficeAddress officeAddress =
-                  officeAddressProvider.getOfficeAddressByName("ayahhebat") ??
-                      OfficeAddress(
-                          id: 0,
-                          name: "ayahhebat",
-                          address: "JL Griya Karang Asri");
-              showAddBookDialog(context, officeAddress.address);
+              // OfficeAddress officeAddress =
+              //     officeAddressProvider.getOfficeAddressByName("ayahhebat") ??
+              //         OfficeAddress(
+              //             id: 0,
+              //             name: "ayahhebat",
+              //             address: "JL Griya Karang Asri");
+              // showAddBookDialog(context, officeAddress.address);
+              Navigator.pushNamed(context, '/addBook');
             },
             child: Icon(Icons.add),
             backgroundColor: AppColors.primaryColor),
@@ -359,7 +441,9 @@ class _BookPageState extends State<BookPage> {
                   color: AppColors.accentColor,
                 )),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/manageBooks');
+              },
               icon: Image.asset(
                 'images/basket.png',
                 width: 24,

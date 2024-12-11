@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -10,18 +11,19 @@ import '../consts/app_styles.dart';
 import '../models/book_category_model.dart';
 import '../providers/book_category_provider.dart';
 import '../providers/office_address_provider.dart';
-import 'button_builder.dart';
-import 'date_picker_row.dart';
+import '../widgets/app_bar_builder.dart';
+import '../widgets/button_builder.dart';
+import '../widgets/date_picker_row.dart';
+import '../widgets/snack_bar_builder.dart';
 
-class AddBookDialog extends StatefulWidget {
-  final String address;
-  const AddBookDialog({super.key, required this.address});
+class AddBookPage extends StatefulWidget {
+  const AddBookPage({super.key});
 
   @override
-  State<AddBookDialog> createState() => _AddBookDialogState();
+  State<AddBookPage> createState() => _AddBookPageState();
 }
 
-class _AddBookDialogState extends State<AddBookDialog> {
+class _AddBookPageState extends State<AddBookPage> {
   final _fromKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _stockController = TextEditingController();
@@ -36,8 +38,11 @@ class _AddBookDialogState extends State<AddBookDialog> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("address in add book: ${widget.address}");
-      _addressController.text = widget.address;
+      final officeAddressProvider =
+          Provider.of<OfficeAddressProvider>(context, listen: false);
+      officeAddressProvider.fetchOfficeAddresses();
+      _addressController.text =
+          officeAddressProvider.officeAddresses[0].address;
     });
     super.initState();
   }
@@ -64,12 +69,38 @@ class _AddBookDialogState extends State<AddBookDialog> {
     required String description,
     required int stock,
     required DateTime activeAt,
-    required List<String> categoryIds,
+    required List<int> categoryIds,
     required File photo,
+    required BuildContext context,
   }) async {
     if (_fromKey.currentState!.validate()) {
-      _bookApi.createBookDonation(name, description, stock.toString(),
-          activeAt.toIso8601String(), categoryIds.join(","), photo);
+      bool success = await _bookApi.createBookDonation(
+          name,
+          description,
+          stock.toString(),
+          activeAt.toIso8601String(),
+          categoryIds.join(","),
+          photo);
+      if (success) {
+        _titleController.clear();
+        _stockController.clear();
+        selectedIds.clear();
+        _descriptionController.clear();
+        _selectedDate = null;
+        _imageFile = null;
+
+        setState(() {});
+
+        showCostumSnackBar(
+            context: context,
+            message: "Buku berhasil diajukan",
+            backgroundColor: AppColors.greenColor!);
+      } else {
+        showCostumSnackBar(
+            context: context,
+            message: "Buku gagal diajukan",
+            backgroundColor: AppColors.redColor!);
+      }
     }
   }
 
@@ -77,25 +108,32 @@ class _AddBookDialogState extends State<AddBookDialog> {
   Widget build(BuildContext context) {
     return Consumer2<BookCategoryProvider, OfficeAddressProvider>(
         builder: (context, bookCategoryProvider, officeAddressProvider, child) {
-      return Dialog(
-        child: SingleChildScrollView(
+      return Scaffold(
+        appBar: AppBarBuilder(
+          title: "Tambah Buku",
+          showBackButton: true,
+          onBackButtonPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Form(
               key: _fromKey,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Tambah Buku", style: AppStyles.labelTextStyle),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(Icons.close))
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text("Tambah Buku", style: AppStyles.labelTextStyle),
+                  //     IconButton(
+                  //         onPressed: () {
+                  //           Navigator.pop(context);
+                  //         },
+                  //         icon: Icon(Icons.close))
+                  //   ],
+                  // ),
                   Center(
                     child: Column(
                       children: [
@@ -150,7 +188,7 @@ class _AddBookDialogState extends State<AddBookDialog> {
                       hint: "Alamat buku dikirimkan",
                       controller: _addressController,
                       readOnly: true,
-                      maxLines: 3),
+                      maxLines: 2),
                   DatePickerRow(
                     title: 'Tanggal pemberian*',
                     date: _selectedDate,
@@ -163,27 +201,38 @@ class _AddBookDialogState extends State<AddBookDialog> {
                   ButtonBuilder(
                       onPressed: () async {
                         if (_imageFile == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          final snackBar = SnackBar(
+                              backgroundColor: AppColors.redColor,
                               content:
-                                  Text('Mohon pilih gambar terlebih dahulu')));
+                                  Text("Mohon pilih gambar terlebih dahulu"));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           return;
                         }
 
-                        // Validasi tanggal tidak null
                         if (_selectedDate == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text('Mohon pilih tanggal terlebih dahulu')));
+                          showCostumSnackBar(
+                              context: context,
+                              message: "Mohon pilih tanggal terlebih dahulu",
+                              backgroundColor: AppColors.redColor!);
                           return;
                         }
 
-                        _submitForm(
+                        if (selectedIds.isEmpty) {
+                          showCostumSnackBar(
+                              context: context,
+                              message: "Mohon pilih kategori terlebih dahulu",
+                              backgroundColor: AppColors.redColor!);
+                          return;
+                        }
+
+                        await _submitForm(
                             name: _titleController.text,
                             description: _descriptionController.text,
-                            stock: 1,
+                            stock: int.parse(_stockController.text),
                             activeAt: _selectedDate ?? DateTime.now(),
-                            categoryIds: ["1", "2"],
-                            photo: _imageFile!);
+                            categoryIds: selectedIds.toList(),
+                            photo: _imageFile!,
+                            context: context);
                       },
                       child: Text("Ajukan Buku",
                           style: AppStyles.labelWhiteTextStyle))
