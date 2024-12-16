@@ -10,8 +10,10 @@ import 'src/my_app.dart';
 import 'src/providers/book_category_provider.dart';
 import 'src/providers/book_detail_provider.dart';
 import 'src/providers/book_provider.dart';
+import 'src/providers/borrow_book_provider.dart';
 import 'src/providers/borrow_books_provider.dart';
 import 'src/providers/comment_provider.dart';
+import 'src/providers/donation_book_provider.dart';
 import 'src/providers/donation_books_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
@@ -114,7 +116,10 @@ main() async {
         ChangeNotifierProvider(create: (_) => BookDetailProvider()),
 
         ChangeNotifierProvider(create: (_) => BorrowBooksProvider()),
+        ChangeNotifierProvider(create: (_) => BorrowBookProvider()),
+
         ChangeNotifierProvider(create: (_) => DonationBooksProvider()),
+        ChangeNotifierProvider(create: (_) => DonationBookProvider()),
 
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
       ],

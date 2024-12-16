@@ -72,6 +72,23 @@ class BookData {
   }
 }
 
+class BorrowBookByIdResponse {
+  final String message;
+  final BorrowBook data;
+
+  BorrowBookByIdResponse({
+    required this.message,
+    required this.data,
+  });
+
+  factory BorrowBookByIdResponse.fromJson(Map<String, dynamic> json) {
+    return BorrowBookByIdResponse(
+      message: json['message'] ?? 'No message',
+      data: BorrowBook.fromJson(json['data'] ?? {}),
+    );
+  }
+}
+
 class BorrowBooksResponse {
   final String message;
   final List<BorrowBook> data;

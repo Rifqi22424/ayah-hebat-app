@@ -68,7 +68,7 @@ class _AddBookPageState extends State<AddBookPage> {
     required String name,
     required String description,
     required int stock,
-    required DateTime activeAt,
+    required DateTime planSentAt,
     required List<int> categoryIds,
     required File photo,
     required BuildContext context,
@@ -78,7 +78,7 @@ class _AddBookPageState extends State<AddBookPage> {
           name,
           description,
           stock.toString(),
-          activeAt.toIso8601String(),
+          planSentAt.toIso8601String(),
           categoryIds.join(","),
           photo);
       if (success) {
@@ -229,7 +229,7 @@ class _AddBookPageState extends State<AddBookPage> {
                             name: _titleController.text,
                             description: _descriptionController.text,
                             stock: int.parse(_stockController.text),
-                            activeAt: _selectedDate ?? DateTime.now(),
+                            planSentAt: _selectedDate ?? DateTime.now(),
                             categoryIds: selectedIds.toList(),
                             photo: _imageFile!,
                             context: context);

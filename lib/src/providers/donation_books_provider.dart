@@ -45,6 +45,35 @@ class DonationBooksProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refreshDonationBooks() async {
+
+    try {
+
+      _donationBooksState = DonationBooksState.loading;
+      _currentPage = 1;
+      _donationBooks = [];
+      notifyListeners();
+
+      final DonationBooksResponse response =
+          await donationService.getDonationBooks(page: _currentPage);
+
+      if (response.data.isNotEmpty) {
+        _donationBooks = response.data;
+        _currentPage++;
+        _hasMoreData = response.data.length >= response.pagination.itemsPerPage;
+      } else {
+        _hasMoreData = false;
+      }
+
+      _donationBooksState = DonationBooksState.loaded;
+    } catch (e) {
+      _donationBooksState = DonationBooksState.error;
+      _errorMessage = e.toString();
+    }
+
+    notifyListeners();
+  }
+
   void reset() {
     _donationBooks = [];
     _donationBooksState = DonationBooksState.initial;

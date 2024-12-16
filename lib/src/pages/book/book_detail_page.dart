@@ -123,7 +123,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         Navigator.pop(context);
 
                         Navigator.pushNamed(context, '/borrowBookDetail',
-                            arguments: {'borrowBook': response, 'fromPage': '/bookDetail'});
+                            arguments: {'borrowId': response.id, 'fromPage': '/bookDetail'});
                       } catch (e) {
                         print(e.toString());
                         showCostumSnackBar(

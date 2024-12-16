@@ -8,13 +8,12 @@ import 'package:ayahhebat/src/pages/forum/comments_page.dart';
 import 'package:ayahhebat/src/pages/message_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import '../models/borrow_book_model.dart';
-import '../models/borrow_books_model.dart';
 import '../models/post_model.dart';
 import '../pages/add_book_page.dart';
 import '../pages/announcement/announcement_page.dart';
 import '../pages/book/book_detail_page.dart';
 import '../pages/book/borrow_book_detail_page.dart';
+import '../pages/book/donation_book_detail_page.dart';
 import '../pages/book/manage_books_page.dart';
 import '../pages/change_password_page.dart';
 import '../pages/my_ranking_page.dart';
@@ -57,11 +56,16 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => AddBookPage());
       case "/borrowBookDetail":
         final args = settings.arguments as Map<String, dynamic>;
-        final BorrowBook borrowBook = args['borrowBook'];
+        final int borrowId = args['borrowId'];
         final String fromPage = args['fromPage'];
         return MaterialPageRoute(
-            builder: (context) => BorrowBookDetailPage(
-                borrowBook: borrowBook, fromPage: fromPage));
+            builder: (context) =>
+                BorrowBookDetailPage(borrowId: borrowId, fromPage: fromPage));
+      case "/donationBookDetail":
+        final args = settings.arguments as Map<String, dynamic>;
+        final int bookId = args['bookId'];
+        return MaterialPageRoute(
+            builder: (context) => DonationBookDetailPage(bookId: bookId));
       case "/manageBooks":
         return MaterialPageRoute(builder: (context) => ManageBooksPage());
       case "/profile":

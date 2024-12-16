@@ -10,7 +10,7 @@ import '../../providers/borrow_books_provider.dart';
 import '../../providers/donation_books_provider.dart';
 import '../../utils/date_to_show_by_borrow_status.dart';
 import '../../utils/get_network_image.dart';
-import '../../utils/text_by_borrow_status.dart';
+import '../../utils/get_by_borrow_status.dart';
 import '../../widgets/app_bar_builder.dart';
 
 class ManageBooksPage extends StatefulWidget {
@@ -21,7 +21,9 @@ class ManageBooksPage extends StatefulWidget {
 }
 
 class _ManageBooksPageState extends State<ManageBooksPage> {
-  ScrollController _borrowScrollController = ScrollController();
+  final ScrollController _borrowScrollController = ScrollController();
+  final ScrollController _donationScrollController = ScrollController();
+
   @override
   void initState() {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -36,6 +38,13 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
       if (_borrowScrollController.position.pixels ==
           _borrowScrollController.position.maxScrollExtent) {
         borrowBooksProvider.fetchBorrowBooks();
+      }
+    });
+
+    _donationScrollController.addListener(() {
+      if (_donationScrollController.position.pixels ==
+          _donationScrollController.position.maxScrollExtent) {
+        donationBooksProvider.fetchDonationBooks();
       }
     });
     // });
@@ -78,81 +87,85 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
 
   Widget borrowSection() {
     return Consumer<BorrowBooksProvider>(
-      builder: (context, borrowBooksProvider, child) {
-        return RefreshIndicator(
-          onRefresh: borrowBooksProvider.refreshBorrowBooks,
-          child: ListView.builder(
-            controller: _borrowScrollController,
-            itemCount: borrowBooksProvider.borrowBooks.length + 1,
-            itemBuilder: (context, index) {
-              if (index == borrowBooksProvider.borrowBooks.length) {
-                return borrowBooksProvider.hasMoreData
-                    ? Center(child: CircularProgressIndicator())
-                    : SizedBox.shrink();
-              }
-              final book = borrowBooksProvider.borrowBooks[index];
-              return Column(
-                children: [
-                  Divider(color: AppColors.accentColor, height: 0.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/borrowBookDetail', arguments: {
-                        'borrowBook': book,
-                        'fromPage': '/manageBooks'
-                      });
-                    },
-                    child: listTileBorrowBooks(book),
-                  )
-                ],
-              );
-          
-              // return Row(
-              //   children: [
-              //     Text(book.book.name),
-              //     Text(book.status),
-              //   ],
-              // );
-            },
-          ),
-        );
-      }
-    );
+        builder: (context, borrowBooksProvider, child) {
+      return RefreshIndicator(
+        onRefresh: borrowBooksProvider.refreshBorrowBooks,
+        child: ListView.builder(
+          controller: _borrowScrollController,
+          itemCount: borrowBooksProvider.borrowBooks.length + 1,
+          itemBuilder: (context, index) {
+            if (index == borrowBooksProvider.borrowBooks.length) {
+              return borrowBooksProvider.hasMoreData
+                  ? Center(child: CircularProgressIndicator())
+                  : SizedBox.shrink();
+            }
+            final borrow = borrowBooksProvider.borrowBooks[index];
+            return Column(
+              children: [
+                Divider(color: AppColors.accentColor, height: 0.0),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/borrowBookDetail',
+                        arguments: {
+                          'borrowId': borrow.id,
+                          'fromPage': '/manageBooks'
+                        });
+                  },
+                  child: listTileBorrowBooks(borrow),
+                )
+              ],
+            );
+
+            // return Row(
+            //   children: [
+            //     Text(book.book.name),
+            //     Text(book.status),
+            //   ],
+            // );
+          },
+        ),
+      );
+    });
   }
 
-  ListView donationSection() {
-    final donationBooksProvider =
-        Provider.of<DonationBooksProvider>(context, listen: false);
-    print(donationBooksProvider.donationBooks.length);
-    print(donationBooksProvider.donationBooksState);
-    print(donationBooksProvider.errorMessage);
+  Widget donationSection() {
+    return Consumer<DonationBooksProvider>(
+        builder: (context, donationBooksProvider, child) {
+      return RefreshIndicator(
+        onRefresh: donationBooksProvider.refreshDonationBooks,
+        child: ListView.builder(
+          controller: _donationScrollController,
+          itemCount: donationBooksProvider.donationBooks.length + 1,
+          itemBuilder: (context, index) {
+            if (index == donationBooksProvider.donationBooks.length) {
+              return donationBooksProvider.hasMoreData
+                  ? Center(child: CircularProgressIndicator())
+                  : SizedBox.shrink();
+            }
+            final book = donationBooksProvider.donationBooks[index];
+            return Column(
+              children: [
+                Divider(color: AppColors.accentColor, height: 0.0),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/donationBookDetail',
+                        arguments: {'bookId': book.id});
+                  },
+                  child: listTileDonationBooks(book),
+                )
+              ],
+            );
 
-    return ListView.builder(
-      itemCount: donationBooksProvider.donationBooks.length + 1,
-      itemBuilder: (context, index) {
-        if (index == donationBooksProvider.donationBooks.length) {
-          return donationBooksProvider.hasMoreData
-              ? Center(child: CircularProgressIndicator())
-              : SizedBox.shrink();
-        }
-        final book = donationBooksProvider.donationBooks[index];
-        return Column(
-          children: [
-            Divider(color: AppColors.accentColor, height: 0.0),
-            InkWell(
-              onTap: () {},
-              child: listTileDonationBooks(book),
-            )
-          ],
-        );
-
-        // return Row(
-        //   children: [
-        //     Text(book.book.name),
-        //     Text(book.status),
-        //   ],
-        // );
-      },
-    );
+            // return Row(
+            //   children: [
+            //     Text(book.book.name),
+            //     Text(book.status),
+            //   ],
+            // );
+          },
+        ),
+      );
+    });
   }
 
   Color borrowStatusColor(String status) {
@@ -264,49 +277,7 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
     }
   }
 
-  Column listTileDonationBooks(DonationBook book) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Image.network(GetNetworkImage.getBooks(book.imageUrl), height: 100),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    book.categories.join(", "),
-                    maxLines: 1,
-                    overflow: TextOverflow.clip,
-                  ),
-                  Text(book.name)
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100))),
-                foregroundColor:
-                    WidgetStatePropertyAll(donationStatusColor(book.status)),
-                backgroundColor: WidgetStatePropertyAll(
-                    backgroundDonationStatusColor(book.status)),
-              ),
-              child: Text(statusByDonationStatus(book.status)),
-            )
-          ],
-        ),
-        // Text(book.id.toString()),
-        Text(textByDonationDate(book.status)),
-        Text(dateToShowDonation(book.status, book).toString()),
-      ],
-    );
-  }
-
-  Widget listTileBorrowBooks(BorrowBook book) {
+  listTileDonationBooks(DonationBook book) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
       child: Column(
@@ -316,21 +287,48 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Image.network(GetNetworkImage.getBooks(book.book.imageUrl),
-                  height: 80),
+              Image.network(
+                GetNetworkImage.getBooks(book.imageUrl),
+                height: 80,
+                width: 50,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                      width: 50,
+                      height: 80,
+                      color: AppColors.grey,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                              value: loadingProgress.expectedTotalBytes!
+                                  .toDouble())));
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 50,
+                    height: 80,
+                    color: AppColors.accentColor,
+                    child: Icon(
+                      Icons.error_outline,
+                      color: AppColors.whiteColor,
+                    ),
+                  );
+                },
+              ),
               SizedBox(width: PaddingSizes.small),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      book.book.categories.join(", "),
+                      book.categories.join(", "),
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       style: AppStyles.hintTextStyle,
                     ),
                     Text(
-                      book.book.name,
+                      book.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppStyles.labelBoldTextStyle,
@@ -344,12 +342,13 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
                   shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100))),
                   foregroundColor:
-                      WidgetStatePropertyAll(borrowStatusColor(book.status)),
+                      WidgetStatePropertyAll(donationStatusColor(book.status)),
                   backgroundColor: WidgetStatePropertyAll(
-                      backgroundBorrowStatusColor(book.status)),
+                      backgroundDonationStatusColor(book.status)),
                 ),
                 child: Text(
-                  GetByBorrowStatus.statusByBorrowStatus(book.status), style: AppStyles.plainLabelTextStyle,
+                  statusByDonationStatus(book.status),
+                  style: AppStyles.plainLabelTextStyle,
                 ),
               )
             ],
@@ -357,11 +356,103 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
           // Text(book.id.toString()),
           SizedBox(height: PaddingSizes.small),
           Text(
-            GetByBorrowStatus.textByBorrowStatus(book.status),
+            textByDonationDate(book.status),
             style: AppStyles.hintTextStyle,
           ),
           Text(
-            DateToShow.dateToShowByBorrowStatus(book.status, book).toString(),
+            dateToShowDonation(book.status, book).toString(),
+            style: AppStyles.labelTextStyle,
+          ),
+          SizedBox(height: PaddingSizes.small),
+        ],
+      ),
+    );
+  }
+
+  Widget listTileBorrowBooks(BorrowBook borrow) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: PaddingSizes.small),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Image.network(
+                GetNetworkImage.getBooks(borrow.book.imageUrl),
+                height: 80,
+                width: 50,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                      width: 50,
+                      height: 80,
+                      color: AppColors.grey,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                              value: loadingProgress.expectedTotalBytes!
+                                  .toDouble())));
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 50,
+                    height: 80,
+                    color: AppColors.accentColor,
+                    child: Icon(
+                      Icons.error_outline,
+                      color: AppColors.whiteColor,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(width: PaddingSizes.small),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      borrow.book.categories.join(", "),
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      style: AppStyles.hintTextStyle,
+                    ),
+                    Text(
+                      borrow.book.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppStyles.labelBoldTextStyle,
+                    )
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100))),
+                  foregroundColor:
+                      WidgetStatePropertyAll(borrowStatusColor(borrow.status)),
+                  backgroundColor: WidgetStatePropertyAll(
+                      backgroundBorrowStatusColor(borrow.status)),
+                ),
+                child: Text(
+                  GetByBorrowStatus.statusByBorrowStatus(borrow.status),
+                  style: AppStyles.plainLabelTextStyle,
+                ),
+              )
+            ],
+          ),
+          // Text(book.id.toString()),
+          SizedBox(height: PaddingSizes.small),
+          Text(
+            GetByBorrowStatus.textByBorrowStatus(borrow.status),
+            style: AppStyles.hintTextStyle,
+          ),
+          Text(
+            DateToShow.dateToShowByBorrowStatus(borrow.status, borrow).toString(),
             style: AppStyles.labelTextStyle,
           ),
           SizedBox(height: PaddingSizes.small),

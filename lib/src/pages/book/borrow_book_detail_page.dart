@@ -6,17 +6,17 @@ import 'package:provider/provider.dart';
 
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
-import '../../models/borrow_books_model.dart';
+import '../../providers/borrow_book_provider.dart';
 import '../../utils/date_to_show_by_borrow_status.dart';
 import '../../utils/get_network_image.dart';
-import '../../utils/text_by_borrow_status.dart';
+import '../../utils/get_by_borrow_status.dart';
 import '../../widgets/button_builder.dart';
 
 class BorrowBookDetailPage extends StatefulWidget {
-  final BorrowBook borrowBook;
   final String fromPage;
+  final int borrowId;
   const BorrowBookDetailPage(
-      {super.key, required this.borrowBook, this.fromPage = "/manageBooks"});
+      {super.key, required this.borrowId, this.fromPage = "/manageBooks"});
 
   @override
   State<BorrowBookDetailPage> createState() => _BorrowBookDetailPageState();
@@ -30,12 +30,17 @@ class _BorrowBookDetailPageState extends State<BorrowBookDetailPage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final officeAddressProvider =
-          Provider.of<OfficeAddressProvider>(context, listen: false);
-      officeAddressProvider.fetchOfficeAddresses();
-    });
     super.initState();
+    context
+        .read<BorrowBookProvider>()
+        .fetchBorrowBookById(borrowId: widget.borrowId);
+    context.read<OfficeAddressProvider>().fetchOfficeAddresses();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    context.read<BorrowBookProvider>().reset();
   }
 
   String imagePathByStatus(String status) {
@@ -91,129 +96,152 @@ class _BorrowBookDetailPageState extends State<BorrowBookDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OfficeAddressProvider>(
-        builder: (context, officeAddressProvider, child) {
-      return Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(
-                left: PaddingSizes.medium,
-                right: PaddingSizes.medium,
-                bottom: PaddingSizes.medium),
-            child: Column(
-              children: [
-                Image.asset(
-                  imagePathByStatus(widget.borrowBook.status),
-                  width: 126,
-                  height: 126,
-                ),
-                SizedBox(height: PaddingSizes.large),
-                Text(
-                  titleByStatus(widget.borrowBook.status),
-                  style: AppStyles.headingTextStyle,
-                ),
+    return Scaffold(
+      body: SafeArea(
+        child: Consumer2<BorrowBookProvider, OfficeAddressProvider>(builder:
+            (context, borrowBookProvider, officeAddressProvider, child) {
+          switch (borrowBookProvider.borrowBookState) {
+            case BorrowBookState.initial:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case BorrowBookState.loading:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case BorrowBookState.loaded:
+              return Padding(
+                padding: const EdgeInsets.only(
+                    left: PaddingSizes.medium,
+                    right: PaddingSizes.medium,
+                    bottom: PaddingSizes.medium),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      imagePathByStatus(borrowBookProvider.borrowBook!.status),
+                      width: 126,
+                      height: 126,
+                    ),
+                    SizedBox(height: PaddingSizes.large),
+                    Text(
+                      titleByStatus(borrowBookProvider.borrowBook!.status),
+                      style: AppStyles.headingTextStyle,
+                    ),
 
-                SizedBox(height: PaddingSizes.small),
-                Text(
-                  descByStatus(widget.borrowBook.status),
-                  style: AppStyles.hintTextStyle,
-                  textAlign: TextAlign.center,
-                ),
+                    SizedBox(height: PaddingSizes.small),
+                    Text(
+                      descByStatus(borrowBookProvider.borrowBook!.status),
+                      style: AppStyles.hintTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
 
-                SizedBox(height: PaddingSizes.large),
-                Expanded(
-                  child: Image.network(
-                    GetNetworkImage.getBooks(widget.borrowBook.book.imageUrl),
-                  ),
-                ),
-                SizedBox(height: PaddingSizes.large),
-                Divider(color: AppColors.accentColor),
-                SizedBox(height: PaddingSizes.small),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("ID Peminjaman: ", style: AppStyles.hintTextStyle),
-                    Text('#${widget.borrowBook.id.toString()}',
-                        style: AppStyles.labelTextStyle),
-                  ],
-                ),
-                SizedBox(height: PaddingSizes.small),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Status: ", style: AppStyles.hintTextStyle),
-                    Text(
-                        GetByBorrowStatus.statusByBorrowStatus(
-                            widget.borrowBook.status),
-                        style: AppStyles.labelTextStyle),
-                  ],
-                ),
-                SizedBox(height: PaddingSizes.small),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        GetByBorrowStatus.textByBorrowStatus(
-                            widget.borrowBook.status),
-                        style: AppStyles.hintTextStyle),
-                    Text(
-                        DateToShow.dateToShowByBorrowStatus(
-                            widget.borrowBook.status, widget.borrowBook),
-                        style: AppStyles.labelTextStyle),
-                  ],
-                ),
-                SizedBox(height: PaddingSizes.small),
-                // Row(
-                //   children: [
-                //     Text("Jumlah Buku: "),
-                //     Text(widget.borrowBook.quantity.toString()),
-                //   ],
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Judul Buku: ", style: AppStyles.hintTextStyle),
-                    SizedBox(width: PaddingSizes.doubleExtraLarge),
+                    SizedBox(height: PaddingSizes.large),
                     Expanded(
-                        child: Text(widget.borrowBook.book.name,
-                            textAlign: TextAlign.end,
-                            softWrap: true,
-                            overflow: TextOverflow.visible,
-                            style: AppStyles.labelTextStyle)),
-                  ],
-                ),
-                SizedBox(height: PaddingSizes.small),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text("Alamat: ", style: AppStyles.hintTextStyle),
-                    SizedBox(width: PaddingSizes.doubleExtraLarge),
-                    if (officeAddressProvider.officeAddresses.isNotEmpty)
-                      Expanded(
-                        child: Text(
-                            textAlign: TextAlign.end,
-                            officeAddressProvider.officeAddresses[0].address,
-                            softWrap: true,
-                            overflow: TextOverflow.visible,
-                            style: AppStyles.labelTextStyle),
+                      child: Image.network(
+                        GetNetworkImage.getBooks(
+                            borrowBookProvider.borrowBook!.book.imageUrl),
                       ),
+                    ),
+                    SizedBox(height: PaddingSizes.large),
+                    Divider(color: AppColors.accentColor),
+                    SizedBox(height: PaddingSizes.small),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("ID buku: ", style: AppStyles.hintTextStyle),
+                        Text('#${borrowBookProvider.borrowBook!.id.toString()}',
+                            style: AppStyles.labelTextStyle),
+                      ],
+                    ),
+                    SizedBox(height: PaddingSizes.small),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Status: ", style: AppStyles.hintTextStyle),
+                        Text(
+                            GetByBorrowStatus.statusByBorrowStatus(
+                                borrowBookProvider.borrowBook!.status),
+                            style: AppStyles.labelTextStyle),
+                      ],
+                    ),
+                    SizedBox(height: PaddingSizes.small),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            GetByBorrowStatus.textByBorrowStatus(
+                                borrowBookProvider.borrowBook!.status),
+                            style: AppStyles.hintTextStyle),
+                        Text(
+                            DateToShow.dateToShowByBorrowStatus(
+                                borrowBookProvider.borrowBook!.status,
+                                borrowBookProvider.borrowBook!),
+                            style: AppStyles.labelTextStyle),
+                      ],
+                    ),
+                    SizedBox(height: PaddingSizes.small),
+                    // Row(
+                    //   children: [
+                    //     Text("Jumlah Buku: "),
+                    //     Text(borrowBookProvider.borrowBook!.quantity.toString()),
+                    //   ],
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Judul Buku: ", style: AppStyles.hintTextStyle),
+                        SizedBox(width: PaddingSizes.doubleExtraLarge),
+                        Expanded(
+                            child: Text(
+                                borrowBookProvider.borrowBook!.book.name,
+                                textAlign: TextAlign.end,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                style: AppStyles.labelTextStyle)),
+                      ],
+                    ),
+                    SizedBox(height: PaddingSizes.small),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Alamat: ", style: AppStyles.hintTextStyle),
+                        SizedBox(width: PaddingSizes.doubleExtraLarge),
+                        if (officeAddressProvider.officeAddresses.isNotEmpty)
+                          Expanded(
+                            child: Text(
+                                textAlign: TextAlign.end,
+                                officeAddressProvider
+                                    .officeAddresses[0].address,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                style: AppStyles.labelTextStyle),
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: PaddingSizes.small),
+                    Divider(color: AppColors.accentColor),
+                    SizedBox(height: PaddingSizes.small),
+                    ButtonBuilder(
+                      child: Text("Lihat semua buku yang dipinjam"),
+                      onPressed: () async {
+                        onSeeAllBorrowedBooksTapped(context, widget.fromPage);
+                      },
+                    ),
                   ],
                 ),
-                SizedBox(height: PaddingSizes.small),
-                Divider(color: AppColors.accentColor),
-                SizedBox(height: PaddingSizes.small),
-                ButtonBuilder(
-                  child: Text("Lihat semua buku yang dipinjam"),
-                  onPressed: () async {
-                    onSeeAllBorrowedBooksTapped(context, widget.fromPage);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
+              );
+            case BorrowBookState.error:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            default:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          }
+        }),
+      ),
+    );
   }
 
   onSeeAllBorrowedBooksTapped(BuildContext context, String fromPage) {

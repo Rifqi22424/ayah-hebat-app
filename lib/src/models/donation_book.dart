@@ -3,6 +3,7 @@ class DonationBook {
   final int stock;
   final String name;
   final String status;
+  final String description;
   final DateTime planSentAt;
   final DateTime? acceptedAt;
   final DateTime? rejectedAt;
@@ -16,6 +17,7 @@ class DonationBook {
     required this.stock,
     required this.name,
     required this.status,
+    required this.description,
     required this.planSentAt,
     this.acceptedAt,
     this.rejectedAt,
@@ -31,6 +33,7 @@ class DonationBook {
       stock: json['stock'] ?? 0,
       name: json['name'] ?? 'Unknown',
       status: json['status'] ?? 'PENDING',
+      description: json['description'] ?? 'Deskripsi buku',
       planSentAt: json['planSentAt'] != null
           ? DateTime.parse(json['planSentAt'])
           : DateTime.now(),
@@ -49,6 +52,25 @@ class DonationBook {
           .toList(),
       borrowedCount: json['_count']?['peminjaman'] ?? 0,
     );
+  }
+
+  @override
+  String toString() {
+    return '''
+DonationBook {
+  id: $id,
+  stock: $stock,
+  name: "$name",
+  description: "$description",
+  planSentAt: $planSentAt,
+  acceptedAt: $acceptedAt,
+  rejectedAt: $rejectedAt,
+  canceledAt: $canceledAt,
+  imageUrl: "$imageUrl",
+  categories: ${categories.join(', ')},
+  borrowedCount: $borrowedCount
+}
+''';
   }
 }
 
@@ -70,6 +92,23 @@ class DonationBooksResponse {
           .map((item) => DonationBook.fromJson(item as Map<String, dynamic>))
           .toList(),
       pagination: Pagination.fromJson(json['pagination'] ?? {}),
+    );
+  }
+}
+
+class DonationBookByIdResponse {
+  final String message;
+  final DonationBook data;
+
+  DonationBookByIdResponse({
+    required this.message,
+    required this.data,
+  });
+
+  factory DonationBookByIdResponse.fromJson(Map<String, dynamic> json) {
+    return DonationBookByIdResponse(
+      message: json['message'] ?? 'No message',
+      data: DonationBook.fromJson(json['data'] ?? {}),
     );
   }
 }

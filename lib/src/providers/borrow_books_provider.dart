@@ -42,6 +42,8 @@ class BorrowBooksProvider extends ChangeNotifier {
       _errorMessage = e.toString();
     }
 
+    print("Error message: $_errorMessage");
+
     notifyListeners();
   }
 
