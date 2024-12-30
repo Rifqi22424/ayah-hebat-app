@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
@@ -88,15 +89,63 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
   Widget borrowSection() {
     return Consumer<BorrowBooksProvider>(
         builder: (context, borrowBooksProvider, child) {
+      print("Borrow State: ${borrowBooksProvider.borrowBooksState}");
+
+      if (borrowBooksProvider.borrowBooksState == BorrowBooksState.initial &&
+              borrowBooksProvider.borrowBooks.isEmpty ||
+          borrowBooksProvider.borrowBooksState == BorrowBooksState.loading &&
+              borrowBooksProvider.borrowBooks.isEmpty) {
+        return _buildManageShimmerEffect();
+      }
+
+      if (borrowBooksProvider.borrowBooksState == BorrowBooksState.error) {
+        return Center(
+          child: TextButton(
+              onPressed: borrowBooksProvider.refreshBorrowBooks,
+              child: Text("Refresh")),
+        );
+      }
+
+      if (borrowBooksProvider.borrowBooks.isEmpty) {
+        return RefreshIndicator(
+            color: AppColors.primaryColor,
+            onRefresh: borrowBooksProvider.refreshBorrowBooks,
+            child: Column(
+              children: [
+                Expanded(
+                    child: ListView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 3),
+                        Text(
+                          "Silahkan untuk meminjam buku terlebih dahulu",
+                          style: AppStyles.labelTextStyle,
+                        ),
+                      ],
+                    )
+                  ],
+                ))
+              ],
+            ));
+      }
+
       return RefreshIndicator(
+        color: AppColors.primaryColor,
         onRefresh: borrowBooksProvider.refreshBorrowBooks,
         child: ListView.builder(
+          physics: AlwaysScrollableScrollPhysics(),
           controller: _borrowScrollController,
           itemCount: borrowBooksProvider.borrowBooks.length + 1,
           itemBuilder: (context, index) {
             if (index == borrowBooksProvider.borrowBooks.length) {
               return borrowBooksProvider.hasMoreData
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(
+                      color: AppColors.primaryColor,
+                    ))
                   : SizedBox.shrink();
             }
             final borrow = borrowBooksProvider.borrowBooks[index];
@@ -115,13 +164,6 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
                 )
               ],
             );
-
-            // return Row(
-            //   children: [
-            //     Text(book.book.name),
-            //     Text(book.status),
-            //   ],
-            // );
           },
         ),
       );
@@ -131,15 +173,65 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
   Widget donationSection() {
     return Consumer<DonationBooksProvider>(
         builder: (context, donationBooksProvider, child) {
+      print("DonationBooksState: ${donationBooksProvider.donationBooksState}");
+      if (donationBooksProvider.donationBooksState ==
+                  DonationBooksState.initial &&
+              donationBooksProvider.donationBooks.isEmpty ||
+          donationBooksProvider.donationBooksState ==
+                  DonationBooksState.loading &&
+              donationBooksProvider.donationBooks.isEmpty) {
+        print("Loading triggered");
+        return _buildManageShimmerEffect();
+      }
+      if (donationBooksProvider.donationBooksState ==
+          DonationBooksState.error) {
+        return Center(
+          child: TextButton(
+              onPressed: donationBooksProvider.refreshDonationBooks,
+              child: Text("Refresh")),
+        );
+      }
+
+      if (donationBooksProvider.donationBooks.isEmpty) {
+        return RefreshIndicator(
+            color: AppColors.primaryColor,
+            onRefresh: donationBooksProvider.refreshDonationBooks,
+            child: Column(
+              children: [
+                Expanded(
+                    child: ListView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 3),
+                        Text(
+                          "Silahkan untuk mendonasikan buku terlebih dahulu",
+                          style: AppStyles.labelTextStyle,
+                        ),
+                      ],
+                    )
+                  ],
+                ))
+              ],
+            ));
+      }
+      // return _buildManageShimmerEffect();
       return RefreshIndicator(
+        color: AppColors.primaryColor,
         onRefresh: donationBooksProvider.refreshDonationBooks,
         child: ListView.builder(
           controller: _donationScrollController,
+          physics: AlwaysScrollableScrollPhysics(),
           itemCount: donationBooksProvider.donationBooks.length + 1,
           itemBuilder: (context, index) {
             if (index == donationBooksProvider.donationBooks.length) {
               return donationBooksProvider.hasMoreData
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(
+                      color: AppColors.primaryColor,
+                    ))
                   : SizedBox.shrink();
             }
             final book = donationBooksProvider.donationBooks[index];
@@ -297,18 +389,17 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
                   return Container(
                       width: 50,
                       height: 80,
-                      color: AppColors.grey,
+                      // color: AppColors.grey,
                       child: Center(
                           child: CircularProgressIndicator(
-                              color: AppColors.primaryColor,
-                              value: loadingProgress.expectedTotalBytes!
-                                  .toDouble())));
+                        color: AppColors.primaryColor,
+                      )));
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     width: 50,
                     height: 80,
-                    color: AppColors.accentColor,
+                    color: AppColors.darkGrey,
                     child: Icon(
                       Icons.error_outline,
                       color: AppColors.whiteColor,
@@ -369,6 +460,92 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
     );
   }
 
+  Widget _buildManageShimmerEffect() {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Placeholder untuk gambar buku
+                    Container(
+                      width: 50,
+                      height: 80,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 16),
+                    // Placeholder untuk teks detail buku
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 10,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          SizedBox(height: 6),
+                          Container(
+                            height: 12,
+                            width: 150,
+                            color: Colors.white,
+                          ),
+                          SizedBox(height: 6),
+                          Container(
+                            height: 10,
+                            width: 100,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    // Placeholder untuk tombol status
+                    Container(
+                      height: 30,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Container(
+                  height: 10,
+                  width: 150,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 6),
+                Container(
+                  height: 12,
+                  width: 100,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 16),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget listTileBorrowBooks(BorrowBook borrow) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
@@ -387,20 +564,20 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
-                      width: 50,
-                      height: 80,
-                      color: AppColors.grey,
-                      child: Center(
-                          child: CircularProgressIndicator(
-                              color: AppColors.primaryColor,
-                              value: loadingProgress.expectedTotalBytes!
-                                  .toDouble())));
+                    width: 50,
+                    height: 80,
+                    // color: AppColors.grey,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: AppColors.primaryColor,
+                    )),
+                  );
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     width: 50,
                     height: 80,
-                    color: AppColors.accentColor,
+                    color: AppColors.darkGrey,
                     child: Icon(
                       Icons.error_outline,
                       color: AppColors.whiteColor,
@@ -452,7 +629,8 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
             style: AppStyles.hintTextStyle,
           ),
           Text(
-            DateToShow.dateToShowByBorrowStatus(borrow.status, borrow).toString(),
+            DateToShow.dateToShowByBorrowStatus(borrow.status, borrow)
+                .toString(),
             style: AppStyles.labelTextStyle,
           ),
           SizedBox(height: PaddingSizes.small),

@@ -46,9 +46,7 @@ class DonationBooksProvider extends ChangeNotifier {
   }
 
   Future<void> refreshDonationBooks() async {
-
     try {
-
       _donationBooksState = DonationBooksState.loading;
       _currentPage = 1;
       _donationBooks = [];
@@ -65,6 +63,7 @@ class DonationBooksProvider extends ChangeNotifier {
         _hasMoreData = false;
       }
 
+      print("Loaded trigered");
       _donationBooksState = DonationBooksState.loaded;
     } catch (e) {
       _donationBooksState = DonationBooksState.error;

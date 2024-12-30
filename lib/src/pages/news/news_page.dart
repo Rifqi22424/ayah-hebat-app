@@ -6,6 +6,7 @@ import 'package:ayahhebat/src/widgets/app_bar_builder.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
+import '../../consts/padding_sizes.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -210,6 +211,8 @@ class _NewsPageState extends State<NewsPage> {
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
                                               ),
+                                              SizedBox(
+                                                  height: PaddingSizes.small),
                                               Text(
                                                 news.subTitle,
                                                 style: AppStyles
@@ -218,6 +221,8 @@ class _NewsPageState extends State<NewsPage> {
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               ),
+                                              SizedBox(
+                                                    height: PaddingSizes.extrasmall),
                                               Text(news.author,
                                                   style: AppStyles
                                                       .labelPrimaryTextStyle)

@@ -55,39 +55,39 @@ class BookApi {
     String categoryIds,
     File photo,
   ) async {
-    try {
-      final url = Uri.parse('$serverPath/books/donation');
-      final request = http.MultipartRequest('POST', url);
-      String? token = await SharedPreferencesHelper.getToken();
+    final url = Uri.parse('$serverPath/books/donation');
+    final request = http.MultipartRequest('POST', url);
+    String? token = await SharedPreferencesHelper.getToken();
 
-      request.fields['name'] = name;
-      request.fields['description'] = description;
-      request.fields['stock'] = stock;
-      request.fields['planSentAt'] = planSentAt;
-      request.fields['categoryIds'] = categoryIds;
+    request.fields['name'] = name;
+    request.fields['description'] = description;
+    request.fields['stock'] = stock;
+    request.fields['planSentAt'] = planSentAt;
+    request.fields['categoryIds'] = categoryIds;
 
-      request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Authorization'] = 'Bearer $token';
 
-      final fotoPart = await http.MultipartFile.fromPath(
-        'photo',
-        photo.path,
-        contentType: MediaType(
-            GetMediaType.getMediaType(photo.path), photo.path.split('.').last),
-      );
-      request.files.add(fotoPart);
+    final fotoPart = await http.MultipartFile.fromPath(
+      'photo',
+      photo.path,
+      contentType: MediaType(
+          GetMediaType.getMediaType(photo.path), photo.path.split('.').last),
+    );
+    request.files.add(fotoPart);
 
-      final response = await request.send();
+    final response = await request.send();
 
-      print(response.statusCode);
+    print(response.statusCode);
 
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        print(response.stream.bytesToString());
-        throw response.stream.bytesToString();
-      }
-    } catch (error) {
-      return false;
+    final responseBody = await response.stream.bytesToString();
+    final decodedResponse = json.decode(responseBody);
+
+    // Check the response status
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      // If the status code is not 201, throw the error message
+      throw decodedResponse['error'] ?? 'Unknown error';
     }
   }
 

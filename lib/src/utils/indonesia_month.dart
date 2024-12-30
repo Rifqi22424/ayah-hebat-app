@@ -28,8 +28,8 @@ class IndonesiaMonth {
     return _bulanIndonesia[monthNumber];
   }
 
-  static String? getDayName(int dayNumber) {
-    int validDayNumber = dayNumber > 7 ? dayNumber % 7 : dayNumber;
-    return _dayIndonesia[validDayNumber];
+  static String? getDayName(DateTime date) {
+    int weekday = date.weekday; // 1 = Monday, 7 = Sunday
+    return _dayIndonesia[weekday] ?? "Invalid Day";
   }
 }

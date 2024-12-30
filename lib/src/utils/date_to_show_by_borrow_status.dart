@@ -4,13 +4,23 @@ import 'indonesia_month.dart';
 class DateToShow {
 
     static String parseDate(String date) {
-    DateTime parsedDate = DateTime.parse(date);
-    String? day = IndonesiaMonth.getDayName(parsedDate.day);
+    DateTime parsedDate = parseDateWithTimeZone(date);
+    String? day = IndonesiaMonth.getDayName(parsedDate);
     String dayNumber = parsedDate.day.toString();
     String? month = IndonesiaMonth.getMonthName(parsedDate.month);
     String year = parsedDate.year.toString();
     return '$day, $dayNumber  $month $year';
   }
+
+  static DateTime parseDateWithTimeZone(String date) {
+  // Parse the date in UTC
+  DateTime parsedDate = DateTime.parse(date).toUtc();
+  
+  // Adjust the parsed UTC date to the local timezone (Indonesia: UTC+7)
+  DateTime indonesiaDate = parsedDate.add(Duration(hours: 7));
+
+  return indonesiaDate;
+}
 
    static String dateToShowByBorrowStatus(String status, BorrowBook borrowBook) {
     switch (status) {

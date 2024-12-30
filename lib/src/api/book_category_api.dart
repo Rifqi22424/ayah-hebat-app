@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class BookCategoryApi {
   Future<List<BookCategory>> getAllCategoryBooks({String? search}) async {
     String? token = await SharedPreferencesHelper.getToken();
-    print("masuk category");
+    // print("masuk category");
 
     final queryParameters = {
       'search': search ?? '',
@@ -27,7 +27,7 @@ class BookCategoryApi {
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      print("responseData $responseData");
+      // print("responseData $responseData");
       List<BookCategory> categoryBooks =
           responseData.map((data) => BookCategory.fromJson(data)).toList();
       return categoryBooks;

@@ -1,5 +1,6 @@
 import 'package:ayahhebat/main.dart';
 import 'package:ayahhebat/src/api/profile_api.dart';
+import 'package:ayahhebat/src/consts/padding_sizes.dart';
 import 'package:ayahhebat/src/widgets/app_bar_left_builder.dart';
 import 'package:ayahhebat/src/widgets/button_builder.dart';
 import 'package:ayahhebat/src/widgets/costum_snack_bar.dart';
@@ -77,7 +78,7 @@ class _ForumsPageState extends State<ForumsPage> {
 
     if (postProvider.editPostState == EditPostState.error) {
       showCustomSnackBar(
-          context, "Gagal mengirim postingan", AppColors.redColor!);
+          context, "Gagal mengirim postingan", AppColors.redColor);
     } else if (postProvider.editPostState == EditPostState.loaded) {
       print("done");
       _postBodyController.clear();
@@ -314,7 +315,7 @@ class _ForumsPageState extends State<ForumsPage> {
                                   context, _postBodyController.text);
                             } catch (e) {
                               showCustomSnackBar(
-                                  context, e.toString(), AppColors.redColor!);
+                                  context, e.toString(), AppColors.redColor);
                             }
                           },
                           child: Text("Kirim")),
@@ -422,26 +423,35 @@ class _ForumsPageState extends State<ForumsPage> {
       appBar: AppBarLeftBuilder(
           title: "Forum diskusi", description: "Diskusi tentang keluarga"),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(
+          left: PaddingSizes.medium,
+          right: PaddingSizes.medium,
+          bottom: PaddingSizes.medium,
+          top: PaddingSizes.small,
+        ),
         child: Column(
           children: [
             TextField(
+              style: AppStyles.labelTextStyle,
               controller: _searchController,
               onChanged: (_) {
                 autoSearch();
               },
               decoration: InputDecoration(
-                  hintText: "Cari disini...",
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32),
-                      borderSide: BorderSide(color: AppColors.primaryColor)),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        searchTrigger();
-                      },
-                      icon: Icon(Icons.search, color: AppColors.textColor)),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32))),
+                hintText: "Cari disini...",
+                hintStyle: AppStyles.hintTextStyle,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32),
+                    borderSide: BorderSide(color: AppColors.primaryColor)),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      searchTrigger();
+                    },
+                    icon: Icon(Icons.search, color: AppColors.accentColor)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
+                isDense: true,
+              ),
             ),
             SizedBox(height: 16),
             Expanded(child: Consumer<PostProvider>(
@@ -467,8 +477,7 @@ class _ForumsPageState extends State<ForumsPage> {
                   return const Center(
                     child: Text("Belum ada postingan"),
                   );
-                }
-                else {
+                } else {
                   return RefreshIndicator(
                     color: AppColors.primaryColor,
                     onRefresh: () async {
@@ -528,16 +537,16 @@ class _ForumsPageState extends State<ForumsPage> {
                                               SizedBox(width: 10),
                                               Text(
                                                 post.user.profile.nama,
-                                                style:
-                                                    AppStyles.heading3BoldTextStyle,
+                                                style: AppStyles
+                                                    .heading3BoldTextStyle,
                                               ),
                                               SizedBox(width: 5),
                                               Column(
                                                 children: [
                                                   Text(
                                                     "${monthNames[post.createdAt.month]} ${post.createdAt.day}, ${post.createdAt.year}",
-                                                    style:
-                                                        AppStyles.miniHintTextStyle,
+                                                    style: AppStyles
+                                                        .miniHintTextStyle,
                                                   ),
                                                   SizedBox(height: 4),
                                                 ],
@@ -545,7 +554,8 @@ class _ForumsPageState extends State<ForumsPage> {
                                             ],
                                           ),
                                           SizedBox(height: 12),
-                                          ExpandableText(body: post.body, isPost: true),
+                                          ExpandableText(
+                                              body: post.body, isPost: true),
                                           SizedBox(height: 12),
                                         ],
                                       ),

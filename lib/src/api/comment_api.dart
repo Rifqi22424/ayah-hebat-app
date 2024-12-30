@@ -16,7 +16,7 @@ class CommentApi {
       'offset': offset.toString(),
     });
 
-    print(uri);
+    // print(uri);
 
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
@@ -109,9 +109,9 @@ class CommentApi {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
-      print(token!);
-      print("comment id: " + commentId.toString());
+      //print(response.body);
+      //print(token!);
+      //print("comment id: " + commentId.toString());
       return true;
     } else {
       final errorData = json.decode(response.body)['error'];
@@ -131,7 +131,7 @@ class CommentApi {
       'offset': offset.toString(),
     });
 
-    print(uri);
+    //print(uri);
 
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(

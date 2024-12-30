@@ -36,6 +36,7 @@ class AppStyles {
     fontFamily: 'Lato',
     fontWeight: FontWeight.w400,
     color: AppColors.textColor,
+    height: 1.25
   );
 
   static TextStyle plainLabelTextStyle = const TextStyle(

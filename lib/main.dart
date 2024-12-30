@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -19,8 +20,8 @@ import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 
-const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -123,7 +124,13 @@ main() async {
 
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
       ],
-      child: MyApp(),
+      child: DevicePreview(
+      enabled: true,
+      tools: const [
+        ...DevicePreview.defaultTools,
+      ],
+      builder: (context) => const MyApp(),
+    ),
     ),
   );
 }

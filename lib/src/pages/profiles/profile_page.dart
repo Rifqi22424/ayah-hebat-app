@@ -275,12 +275,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "btnSupport",
-        onPressed: _launchURL,
-        child: Icon(Icons.support_agent),
-        backgroundColor: Colors.green,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   heroTag: "btnSupport",
+      //   onPressed: _launchURL,
+      //   child: Icon(Icons.support_agent),
+      //   backgroundColor: Colors.green,
+      // ),
     );
   }
 

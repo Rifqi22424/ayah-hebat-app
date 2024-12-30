@@ -775,6 +775,7 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: TextFormField(
+                                style: AppStyles.labelTextStyle,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderSide: BorderSide.none,

@@ -1,13 +1,13 @@
 import 'package:ayahhebat/src/consts/app_colors.dart';
 import 'package:ayahhebat/src/consts/app_styles.dart';
+import 'package:ayahhebat/src/consts/padding_sizes.dart';
 import 'package:ayahhebat/src/utils/get_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../providers/book_category_provider.dart';
 import '../../providers/book_provider.dart';
-import '../../widgets/add_book_dialog.dart';
-import '../../widgets/button_builder.dart';
 
 class BookPage extends StatefulWidget {
   const BookPage({super.key});
@@ -52,62 +52,62 @@ class _BookPageState extends State<BookPage> {
     super.dispose();
   }
 
-  showFilterDialog() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Consumer<BookCategoryProvider>(
-            builder: (context, bookCategoryProvider, child) {
-          return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Pinjam Buku',
-                          style: AppStyles.heading2TextStyle,
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: Icon(Icons.close),
-                          padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    _buildDropdown(
-                        'Pilih Category',
-                        selectedFilterCategory,
-                        bookCategoryProvider.bookCategories
-                            .map((category) => category.name)
-                            .toList(), (String? newValue) {
-                      setState(() {
-                        selectedFilterCategory = newValue!;
-                      });
-                    }),
-                    SizedBox(height: 32),
-                    ButtonBuilder(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                      },
-                      child: Text('Filter'),
-                    ),
-                  ],
-                ),
-              ));
-        });
-      },
-    );
-  }
+  // showFilterDialog() {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Consumer<BookCategoryProvider>(
+  //           builder: (context, bookCategoryProvider, child) {
+  //         return Dialog(
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(16),
+  //             ),
+  //             child: Container(
+  //               padding: EdgeInsets.all(16),
+  //               child: Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Text(
+  //                         'Pinjam Buku',
+  //                         style: AppStyles.heading2TextStyle,
+  //                       ),
+  //                       IconButton(
+  //                         onPressed: () => Navigator.pop(context),
+  //                         icon: Icon(Icons.close),
+  //                         padding: EdgeInsets.zero,
+  //                         constraints: BoxConstraints(),
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(height: 16),
+  //                   _buildDropdown(
+  //                       'Pilih Category',
+  //                       selectedFilterCategory,
+  //                       bookCategoryProvider.bookCategories
+  //                           .map((category) => category.name)
+  //                           .toList(), (String? newValue) {
+  //                     setState(() {
+  //                       selectedFilterCategory = newValue!;
+  //                     });
+  //                   }),
+  //                   SizedBox(height: 32),
+  //                   ButtonBuilder(
+  //                     onPressed: () async {
+  //                       Navigator.pop(context);
+  //                     },
+  //                     child: Text('Filter'),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ));
+  //       });
+  //     },
+  //   );
+  // }
 
   Widget _buildDropdown(String hint, String? value, List<String> items,
       ValueChanged<String?> onChanged) {
@@ -144,6 +144,7 @@ class _BookPageState extends State<BookPage> {
 
   void fetchBooksByCategoryAndSearch(
       {required String category, String? search, bool isSearch = false}) {
+    print("fetchBooksByCategoryAndSearch");
     offset = 0;
     Provider.of<BookProvider>(context, listen: false).clearBooks();
     if (isSearch) {
@@ -167,52 +168,50 @@ class _BookPageState extends State<BookPage> {
         appBar: appBarBook(),
         body: Column(
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            SizedBox(height: PaddingSizes.small),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
               child: Row(
                 children: [
                   Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(60),
-                              borderSide:
-                                  BorderSide(color: AppColors.accentColor),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(60),
-                              borderSide:
-                                  BorderSide(color: AppColors.accentColor),
-                            ),
-                            suffixIconColor: AppColors.accentColor,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(60),
-                              borderSide: BorderSide(
-                                  color: AppColors.primaryColor, width: 2),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(60),
-                              borderSide:
-                                  BorderSide(color: AppColors.redColor!),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(60),
-                              borderSide: BorderSide(
-                                  color: AppColors.primaryColor, width: 2),
-                            ),
-                            hintText: "Cari Buku",
-                            hintStyle: AppStyles.hintTextStyle,
-                            suffixIcon: Icon(Icons.search)),
-                        onChanged: (value) {
-                          searchBooksText = value;
-                          fetchBooksByCategoryAndSearch(
-                              category: selectedCategory,
-                              search: searchBooksText,
-                              isSearch: true);
-                        },
+                    child: TextField(
+                      style: AppStyles.labelTextStyle,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                          borderSide: BorderSide(color: AppColors.accentColor),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                          borderSide: BorderSide(color: AppColors.accentColor),
+                        ),
+                        suffixIconColor: AppColors.accentColor,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                          borderSide: BorderSide(
+                              color: AppColors.primaryColor, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                          borderSide: BorderSide(color: AppColors.redColor),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                          borderSide: BorderSide(
+                              color: AppColors.primaryColor, width: 2),
+                        ),
+                        hintText: "Cari Buku",
+                        hintStyle: AppStyles.hintTextStyle,
+                        suffixIcon: Icon(Icons.search),
+                        isDense: true,
                       ),
+                      onChanged: (value) {
+                        searchBooksText = value;
+                        fetchBooksByCategoryAndSearch(
+                            category: selectedCategory,
+                            search: searchBooksText,
+                            isSearch: true);
+                      },
                     ),
                   ),
                   // SizedBox(width: 12),
@@ -238,6 +237,7 @@ class _BookPageState extends State<BookPage> {
                 ],
               ),
             ),
+            SizedBox(height: PaddingSizes.small),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.only(left: 16),
@@ -279,14 +279,38 @@ class _BookPageState extends State<BookPage> {
                 Consumer<BookProvider>(builder: (context, bookProvider, child) {
               if (bookProvider.bookState == BookState.initial ||
                   bookProvider.bookState == BookState.loading) {
+                return _buildGridShimmerEffect();
+              }
+
+              if (bookProvider.bookState == BookState.error) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: TextButton(
+                      onPressed: () => fetchBooksByCategoryAndSearch(
+                          category: selectedCategory, search: searchBooksText),
+                      child: Text("Refresh")),
                 );
               }
+
               if (bookProvider.books.isEmpty) {
-                return Center(
-                  child: Text("Buku Kosong"),
-                );
+                // return Center(
+                //   child: Text("Buku Kosong"),
+                // );
+                return RefreshIndicator(
+                  color: AppColors.primaryColor,
+                    child: ListView(
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height / 4),
+                            Text("Buku belum tersedia",
+                                style: AppStyles.labelTextStyle)
+                          ],
+                        )
+                      ],
+                    ),
+                    onRefresh: () async => fetchBooksByCategoryAndSearch(
+                        category: selectedCategory, search: searchBooksText));
               }
               return RefreshIndicator(
                 color: AppColors.primaryColor,
@@ -295,10 +319,12 @@ class _BookPageState extends State<BookPage> {
                       category: selectedCategory, search: searchBooksText);
                 },
                 child: GridView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  physics: AlwaysScrollableScrollPhysics(),
                   controller: _scrollController,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.65,
+                      mainAxisExtent: 300,
                       crossAxisSpacing: 6,
                       mainAxisSpacing: 6),
                   itemCount: bookProvider.bookState == BookState.loading
@@ -324,28 +350,40 @@ class _BookPageState extends State<BookPage> {
                           side: BorderSide(color: AppColors.grey),
                         ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: ClipRRect(
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(12)),
                                 child: Image.network(
-                                  // GetNetworkImage.getBooks(book.imageurl),
-                                  GetNetworkImage.getBooks(book.imageurl),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
+                                    // GetNetworkImage.getBooks(book.imageurl),
+                                    GetNetworkImage.getBooks(book.imageurl),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: double.infinity,
+                                    // color: AppColors.grey,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Image not found",
+                                      style: AppStyles.labelTextStyle,
+                                    ),
+                                  );
+                                }, loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Container(
                                       width: double.infinity,
-                                      color: AppColors.grey,
+                                      // color: AppColors.grey,
                                       alignment: Alignment.center,
-                                      child: Text(
-                                        "Image not found",
-                                        style: AppStyles.labelTextStyle,
-                                      ),
-                                    );
-                                  },
-                                ),
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.primaryColor,
+                                      ));
+                                }),
                               ),
                             ),
                             Padding(
@@ -401,17 +439,82 @@ class _BookPageState extends State<BookPage> {
     });
   }
 
-  showAddBookDialog(BuildContext context, String address) async {
-    print("address $address");
-    final result = await showDialog(
-        context: context,
-        builder: (context) => AddBookDialog(
-              address: address,
-            ));
-    if (result != null) {
-      print("result: $result");
-    }
+  Widget _buildGridShimmerEffect() {
+    return GridView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisExtent: 300,
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 6,
+      ),
+      itemCount: 6, // Jumlah shimmer item yang ingin ditampilkan
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.grey[300]!),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(12)),
+                    child: Container(
+                      color: Colors.white,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 10,
+                        width: double.infinity,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 6),
+                      Container(
+                        height: 12,
+                        width: 150,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 6),
+                      Container(
+                        height: 10,
+                        width: 80,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
+
+  // showAddBookDialog(BuildContext context, String address) async {
+  //   print("address $address");
+  //   final result = await showDialog(
+  //       context: context,
+  //       builder: (context) => AddBookDialog(
+  //             address: address,
+  //           ));
+  //   if (result != null) {
+  //     print("result: $result");
+  //   }
+  // }
 
   AppBar appBarBook() {
     return AppBar(

@@ -20,12 +20,10 @@ class _MessagePageState extends State<MessagePage> {
     // for background and terminated state
     if (data.notification != null) {
       payload = data.data;
-      print("Data masuk");
     }
     // for foreground state
     if (data.notification == null && data.data.isNotEmpty) {
       payload = jsonDecode(data.data['payload']);
-      print("Data decode");
     }
     return Scaffold(
       appBar: AppBar(title: Text("Your Message")),

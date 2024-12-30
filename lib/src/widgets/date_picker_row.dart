@@ -5,7 +5,7 @@ import '../consts/app_styles.dart';
 
 class DatePickerRow extends StatelessWidget {
   // final BuildContext context;
-  final String title;
+  final Widget title;
   final DateTime? minDate;
   final DateTime? date;
   final void Function(DateTime) onDatePicked;
@@ -19,7 +19,7 @@ class DatePickerRow extends StatelessWidget {
     required this.onDatePicked,
   }) : super(key: key);
 
-  Future<void> _selectDate(BuildContext context, String title, DateTime? date,
+  Future<void> _selectDate(BuildContext context, Widget title, DateTime? date,
       void Function(DateTime) onDatePicked) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -54,7 +54,7 @@ class DatePickerRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppStyles.hintTextStyle),
+        title,
         InkWell(
           onTap: () {
             _selectDate(context, title, date, onDatePicked);

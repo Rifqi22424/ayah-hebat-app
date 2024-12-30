@@ -355,22 +355,25 @@ class _CommentsPageState extends State<CommentsPage> {
           Row(
             children: [
               Expanded(
-                child: TextField(
-                  focusNode: _focusNode,
-                  controller: commentController,
-                  decoration: InputDecoration(
-                      hintText: "Ketik Pesan...",
-                      // contentPadding:
-                      //     EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32),
-                          borderSide:
-                              BorderSide(color: AppColors.primaryColor)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32),
-                          borderSide: BorderSide(
-                            color: AppColors.grey,
-                          ))),
+                child: SizedBox(
+                  height: 50,
+                  child: TextField(
+                    focusNode: _focusNode,
+                    controller: commentController,
+                    decoration: InputDecoration(
+                        hintText: "Ketik Pesan...",
+                        // contentPadding:
+                        //     EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32),
+                            borderSide:
+                                BorderSide(color: AppColors.primaryColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32),
+                            borderSide: BorderSide(
+                              color: AppColors.grey,
+                            ))),
+                  ),
                 ),
               ),
               SizedBox(width: 12),

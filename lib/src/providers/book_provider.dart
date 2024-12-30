@@ -12,7 +12,7 @@ class BookProvider extends ChangeNotifier {
 
   // Getters
   List<Book> get books => _books;
-  BookState get bookState => _bookState;  
+  BookState get bookState => _bookState;
   String? get errorMessage => _errorMessage;
   bool get hasMoreData => _hasMoreData;
 
@@ -26,6 +26,7 @@ class BookProvider extends ChangeNotifier {
     String category = "semua",
     bool refresh = false,
   }) async {
+    print("Fetching books...");
     if (!hasMoreData) return;
 
     try {
@@ -74,6 +75,7 @@ class BookProvider extends ChangeNotifier {
     String? search,
     String category = "semua",
   }) async {
+    print("Searching books...");
     if (bookState == BookState.loading) return;
 
     _bookState = BookState.loading;
