@@ -19,6 +19,7 @@ import 'src/providers/donation_books_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 // const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
 const serverPath = "https://backend.ayahhebat.mangcoding.com";
@@ -50,7 +51,8 @@ void showNotification({required String title, required String body}) {
 }
 
 main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -111,26 +113,24 @@ main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => PostProvider()),
         ChangeNotifierProvider(create: (_) => CommentProvider()),
-
         ChangeNotifierProvider(create: (_) => BookProvider()),
         ChangeNotifierProvider(create: (_) => BookCategoryProvider()),
         ChangeNotifierProvider(create: (_) => BookDetailProvider()),
-
         ChangeNotifierProvider(create: (_) => BorrowBooksProvider()),
         ChangeNotifierProvider(create: (_) => BorrowBookProvider()),
-
         ChangeNotifierProvider(create: (_) => DonationBooksProvider()),
         ChangeNotifierProvider(create: (_) => DonationBookProvider()),
-
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
       ],
       child: DevicePreview(
-      enabled: true,
-      tools: const [
-        ...DevicePreview.defaultTools,
-      ],
-      builder: (context) => const MyApp(),
-    ),
+        enabled: true,
+        tools: const [
+          ...DevicePreview.defaultTools,
+        ],
+        builder: (context) => const MyApp(),
+      ),
     ),
   );
+
+  FlutterNativeSplash.remove();
 }

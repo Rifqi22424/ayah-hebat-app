@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
+import '../consts/app_colors.dart';
 import '../models/login_response_model.dart';
 import '../utils/shared_preferences.dart';
 import '../widgets/image_cover_builder.dart';
@@ -39,21 +40,40 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _delayAndPush(context);
-
-    return Scaffold(
-      body: _splashImages(),
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        _getToken();
+      },
     );
   }
 
-  void _delayAndPush(BuildContext context) async {
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      _getToken();
-    });
+  @override
+  Widget build(BuildContext context) {
+    // _delayAndPush(context);
+
+    return Scaffold(
+      body: Expanded(
+          child: Container(
+        color: AppColors.primaryColor,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset("images/splash_logo_aspect.png", width: 225),
+              CircularProgressIndicator(
+                color: AppColors.whiteColor,
+              ),
+            ],
+          ),
+        ),
+      )),
+    );
   }
 
-  Widget _splashImages() {
-    return const ImageCoverBuilder(imagePath: 'images/splash-images.png');
-  }
+  // Widget _splashImages() {
+  // return const ImageCoverBuilder(imagePath: 'images/splash-images.png');
+  // return const Text("Splash Screen");
+  // }
 }
