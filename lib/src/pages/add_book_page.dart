@@ -215,6 +215,13 @@ class _AddBookPageState extends State<AddBookPage> {
                       hint: "10",
                       controller: _stockController,
                       isNumber: true),
+                  Row(
+                    children: [
+                      SizedBox(width: PaddingSizes.small),
+                      Text("Kategori Buku",
+                          style: AppStyles.labelBoldTextStyle),
+                    ],
+                  ),
                   _buildCategoriesChips(bookCategoryProvider.bookCategories),
                   _buildTextFormField(
                       title: "Deskripsi Buku",
@@ -346,42 +353,36 @@ class _AddBookPageState extends State<AddBookPage> {
         .where((e) => e.id != 0)
         .map((e) => {'name': e.name, 'id': e.id})
         .toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Kategori Buku", style: AppStyles.labelBoldTextStyle),
-        Wrap(
-          // spacing: 2,
-          runSpacing: -12,
-          children: options.map((option) {
-            String name = option['name'];
-            int id = option['id'];
-            bool isSelected = selectedIds.contains(id);
+    return Wrap(
+      // spacing: 2,
+      runSpacing: -12,
+      children: options.map((option) {
+        String name = option['name'];
+        int id = option['id'];
+        bool isSelected = selectedIds.contains(id);
 
-            return FilterChip(
-              showCheckmark: false,
-              label: Text(
-                name,
-                style: isSelected
-                    ? AppStyles.labelWhiteTextStyle
-                    : AppStyles.labelTextStyle,
-              ),
-              selected: selectedIds.contains(id),
-              onSelected: (isSelected) {
-                setState(() {
-                  if (isSelected) {
-                    selectedIds.add(id);
-                  } else {
-                    selectedIds.remove(id);
-                  }
-                });
-              },
-              backgroundColor: AppColors.grey,
-              selectedColor: AppColors.primaryColor,
-            );
-          }).toList(),
-        ),
-      ],
+        return FilterChip(
+          showCheckmark: false,
+          label: Text(
+            name,
+            style: isSelected
+                ? AppStyles.labelWhiteTextStyle
+                : AppStyles.labelTextStyle,
+          ),
+          selected: selectedIds.contains(id),
+          onSelected: (isSelected) {
+            setState(() {
+              if (isSelected) {
+                selectedIds.add(id);
+              } else {
+                selectedIds.remove(id);
+              }
+            });
+          },
+          backgroundColor: AppColors.grey,
+          selectedColor: AppColors.primaryColor,
+        );
+      }).toList(),
     );
   }
 
