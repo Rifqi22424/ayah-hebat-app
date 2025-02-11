@@ -20,15 +20,15 @@ class _ButtonBuilderState extends State<ButtonBuilder> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
         ),
         backgroundColor:
-            WidgetStateProperty.all<Color>(AppColors.primaryColor),
+            MaterialStatePropertyAll<Color>(AppColors.primaryColor),
         minimumSize:
-            WidgetStateProperty.all<Size>(const Size(double.maxFinite, 50)),
+            MaterialStatePropertyAll<Size>(const Size(double.maxFinite, 50)),
       ),
       onPressed: () async {
         setState(() {

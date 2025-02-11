@@ -430,11 +430,11 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
               TextButton(
                 onPressed: () {},
                 style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100))),
-                  foregroundColor:
-                      WidgetStatePropertyAll(donationStatusColor(book.status)),
-                  backgroundColor: WidgetStatePropertyAll(
+                  foregroundColor: MaterialStatePropertyAll(
+                      donationStatusColor(book.status)),
+                  backgroundColor: MaterialStatePropertyAll(
                       backgroundDonationStatusColor(book.status)),
                 ),
                 child: Text(
@@ -608,11 +608,11 @@ class _ManageBooksPageState extends State<ManageBooksPage> {
               TextButton(
                 onPressed: () {},
                 style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100))),
-                  foregroundColor:
-                      WidgetStatePropertyAll(borrowStatusColor(borrow.status)),
-                  backgroundColor: WidgetStatePropertyAll(
+                  foregroundColor: MaterialStatePropertyAll(
+                      borrowStatusColor(borrow.status)),
+                  backgroundColor: MaterialStatePropertyAll(
                       backgroundBorrowStatusColor(borrow.status)),
                 ),
                 child: Text(

@@ -1,17 +1,18 @@
 import 'dart:convert';
+import 'package:ayahhebat/src/widgets/app_bar_builder.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-class MessagePage extends StatefulWidget {
+class ResultInfaqPage extends StatefulWidget {
   final RemoteMessage message;
 
-  const MessagePage({Key? key, required this.message}) : super(key: key);
+  const ResultInfaqPage({Key? key, required this.message}) : super(key: key);
 
   @override
-  State<MessagePage> createState() => _MessagePageState();
+  State<ResultInfaqPage> createState() => _ResultInfaqPageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
+class _ResultInfaqPageState extends State<ResultInfaqPage> {
   Map<String, dynamic> payload = {};
 
   @override
@@ -25,13 +26,14 @@ class _MessagePageState extends State<MessagePage> {
     if (data.notification == null && data.data.isNotEmpty) {
       payload = jsonDecode(data.data['payload']);
     }
+
     return Scaffold(
-      appBar: AppBar(title: Text("Your Message")),
+      appBar: AppBarBuilder(title: ""),
       body: Center(
         child: Column(
           children: [
             Text(payload.toString()),
-            // Text(payload['hello'])
+            Text(payload['status'])
           ],
         ),
       ),

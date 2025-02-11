@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ayahhebat/src/providers/allocation_provider.dart';
+import 'package:ayahhebat/src/providers/infaq_provider.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,8 +23,8 @@ import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
-const serverPath = "https://backend.ayahhebat.mangcoding.com";
+const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+// const serverPath = "https://backend.ayahhebat.mangcoding.com";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -75,7 +77,15 @@ main() async {
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     if (message.notification != null) {
       print("Background Notification Tapped");
-      navigatorKey.currentState!.pushNamed("/message", arguments: message);
+      print("Message data: ${message.data}");
+      final notificationType = message.data['notificationType'];
+      print("Notification Type: $notificationType");
+      if (notificationType == "infaqNotification") {
+        navigatorKey.currentState!
+            .pushNamed("/resultInfaq", arguments: message);
+      } else {
+        navigatorKey.currentState!.pushNamed("/message", arguments: message);
+      }
     }
   });
 
@@ -103,8 +113,17 @@ main() async {
 
   if (message != null) {
     print("Launched from terminated state");
-    Future.delayed(Duration(seconds: 1), () {
-      navigatorKey.currentState!.pushNamed("/message", arguments: message);
+    // Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(seconds: 5), () {
+      // navigatorKey.currentState!.pushNamed("/message", arguments: message);
+      final notificationType = message.data['notificationType'];
+      print("Notification Type: $notificationType");
+      if (notificationType == "infaqNotification") {
+        navigatorKey.currentState!
+            .pushNamed("/resultInfaq", arguments: message);
+      } else {
+        navigatorKey.currentState!.pushNamed("/message", arguments: message);
+      }
     });
   }
 
@@ -121,14 +140,17 @@ main() async {
         ChangeNotifierProvider(create: (_) => DonationBooksProvider()),
         ChangeNotifierProvider(create: (_) => DonationBookProvider()),
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
+        ChangeNotifierProvider(create: (_) => AllocationProvider()),
+        ChangeNotifierProvider(create: (_) => InfaqProvider()),
       ],
       child: DevicePreview(
-        enabled: true,
+        enabled: !kReleaseMode,
         tools: const [
           ...DevicePreview.defaultTools,
         ],
         builder: (context) => const MyApp(),
       ),
+      // const MyApp(),
     ),
   );
 

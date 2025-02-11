@@ -78,7 +78,10 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
 
   Future<void> _pickImageMedia(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedFile = await picker.pickImage(
+      source: source,
+      requestFullMetadata: false,
+    );
 
     if (pickedFile != null) {
       setState(() {

@@ -1,4 +1,3 @@
-
 mixin ValidationMixin {
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -61,7 +60,7 @@ mixin ValidationMixin {
     return null;
   }
 
-   String? validateTahun(String? value) {
+  String? validateTahun(String? value) {
     if (value == null || value.isEmpty) {
       return 'Tahun tidak boleh kosong';
     }
@@ -103,6 +102,31 @@ mixin ValidationMixin {
     if (value == null || value.isEmpty) {
       return 'Isi data diatas terlebih dahulu';
     }
+    return null;
+  }
+
+  String? validateDropDown(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Pilih salah satu terlebih dahulu';
+    }
+    return null;
+  }
+
+  String? validateAmount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Masukan nominal terlebih dahulu';
+    }
+
+    int? numericValue = int.tryParse(value.replaceAll('.', ''));
+
+    if (numericValue == null) {
+      return 'Masukan nominal yang valid';
+    }
+
+    if (numericValue < 10000 || numericValue > 1000000) {
+      return 'Nominal harus diantara Rp 10.000 - Rp 1.000.000';
+    }
+
     return null;
   }
 }

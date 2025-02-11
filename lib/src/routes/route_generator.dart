@@ -5,6 +5,9 @@ import 'package:ayahhebat/src/pages/deleteAccount/submit_account_deletion_page.d
 import 'package:ayahhebat/src/pages/detail_story_page.dart';
 import 'package:ayahhebat/src/pages/faq_page.dart';
 import 'package:ayahhebat/src/pages/forum/comments_page.dart';
+import 'package:ayahhebat/src/pages/infaq/detail_infaq_page.dart';
+import 'package:ayahhebat/src/pages/infaq/infaq_history_page.dart';
+import 'package:ayahhebat/src/pages/infaq/send_infaq_page.dart';
 import 'package:ayahhebat/src/pages/message_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +19,8 @@ import '../pages/book/borrow_book_detail_page.dart';
 import '../pages/book/donation_book_detail_page.dart';
 import '../pages/book/manage_books_page.dart';
 import '../pages/change_password_page.dart';
+import '../pages/infaq/pay_method_infaq.dart';
+import '../pages/infaq/result_infaq_page.dart';
 import '../pages/my_ranking_page.dart';
 import '../pages/news_content_page.dart';
 import '../pages/profiles/edit_profile_page.dart';
@@ -70,7 +75,25 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => ManageBooksPage());
       case "/profile":
         return MaterialPageRoute(
-            builder: (context) => const MainPage(index: 4));
+            builder: (context) => const MainPage(index: 5));
+      // Infaq Feature
+      case "/infaq":
+        return MaterialPageRoute(
+            builder: (context) => const MainPage(index: 3));
+      case "/infaqHistory":
+        return MaterialPageRoute(
+            builder: (context) => const InfaqHistoryPage());
+      case "/detailInfaq":
+        final args = settings.arguments as Map<String, dynamic>;
+        final String id = args['id'];
+        return MaterialPageRoute(builder: (context) => DetailInfaqPage(id: id));
+      case "/sendInfaq":
+        return MaterialPageRoute(builder: (context) => const SendInfaqPage());
+      case "/payMethodInfaq":
+        final args = settings.arguments as Map<String, dynamic>;
+        final String redirectUrl = args['redirectUrl'];
+        return MaterialPageRoute(
+            builder: (context) => PayMethodInfaqPage(redirectUrl: redirectUrl));
       case "/addProfile":
         return MaterialPageRoute(builder: (context) => const AddProfilePage());
       case "/editProfile":
@@ -111,7 +134,7 @@ class RouteGenerator {
       case "/forum":
         return MaterialPageRoute(
             builder: (context) => const MainPage(
-                  index: 3,
+                  index: 4,
                 ));
       case "/comments":
         final args = settings.arguments as Map<String, dynamic>;
@@ -134,6 +157,12 @@ class RouteGenerator {
         final message = settings.arguments as RemoteMessage;
         return MaterialPageRoute(
             builder: (context) => MessagePage(
+                  message: message,
+                ));
+      case "/resultInfaq":
+        final message = settings.arguments as RemoteMessage;
+        return MaterialPageRoute(
+            builder: (context) => ResultInfaqPage(
                   message: message,
                 ));
       case "/sendVerificationCode":

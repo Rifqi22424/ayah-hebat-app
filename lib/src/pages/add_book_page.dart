@@ -189,10 +189,10 @@ class _AddBookPageState extends State<AddBookPage> {
                         TextButton(
                             style: TextButton.styleFrom().copyWith(
                                 overlayColor:
-                                    WidgetStateProperty.all(AppColors.grey),
-                                side: WidgetStatePropertyAll(BorderSide(
+                                    MaterialStatePropertyAll(AppColors.grey),
+                                side: MaterialStatePropertyAll(BorderSide(
                                     width: 1, color: AppColors.accentColor)),
-                                shape: WidgetStatePropertyAll(
+                                shape: MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(32)))),

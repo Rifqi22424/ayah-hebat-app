@@ -129,6 +129,9 @@ class _VerificationPageState extends State<VerificationPage> {
                           if (value.length == 1 && index < 5) {
                             FocusScope.of(context).nextFocus();
                           }
+                          if (value.isEmpty && index > 0) {
+                            FocusScope.of(context).previousFocus();
+                          }
                           verificationValues[index] = value;
                           checkVerificationCode();
                         },

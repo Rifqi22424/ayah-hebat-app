@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -100,8 +102,45 @@ class PushNotifications {
 
   // on tap local notification in foreground
   static void onNotificationTap(NotificationResponse notificationResponse) {
-    navigatorKey.currentState!
-        .pushNamed("/message", arguments: notificationResponse);
+    print("Notification tapped");
+    print("Notification: $notificationResponse");
+    print("Notification payload: ${notificationResponse.payload}");
+    // navigatorKey.currentState!
+    //     .pushNamed("/message", arguments: notificationResponse);
+    if (notificationResponse.payload != null) {
+      try {
+        // Decode the payload
+        Map<String, dynamic> payloadData =
+            jsonDecode(notificationResponse.payload!);
+
+        // Manually construct a RemoteMessage object
+        RemoteMessage remoteMessage = RemoteMessage(
+          messageId: payloadData['id'] ?? '', // Assuming 'id' is the messageId
+          sentTime: DateTime.tryParse(payloadData['createdAt'] ?? '') ??
+              DateTime.now(),
+          data:
+              payloadData, // Store all other data as part of RemoteMessage's `data`
+          notification: RemoteNotification(
+            title: "Payment Status", // Example: Custom title
+            body:
+                "Your payment with ID ${payloadData['orderId']} has ${payloadData['status']}.", // Example: Custom message body
+          ),
+        );
+
+        // Navigate to /message with the converted RemoteMessage
+        final notificationType = remoteMessage.data['notificationType'];
+        print("Notification Type: $notificationType");
+        if (notificationType == "infaqNotification") {
+          navigatorKey.currentState!
+              .pushNamed("/resultInfaq", arguments: remoteMessage);
+        } else {
+          navigatorKey.currentState!
+              .pushNamed("/message", arguments: remoteMessage);
+        }
+      } catch (e) {
+        print("Error parsing notification payload: $e");
+      }
+    }
   }
 
   // show a simple notification
