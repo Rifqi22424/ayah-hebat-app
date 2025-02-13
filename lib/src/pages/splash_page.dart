@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
 import '../consts/app_colors.dart';
@@ -28,10 +29,36 @@ class _SplashPageState extends State<SplashPage> {
         SharedPreferencesHelper.saveToken(login.token);
         if (login.profile.nama != "") {
           Navigator.pushReplacementNamed(context, '/home');
+          // RemoteMessage remoteMessage = RemoteMessage(
+          //   notification: RemoteNotification(
+          //     title: "Infaq Berhasil",
+          //     body: "Infaq anda berhasil dikirimkan",
+          //   ),
+          //   data: {
+          //     "id": "28aabdd0-e825-4cbd-a8c4-59e765fea78a",
+          //     "userId": "5",
+          //     "amount": "12000",
+          //     "status": "pending",
+          //     "orderId": "JTYH-1739431473195",
+          //     "redirectUrl":
+          //         "https://app.sandbox.midtrans.com/snap/v4/redirection/69fc04b1-43f0-4473-91f6-652de7bd10a1",
+          //     "allocationTypeCode": "JTYH",
+          //     "paymentType": "cstore",
+          //     "createdAt":
+          //         "Thu Feb 13 2025 14:24:34 GMT+0700 (Western Indonesia Time)",
+          //     "updatedAt":
+          //         "Thu Feb 13 2025 14:34:52 GMT+0700 (Western Indonesia Time)",
+          //     "notificationType": "infaqNotification",
+          //     "allocationType": "mubarahah"
+          //   },
+          // );
+          // Navigator.pushNamed(context, '/resultInfaq',
+          //     arguments: remoteMessage);
         } else {
           Navigator.pushReplacementNamed(context, '/addProfile');
         }
       } catch (e) {
+        print(e.toString());
         Navigator.pushReplacementNamed(context, "/login");
       }
     } else {
