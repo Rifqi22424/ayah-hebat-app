@@ -93,7 +93,7 @@ Future<void> showDetailInfaqDialog(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Detail Infaq", style: AppStyles.heading2TextStyle),
+                      Text("Detail Iuran", style: AppStyles.heading2TextStyle),
                       IconButton(
                           onPressed: () => Navigator.of(context).pop(),
                           icon: Icon(Icons.close))
@@ -116,7 +116,7 @@ Future<void> showDetailInfaqDialog(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text("Jumlah Infaq",
+                                Text("Jumlah Iuran",
                                     style: AppStyles.hintTextStyle),
                                 TextButton(
                                   onPressed: () {},
@@ -159,7 +159,7 @@ Future<void> showDetailInfaqDialog(
                     Text(detailInfaq.paymentType!,
                         style: AppStyles.hintTextStyle),
                   SizedBox(height: PaddingSizes.small),
-                  Text("Type Infaq", style: AppStyles.labelTextStyle),
+                  Text("Type Iuran", style: AppStyles.labelTextStyle),
                   SizedBox(height: PaddingSizes.doubleExtraSmall),
                   Text(detailInfaq.infaqType, style: AppStyles.hintTextStyle),
                   SizedBox(height: PaddingSizes.medium),

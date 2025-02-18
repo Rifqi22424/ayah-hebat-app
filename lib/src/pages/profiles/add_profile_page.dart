@@ -47,6 +47,21 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
       photo = File(selectedMediaEmpty!);
     }
 
+    int maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    if (photo.lengthSync() > maxSizeInBytes) {
+      setState(() {
+        isLoadingWidget = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ukuran gambar terlalu besar! Maksimal 2MB'),
+          backgroundColor: AppColors.redColor,
+        ),
+      );
+      return;
+    }
+
     bool success = await ProfileApi().addProfile(
         namaController.text,
         bioController.text,
@@ -59,9 +74,13 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
     final snackBar = SnackBar(
       content: Text(success
           ? 'Profile data posted successfully'
-          : 'Failed to post profile data'),
+          : 'Gagal memposting data, cek jaringan anda'),
       backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
     );
+
+    setState(() {
+      isLoadingWidget = false;
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 

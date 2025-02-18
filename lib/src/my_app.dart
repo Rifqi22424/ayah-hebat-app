@@ -4,6 +4,7 @@ import 'package:ayahhebat/src/widgets/no_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
 import 'routes/route_generator.dart';
+import 'utils/network_manager.dart';
 // import 'package:uni_links/uni_links.dart';
 
 class MyApp extends StatefulWidget {
@@ -89,8 +90,23 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(useMaterial3: false, fontFamily: 'Lato'),
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
+      // navigatorObservers: [NavigatorObserverWithNetworkCheck()],
       onGenerateRoute: RouteGenerator.generateRoute,
       navigatorKey: navigatorKey,
     );
   }
+
+  // @override
+  // void dispose() {
+  //   NetworkManager().dispose();
+  //   super.dispose();
+  // }
 }
+
+// class NavigatorObserverWithNetworkCheck extends NavigatorObserver {
+//   @override
+//   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+//     super.didPush(route, previousRoute);
+//     NetworkManager().initialize(route.navigator!.context);
+//   }
+// }

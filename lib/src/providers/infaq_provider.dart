@@ -56,6 +56,7 @@ class InfaqProvider extends ChangeNotifier {
       _errorMessage = null;
     } catch (e) {
       _errorMessage = e.toString();
+      print(_errorMessage);
       _state = InfaqState.error;
     } finally {
       print("Infaq State $_state");

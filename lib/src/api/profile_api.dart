@@ -52,6 +52,8 @@ class ProfileApi {
 
       final response = await request.send();
 
+      print(response.statusCode);
+
       if (response.statusCode == 200) {
         return true;
       } else {

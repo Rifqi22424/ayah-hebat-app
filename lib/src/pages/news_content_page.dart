@@ -41,7 +41,7 @@ class _NewsContentPageState extends State<NewsContentPage> {
           return _buildShimmerEffect();
         } else if (snapshot.hasError) {
           return const Center(
-            child: Text('Tidak ada data notifikasi'),
+            child: Text('Tidak ada data Berita'),
           );
         } else if (snapshot.hasData) {
           final News news = snapshot.data!;
@@ -129,7 +129,7 @@ class _NewsContentPageState extends State<NewsContentPage> {
           );
         }
         return Center(
-          child: Text('Tidak ada data notifikasi'),
+          child: Text('Tidak ada data berita'),
         );
       },
     ));

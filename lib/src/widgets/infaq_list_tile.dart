@@ -48,7 +48,7 @@ class InfaqListTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(width: PaddingSizes.small),
-                  Text("Infaq", style: AppStyles.heading3BoldTextStyle),
+                  Text("Iuran", style: AppStyles.heading3BoldTextStyle),
                   // SizedBox(height: PaddingSizes.small),
                   SizedBox(height: PaddingSizes.extrasmall),
                   Text("Rp. ${formatNumber(infaq.amount)}",

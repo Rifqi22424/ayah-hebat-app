@@ -80,7 +80,7 @@ String buttonTextByStatus(String status) {
   if (status == "pending") {
     return "Bayar Sekarang";
   } else {
-    return "Kembali ke Dashboard";
+    return "Kembali ke Halaman Utama";   
   }
 }
 
@@ -149,12 +149,12 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                 ),
                 SizedBox(height: PaddingSizes.large),
                 Text(
-                  data.data['title'] ?? "",
+                  payload['title'] ?? "",
                   textAlign: TextAlign.center,
                   style: AppStyles.heading1TextStyle,
                 ),
                 SizedBox(height: PaddingSizes.small),
-                Text(data.data['body'] ?? "",
+                Text(payload['body'] ?? "",
                     textAlign: TextAlign.center,
                     style: AppStyles.hintTextStyle),
                 SizedBox(height: PaddingSizes.medium),
@@ -185,7 +185,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                   payload["id"] ??
                                       "Exception was thrownException thrownException",
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle)),
+                                  style: AppStyles.labelTextStyle)),
                         ],
                       ),
                       SizedBox(height: PaddingSizes.small),
@@ -201,7 +201,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                       date: payload["updatedAt"] ??
                                           DateTime.now()),
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle)),
+                                  style: AppStyles.labelTextStyle)),
                         ],
                       ),
                       SizedBox(height: PaddingSizes.small),
@@ -217,7 +217,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                   payload["allocationType"] ??
                                       "Exception was thrownException thrownException was thrown",
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle)),
+                                  style: AppStyles.labelTextStyle)),
                         ],
                       ),
                       SizedBox(height: PaddingSizes.small),
@@ -233,7 +233,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                   payload["paymentType"] ??
                                       "Exception was thrownException thrownException was thrown",
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle)),
+                                  style: AppStyles.labelTextStyle)),
                         ],
                       ),
                       SizedBox(height: PaddingSizes.small),
@@ -251,7 +251,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                       .toString()
                                       .capitalize(),
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle)),
+                                  style: AppStyles.labelTextStyle)),
                         ],
                       ),
                       SizedBox(height: PaddingSizes.extraLarge),
@@ -271,7 +271,7 @@ class _ResultInfaqPageState extends State<ResultInfaqPage> {
                                           0)
                                       .toString(),
                                   textAlign: TextAlign.end,
-                                  style: AppStyles.labelBoldTextStyle))
+                                  style: AppStyles.labelTextStyle))
                         ],
                       ),
                     ],

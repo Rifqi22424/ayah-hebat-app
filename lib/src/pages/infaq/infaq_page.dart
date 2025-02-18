@@ -73,7 +73,7 @@ class _InfaqPageState extends State<InfaqPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total Infaq Anda",
+                          Text("Total Iuran Anda",
                               style: AppStyles.hintTextStyle),
                           SizedBox(height: PaddingSizes.extrasmall),
                           Consumer<InfaqProvider>(
@@ -146,7 +146,12 @@ class _InfaqPageState extends State<InfaqPage> {
                             ),
                           ),
                           Expanded(
-                              child: Image.asset("images/infaq_ornament.png")),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight:
+                                          Radius.circular(PaddingSizes.medium)),
+                                  child: Image.asset(
+                                      "images/wadaah_ornament.png"))),
                         ],
                       ),
                     ),
@@ -157,11 +162,11 @@ class _InfaqPageState extends State<InfaqPage> {
               ButtonBuilder(
                   onPressed: () async =>
                       Navigator.pushNamed(context, '/sendInfaq'),
-                  child: Text("Infaq Sekarang")),
+                  child: Text("Iuran Sekarang")),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("List Infaq", style: AppStyles.heading3BoldTextStyle),
+                  Text("List Iuran", style: AppStyles.heading3BoldTextStyle),
                   TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/infaqHistory');
@@ -204,9 +209,15 @@ class _InfaqPageState extends State<InfaqPage> {
 
                   if (value.state == InfaqState.loaded &&
                       value.infaqs.isEmpty) {
-                    return Center(child: Text("Belum ada infaq"));
+                    return Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingSizes.small),
+                      child: ListView(
+                        children: [Center(child: Text("Belum ada infaq"))],
+                      ),
+                    ));
                   }
-
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

@@ -34,7 +34,7 @@ class _InfaqHistoryPageState extends State<InfaqHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBuilder(
-        title: "Riwayat Infaq",
+        title: "Riwayat Iuran",
         showBackButton: true,
         showCancelButton: false,
         onBackButtonPressed: () {

@@ -289,7 +289,9 @@ class _WebViewAppState extends State<PayMethodInfaqPage> {
                   }
                   print("Host: $host");
                   if (host.contains('example.com') ||
-                      host.contains('Webpage not available')) {
+                      host.contains('Webpage not available') ||
+                      host.contains('dhrqldvp-3000.asse.devtunnels.ms') ||
+                      host.contains('backend.ayahhebat.mangcoding')) {
                     print("Error: $host");
                     Navigator.pop(context); // Go back to the previous screen
                     return NavigationDecision.prevent;

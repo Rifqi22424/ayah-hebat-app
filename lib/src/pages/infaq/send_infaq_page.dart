@@ -40,14 +40,16 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
 
   _fetchDefaultValue() async {
     String? gmail = await SharedPreferencesHelper.getEmail();
+    String? phoneNumber = await SharedPreferencesHelper.getPhoneNumber();
     _gmailController.text = gmail ?? "";
+    _phoneNumberController.text = phoneNumber ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBuilder(
-        title: "Kirim Infaq",
+        title: "Kirim Iuran",
         showBackButton: true,
         showCancelButton: false,
         onBackButtonPressed: () {
@@ -128,7 +130,7 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
               ),
             ),
             SizedBox(height: PaddingSizes.small),
-            Text("Type Infaq", style: AppStyles.labelBoldTextStyle),
+            Text("Type Iuran", style: AppStyles.labelBoldTextStyle),
             SizedBox(height: PaddingSizes.extrasmall),
             Container(
               // decoration: BoxDecoration(
@@ -169,7 +171,7 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
                     validator: validateDropDown,
                     value: _selectedInfaqTypeCode,
                     style: AppStyles.labelTextStyle,
-                    hint: Text("Pilih Alokasi Infaq",
+                    hint: Text("Pilih Alokasi Iuran",
                         style: AppStyles.hintTextStyle),
                     items: value.state == AllocationState.loading ||
                             value.state == AllocationState.initial
@@ -180,6 +182,7 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
                                 child: Text(allocation.name));
                           }).toList(),
                     decoration: InputDecoration(
+                      isDense: true,
                       border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.circular(PaddingSizes.extraLarge)),
@@ -200,12 +203,12 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
               style: AppStyles.labelTextStyle,
               validator: validateEmail,
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(PaddingSizes.extraLarge)),
-                hintText: "example@gmail.com",
-                hintStyle: AppStyles.hintTextStyle,
-              ),
+                  border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(PaddingSizes.extraLarge)),
+                  hintText: "example@gmail.com",
+                  hintStyle: AppStyles.hintTextStyle,
+                  isDense: true),
               controller: _gmailController,
               keyboardType: TextInputType.emailAddress,
             ),
@@ -218,6 +221,7 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
                 validator: validatePhone,
                 style: AppStyles.labelTextStyle,
                 decoration: InputDecoration(
+                  isDense: true,
                   border: OutlineInputBorder(
                       borderRadius:
                           BorderRadius.circular(PaddingSizes.extraLarge)),
@@ -255,6 +259,8 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
             allocationTypeCode: allocationTypeCode);
 
         print("Redirect URL: ${response.redirectUrl}");
+
+        SharedPreferencesHelper.savePhoneNumber(phoneNumber);
 
         Navigator.pushNamed(context, '/payMethodInfaq', arguments: {
           'redirectUrl': response.redirectUrl,

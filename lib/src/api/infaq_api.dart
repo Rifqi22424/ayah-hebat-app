@@ -9,7 +9,7 @@ import '../models/entity/infaq_model.dart';
 import '../models/response/create_infaq_response.dart';
 
 class InfaqApi {
-  Future<InfaqsResponse> fetchInfaqs({int limit = 2, int page = 1}) async {
+  Future<InfaqsResponse> fetchInfaqs({int limit = 5, int page = 1}) async {
     String? token = await SharedPreferencesHelper.getToken();
     print(token);
     final Uri uri =

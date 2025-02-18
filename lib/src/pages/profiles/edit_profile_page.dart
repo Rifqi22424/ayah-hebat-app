@@ -78,13 +78,16 @@ class _EditProfilePageState extends State<EditProfilePage>
         anakController.text,
         photo);
 
+    setState(() {
+      isLoadingWidget = false;
+    });
+
     final snackBar = SnackBar(
       content: Text(success
           ? 'Profile data posted successfully'
-          : 'Failed to post profile data'),
+          : 'Gagal memposting data, cek jaringan anda'),
       backgroundColor: success ? AppColors.greenColor : AppColors.redColor,
     );
-    
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
