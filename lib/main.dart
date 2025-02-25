@@ -23,8 +23,8 @@ import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -143,13 +143,15 @@ main() async {
         ChangeNotifierProvider(create: (_) => AllocationProvider()),
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
       ],
-      child: DevicePreview(
-        enabled: !kReleaseMode,
-        tools: const [
-          ...DevicePreview.defaultTools,
-        ],
-        builder: (context) => const MyApp(),
-      ),
+      child: const MyApp(),
+      // DevicePreview(
+      //   enabled: !kReleaseMode,s
+      //   tools: const [
+      //     ...DevicePreview.defaultTools,
+      //   ],
+      //   builder: (context) =>
+      // const MyApp(),
+      // ),
       // const MyApp(),
     ),
   );

@@ -200,6 +200,7 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
             Text("Masukan Gmail", style: AppStyles.labelBoldTextStyle),
             SizedBox(height: PaddingSizes.extrasmall),
             TextFormField(
+              readOnly: true,
               style: AppStyles.labelTextStyle,
               validator: validateEmail,
               decoration: InputDecoration(
@@ -261,6 +262,11 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
         print("Redirect URL: ${response.redirectUrl}");
 
         SharedPreferencesHelper.savePhoneNumber(phoneNumber);
+
+        setState(() {
+          _amountController.clear();
+          _selectedInfaqTypeCode = null;
+        });
 
         Navigator.pushNamed(context, '/payMethodInfaq', arguments: {
           'redirectUrl': response.redirectUrl,
