@@ -21,4 +21,9 @@ class LoginResponse {
       profile: Profile.fromJson(json['user']['profile'] ?? {}),
     );
   }
+
+  @override
+  String toString() {
+    return "LoginResponse(token: $token, id: $id, email: $email, profile: $profile)";
+  }
 }

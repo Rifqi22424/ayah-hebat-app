@@ -48,4 +48,9 @@ class Profile {
       photo: json['profile']['photo'] ?? "",
     );
   }
+
+  @override
+  String toString() {
+    return 'Profile(id: $id, nama: $nama, bio: $bio, namaIstri: $namaIstri, namaAnak: $namaAnak, namaKuttab: $namaKuttab, tahunMasukKuttab: $tahunMasukKuttab, userId: $userId, photo: $photo)';
+  }
 }

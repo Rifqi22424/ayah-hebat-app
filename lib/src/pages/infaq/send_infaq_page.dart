@@ -56,118 +56,115 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
           Navigator.pop(context);
         },
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(16),
-          children: [
-            Text("Nominal Transfer", style: AppStyles.labelBoldTextStyle),
-            SizedBox(height: PaddingSizes.extrasmall),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(PaddingSizes.medium),
-              ),
-              child: Column(
-                children: [
-                  Row(
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Nominal Transfer", style: AppStyles.labelBoldTextStyle),
+                SizedBox(height: PaddingSizes.extrasmall),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(PaddingSizes.medium),
+                  ),
+                  child: Column(
                     children: [
-                      SizedBox(width: PaddingSizes.small),
-                      Text("Rp. "),
-                      SizedBox(width: PaddingSizes.small),
-                      Expanded(
-                        child: TextFormField(
-                          style: AppStyles.labelTextStyle,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "0",
-                            hintStyle: AppStyles.hintTextStyle,
-                          ),
-                          controller: _amountController,
-                          keyboardType: TextInputType.number,
-                          validator: validateAmount,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            TextInputFormatter.withFunction(
-                              (oldValue, newValue) {
-                                String formatted =
-                                    formatStringToNumber(newValue.text);
-                                return TextEditingValue(
-                                  text: formatted,
-                                  selection: TextSelection.collapsed(
-                                      offset: formatted.length),
-                                );
-                              },
+                      Row(
+                        children: [
+                          SizedBox(width: PaddingSizes.small),
+                          Text("Rp. "),
+                          SizedBox(width: PaddingSizes.small),
+                          Expanded(
+                            child: TextFormField(
+                              style: AppStyles.labelTextStyle,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "0",
+                                hintStyle: AppStyles.hintTextStyle,
+                              ),
+                              controller: _amountController,
+                              keyboardType: TextInputType.number,
+                              validator: validateAmount,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                TextInputFormatter.withFunction(
+                                  (oldValue, newValue) {
+                                    String formatted =
+                                        formatStringToNumber(newValue.text);
+                                    return TextEditingValue(
+                                      text: formatted,
+                                      selection: TextSelection.collapsed(
+                                          offset: formatted.length),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                // border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft:
+                                        Radius.circular(PaddingSizes.medium),
+                                    bottomRight:
+                                        Radius.circular(PaddingSizes.medium)),
+                                color: AppColors.grey,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(PaddingSizes.small),
+                                child: Text("Minimum Rp. 10.000",
+                                    style: AppStyles.hintTextStyle),
+                              ),
+                            ),
+                          ),
+                        ],
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            // border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.only(
-                                bottomLeft:
-                                    Radius.circular(PaddingSizes.medium),
-                                bottomRight:
-                                    Radius.circular(PaddingSizes.medium)),
-                            color: AppColors.grey,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(PaddingSizes.small),
-                            child: Text("Minimum Rp. 10.000",
-                                style: AppStyles.hintTextStyle),
-                          ),
-                        ),
+                ),
+                SizedBox(height: PaddingSizes.small),
+                Text("Type Iuran", style: AppStyles.labelBoldTextStyle),
+                SizedBox(height: PaddingSizes.extrasmall),
+                Consumer<AllocationProvider>(
+                    builder: (context, value, child) {
+                  if (value.state == AllocationState.initial ||
+                      value.state == AllocationState.loading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
                       ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: PaddingSizes.small),
-            Text("Type Iuran", style: AppStyles.labelBoldTextStyle),
-            SizedBox(height: PaddingSizes.extrasmall),
-            Container(
-              // decoration: BoxDecoration(
-              //   borderRadius: BorderRadius.circular(PaddingSizes.extraLarge),
-              //   border: Border.all(color: AppColors.pureGrey),
-              // ),
-              child: Consumer<AllocationProvider>(
-                  builder: (context, value, child) {
-                if (value.state == AllocationState.initial ||
-                    value.state == AllocationState.loading) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryColor,
-                    ),
-                  );
-                }
-
-                if (value.state == AllocationState.error) {
-                  return Center(
-                    child: TextButton(
-                        onPressed: () => context
-                            .read<AllocationProvider>()
-                            .fetchAllocations(),
-                        child: Text("Retry"),
-                        style: TextButton.styleFrom(
-                            foregroundColor: AppColors.redColor,
-                            disabledBackgroundColor: AppColors.halfRedColor)),
-                  );
-                }
-
-                if (value.state == AllocationState.loaded &&
-                    value.allocations.isEmpty) {
-                  return Center(child: Text("Belum ada alokasi"));
-                }
-
-                return Expanded(
-                  child: DropdownButtonFormField<String>(
+                    );
+                  }
+                
+                  if (value.state == AllocationState.error) {
+                    return Center(
+                      child: TextButton(
+                          onPressed: () => context
+                              .read<AllocationProvider>()
+                              .fetchAllocations(),
+                          child: Text("Retry"),
+                          style: TextButton.styleFrom(
+                              foregroundColor: AppColors.redColor,
+                              disabledBackgroundColor: AppColors.halfRedColor)),
+                    );
+                  }
+                
+                  if (value.state == AllocationState.loaded &&
+                      value.allocations.isEmpty) {
+                    return Center(child: Text("Belum ada alokasi"));
+                  }
+                
+                  return DropdownButtonFormField<String>(
                     validator: validateDropDown,
                     value: _selectedInfaqTypeCode,
                     style: AppStyles.labelTextStyle,
@@ -192,48 +189,48 @@ class _SendInfaqPageState extends State<SendInfaqPage> with ValidationMixin {
                         _selectedInfaqTypeCode = newValue as String;
                       });
                     },
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: PaddingSizes.small),
-            Text("Masukan Gmail", style: AppStyles.labelBoldTextStyle),
-            SizedBox(height: PaddingSizes.extrasmall),
-            TextFormField(
-              readOnly: true,
-              style: AppStyles.labelTextStyle,
-              validator: validateEmail,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(PaddingSizes.extraLarge)),
-                  hintText: "example@gmail.com",
-                  hintStyle: AppStyles.hintTextStyle,
-                  isDense: true),
-              controller: _gmailController,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: PaddingSizes.small),
-            Text("Masukan Nomor Handphone",
-                style: AppStyles.labelBoldTextStyle),
-            SizedBox(height: PaddingSizes.extrasmall),
-            Expanded(
-              child: TextFormField(
-                validator: validatePhone,
-                style: AppStyles.labelTextStyle,
-                decoration: InputDecoration(
-                  isDense: true,
-                  border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(PaddingSizes.extraLarge)),
-                  hintText: "08123456789",
-                  hintStyle: AppStyles.hintTextStyle,
+                  );
+                }),
+                SizedBox(height: PaddingSizes.small),
+                Text("Masukan Gmail", style: AppStyles.labelBoldTextStyle),
+                SizedBox(height: PaddingSizes.extrasmall),
+                TextFormField(
+                  readOnly: true,
+                  style: AppStyles.labelTextStyle,
+                  validator: validateEmail,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(PaddingSizes.extraLarge)),
+                      hintText: "example@gmail.com",
+                      hintStyle: AppStyles.hintTextStyle,
+                      isDense: true),
+                  controller: _gmailController,
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                controller: _phoneNumberController,
-                keyboardType: TextInputType.number,
-              ),
+                SizedBox(height: PaddingSizes.small),
+                Text("Masukan Nomor Handphone",
+                    style: AppStyles.labelBoldTextStyle),
+                SizedBox(height: PaddingSizes.extrasmall),
+                Expanded(
+                  child: TextFormField(
+                    validator: validatePhone,
+                    style: AppStyles.labelTextStyle,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(PaddingSizes.extraLarge)),
+                      hintText: "08123456789",
+                      hintStyle: AppStyles.hintTextStyle,
+                    ),
+                    controller: _phoneNumberController,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
