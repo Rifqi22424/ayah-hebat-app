@@ -69,33 +69,31 @@ class _InfaqHistoryPageState extends State<InfaqHistoryPage> {
             return Center(child: Text("Belum ada infaq"));
           }
 
-          return Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: PaddingSizes.small),
-              child: RefreshIndicator(
-                color: AppColors.primaryColor,
-                onRefresh: () => context.read<InfaqProvider>().refreshInfaqs(),
-                child: ListView.builder(
-                  controller: _infaqScrollController,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemCount: value.infaqs.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == value.infaqs.length) {
-                      if (value.hasMoreData) {
-                        value.fetchInfaqs();
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.primaryColor,
-                          ),
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
+          return Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: PaddingSizes.small),
+            child: RefreshIndicator(
+              color: AppColors.primaryColor,
+              onRefresh: () => context.read<InfaqProvider>().refreshInfaqs(),
+              child: ListView.builder(
+                controller: _infaqScrollController,
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: value.infaqs.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == value.infaqs.length) {
+                    if (value.hasMoreData) {
+                      value.fetchInfaqs();
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                      );
+                    } else {
+                      return SizedBox.shrink();
                     }
-                    return InfaqListTile(infaq: value.infaqs[index]);
-                  },
-                ),
+                  }
+                  return InfaqListTile(infaq: value.infaqs[index]);
+                },
               ),
             ),
           );
