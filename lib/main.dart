@@ -23,7 +23,7 @@ import 'src/providers/post_provider.dart';
 import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-// const serverPath = "https://dhrqldvp-3000.asse.devtunnels.ms";
+// const serverPath = "https://p3gm9glm-3000.asse.devtunnels.ms";
 const serverPath = "https://backend.ayahhebat.mangcoding.com";
 
 final navigatorKey = GlobalKey<NavigatorState>();
