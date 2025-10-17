@@ -421,7 +421,7 @@ class _ForumsPageState extends State<ForumsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarLeftBuilder(
-          title: "Forum diskusi", description: "Diskusi tentang keluarga"),
+          title: "Forum diskusi", description: "Ayah Hebat Pengawal Peradaban Gemilang"),
       body: Padding(
         padding: const EdgeInsets.only(
           left: PaddingSizes.medium,

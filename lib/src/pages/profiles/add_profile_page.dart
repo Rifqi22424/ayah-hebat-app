@@ -162,28 +162,37 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                           showModalBottomSheet(
                             context: context,
                             builder: (BuildContext context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  (selectedMedia != null)
-                                      ? ListTile(
-                                          leading: const Icon(Icons.delete),
-                                          title: const Text('Hapus Profile'),
-                                          onTap: () {
-                                            _removeProfilePhoto();
-                                            Navigator.pop(context);
-                                          },
-                                        )
-                                      : Container(),
-                                  ListTile(
-                                    leading: const Icon(Icons.photo),
-                                    title: const Text('Pilih Foto'),
-                                    onTap: () {
-                                      _pickImageMedia(ImageSource.gallery);
-                                      Navigator.pop(context);
-                                    },
+                              return SafeArea(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      (selectedMedia != null)
+                                          ? ListTile(
+                                              leading: const Icon(Icons.delete),
+                                              title:
+                                                  const Text('Hapus Profile'),
+                                              onTap: () {
+                                                _removeProfilePhoto();
+                                                Navigator.pop(context);
+                                              },
+                                            )
+                                          : Container(),
+                                      ListTile(
+                                        leading: const Icon(Icons.photo),
+                                        title: const Text('Pilih Foto'),
+                                        onTap: () {
+                                          _pickImageMedia(ImageSource.gallery);
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               );
                             },
                           );

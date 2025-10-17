@@ -43,7 +43,7 @@ class _InfaqPageState extends State<InfaqPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarLeftBuilder(
-          title: "Wadaah", description: "Diskusi tentang keluarga"),
+          title: "Wadaah", description: "Waqaf Dana Abadi Ayah Hebat"),
       body: RefreshIndicator(
         color: AppColors.primaryColor,
         onRefresh: () async {
