@@ -18,7 +18,7 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   late Future<List<PopularNews>> futurePopularNews;
   List<NewestNews> newestNewsList = [];
-  final CarouselController _controller = CarouselController();
+  final CarouselSliderController _controller = CarouselSliderController();
   final ScrollController _scrollController = ScrollController();
   int _current = 0;
   bool isLoading = false;
@@ -222,7 +222,8 @@ class _NewsPageState extends State<NewsPage> {
                                                 maxLines: 1,
                                               ),
                                               SizedBox(
-                                                    height: PaddingSizes.extrasmall),
+                                                  height:
+                                                      PaddingSizes.extrasmall),
                                               Text(news.author,
                                                   style: AppStyles
                                                       .labelPrimaryTextStyle)

@@ -78,9 +78,7 @@ class PushNotifications {
       '@mipmap/ic_launcher',
     );
     final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
-      onDidReceiveLocalNotification: (id, title, body, payload) => null,
-    );
+        DarwinInitializationSettings();
     final LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification');
     final InitializationSettings initializationSettings =
@@ -122,7 +120,7 @@ class PushNotifications {
               payloadData, // Store all other data as part of RemoteMessage's `data`
           notification: RemoteNotification(
             title: "Payment Status", // Example: Custom title
-            body: 
+            body:
                 "Your payment with ID ${payloadData['orderId']} has ${payloadData['status']}.", // Example: Custom message body
           ),
         );
