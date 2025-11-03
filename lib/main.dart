@@ -20,11 +20,14 @@ import 'src/providers/donation_book_provider.dart';
 import 'src/providers/donation_books_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
+import 'src/providers/watch_provider.dart';
+import 'src/providers/playlist_provider.dart';
 import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 // const serverPath = "https://p3gm9glm-3000.asse.devtunnels.ms";
-const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://backend.ayahhebat.mangcoding.com";
+const serverPath = "https://h1pbt3lc-3001.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -142,6 +145,8 @@ main() async {
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
         ChangeNotifierProvider(create: (_) => AllocationProvider()),
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
+        ChangeNotifierProvider(create: (_) => WatchProvider()),
+        ChangeNotifierProvider(create: (_) => PlaylistProvider()),
       ],
       child: const MyApp(),
       // DevicePreview(
