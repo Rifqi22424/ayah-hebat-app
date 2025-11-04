@@ -19,6 +19,7 @@ import '../../consts/app_styles.dart';
 import '../../utils/format_duration.dart';
 import '../../utils/format_upload_date.dart';
 import '../../utils/format_view.dart';
+import '../../utils/share_utils.dart';
 
 // Import Widget
 import '../../widgets/video_card.dart';
@@ -166,6 +167,41 @@ class _WatchDetailPageState extends State<WatchDetailPage> {
     }
   }
 
+  void _showShareOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.whiteColor,
+      builder: (BuildContext bContext) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.share, color: AppColors.accentColor),
+                title: Text('Bagikan', style: AppStyles.heading3TextStyle),
+                onTap: () {
+                  Navigator.of(bContext).pop();
+                  shareVideo(
+                    context,
+                    widget.content.title,
+                    widget.content.videoUrl,
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy, color: AppColors.accentColor),
+                title: Text('Salin Link', style: AppStyles.heading3TextStyle),
+                onTap: () {
+                  Navigator.of(bContext).pop();
+                  copyLink(context, widget.content.videoUrl);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     if (_videoId != null) {
@@ -280,7 +316,9 @@ class _WatchDetailPageState extends State<WatchDetailPage> {
               ),
               IconButton(
                 icon: const Icon(Icons.more_vert, color: AppColors.accentColor),
-                onPressed: () {},
+                onPressed: () {
+                  _showShareOptions(context);
+                },
               ),
             ],
           ),
