@@ -1,4 +1,5 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
-  "dart.flutterSdkPath": ".fvm/versions/3.35.3"
+  "dart.flutterSdkPath": ".fvm/versions/3.35.3",
+  "cmake.sourceDirectory": "D:/Belajar Coding/Working Station/ayah-hebat-app/ayah-hebat-app/windows/flutter"
 }
