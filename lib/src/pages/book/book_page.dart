@@ -296,7 +296,7 @@ class _BookPageState extends State<BookPage> {
                 //   child: Text("Buku Kosong"),
                 // );
                 return RefreshIndicator(
-                  color: AppColors.primaryColor,
+                    color: AppColors.primaryColor,
                     child: ListView(
                       children: [
                         Column(
@@ -521,6 +521,7 @@ class _BookPageState extends State<BookPage> {
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
       elevation: 0,
+      centerTitle: false,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

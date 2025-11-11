@@ -26,8 +26,8 @@ import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 // const serverPath = "https://p3gm9glm-3000.asse.devtunnels.ms";
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
-const serverPath = "https://h1pbt3lc-3001.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://mw2wdjms-3000.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
