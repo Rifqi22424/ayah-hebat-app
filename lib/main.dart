@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ayahhebat/src/providers/allocation_provider.dart';
+import 'package:ayahhebat/src/providers/alms_provider.dart';
 import 'package:ayahhebat/src/providers/infaq_provider.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -147,6 +148,7 @@ main() async {
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
         ChangeNotifierProvider(create: (_) => WatchProvider()),
         ChangeNotifierProvider(create: (_) => PlaylistProvider()),
+        ChangeNotifierProvider(create: (_) => AlmsProvider()),
       ],
       child: const MyApp(),
       // DevicePreview(
