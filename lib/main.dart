@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ayahhebat/src/providers/allocation_provider.dart';
+import 'package:ayahhebat/src/providers/alms_provider.dart';
 import 'package:ayahhebat/src/providers/infaq_provider.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,8 +27,8 @@ import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 // const serverPath = "https://p3gm9glm-3000.asse.devtunnels.ms";
-// const serverPath = "https://backend.ayahhebat.mangcoding.com";
-const serverPath = "https://h1pbt3lc-3001.asse.devtunnels.ms";
+const serverPath = "https://backend.ayahhebat.mangcoding.com";
+// const serverPath = "https://h1pbt3lc-3001.asse.devtunnels.ms";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -147,6 +148,7 @@ main() async {
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
         ChangeNotifierProvider(create: (_) => WatchProvider()),
         ChangeNotifierProvider(create: (_) => PlaylistProvider()),
+        ChangeNotifierProvider(create: (_) => AlmsProvider()),
       ],
       child: const MyApp(),
       // DevicePreview(

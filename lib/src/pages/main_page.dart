@@ -1,3 +1,4 @@
+import 'package:ayahhebat/src/pages/alms/alms_page.dart';
 import 'package:ayahhebat/src/pages/forum/forums_page.dart';
 import 'package:flutter/material.dart';
 import '../consts/app_colors.dart';
@@ -32,7 +33,7 @@ class _MainPageState extends State<MainPage> {
     const NewsPage(), // 1
     const BookPage(), // 2
     const WatchPage(), // 3
-    const InfaqPage(), // 4
+    const AlmsPage(), // 4
     const ForumsPage(), // 5
     const ProfilePage(), // 6
   ];
