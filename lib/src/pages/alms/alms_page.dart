@@ -24,19 +24,24 @@ class _AlmsPageState extends State<AlmsPage> {
   void initState() {
     super.initState();
 
-    refreshAlmssAndTotalAlms();
-    _almsScrollController.addListener(() {
-      if (_almsScrollController.position.pixels ==
-          _almsScrollController.position.maxScrollExtent) {
-        context.read<AlmsProvider>().fetchAlmss();
-        print("fetch alms");
-      }
-    });
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await refreshAlmssAndTotalAlms();
+        _almsScrollController.addListener(() async {
+          if (_almsScrollController.position.pixels ==
+              _almsScrollController.position.maxScrollExtent) {
+            await context.read<AlmsProvider>().fetchAlmss();
+            print("fetch alms");
+          }
+        });
+      });
+    }
   }
 
-  void refreshAlmssAndTotalAlms() async {
-    context.read<AlmsProvider>().refreshAlmss();
-    context.read<AlmsProvider>().refreshTotalAlms();
+  Future<void> refreshAlmssAndTotalAlms() async {
+    final almsProvider = context.read<AlmsProvider>();
+    await almsProvider.refreshAlmss();
+    await almsProvider.refreshTotalAlms();
   }
 
   @override
@@ -47,7 +52,7 @@ class _AlmsPageState extends State<AlmsPage> {
       body: RefreshIndicator(
         color: AppColors.primaryColor,
         onRefresh: () async {
-          refreshAlmssAndTotalAlms();
+          await refreshAlmssAndTotalAlms();
         },
         child: Padding(
           padding: const EdgeInsets.only(

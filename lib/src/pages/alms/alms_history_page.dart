@@ -20,14 +20,18 @@ class _AlmsHistoryPageState extends State<AlmsHistoryPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AlmsProvider>().fetchAlmss();
-    _almsScrollController.addListener(() {
-      if (_almsScrollController.position.pixels ==
-          _almsScrollController.position.maxScrollExtent) {
-        context.read<AlmsProvider>().fetchAlmss();
-        print("fetch alms");
-      }
-    });
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await context.read<AlmsProvider>().fetchAlmss();
+        _almsScrollController.addListener(() async {
+          if (_almsScrollController.position.pixels ==
+              _almsScrollController.position.maxScrollExtent) {
+            await context.read<AlmsProvider>().fetchAlmss();
+            print("fetch alms");
+          }
+        });
+      });
+    }
   }
 
   @override
@@ -69,7 +73,8 @@ class _AlmsHistoryPageState extends State<AlmsHistoryPage> {
           }
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
+            padding:
+                const EdgeInsets.symmetric(horizontal: PaddingSizes.medium),
             child: RefreshIndicator(
               color: AppColors.primaryColor,
               onRefresh: () => context.read<AlmsProvider>().refreshAlmss(),
