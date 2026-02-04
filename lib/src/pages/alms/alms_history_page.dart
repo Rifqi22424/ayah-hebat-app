@@ -22,11 +22,14 @@ class _AlmsHistoryPageState extends State<AlmsHistoryPage> {
     super.initState();
     if (mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await context.read<AlmsProvider>().fetchAlmss();
+        final almsProvider = context.read<AlmsProvider>();
+        almsProvider.fetchAlmss();
         _almsScrollController.addListener(() async {
           if (_almsScrollController.position.pixels ==
-              _almsScrollController.position.maxScrollExtent) {
-            await context.read<AlmsProvider>().fetchAlmss();
+                  _almsScrollController.position.maxScrollExtent &&
+              almsProvider.hasMoreData &&
+              !almsProvider.isAlmsLoading) {
+            context.read<AlmsProvider>().fetchAlmss();
             print("fetch alms");
           }
         });
@@ -81,7 +84,7 @@ class _AlmsHistoryPageState extends State<AlmsHistoryPage> {
               child: ListView.builder(
                 controller: _almsScrollController,
                 physics: AlwaysScrollableScrollPhysics(),
-                itemCount: value.almss.length + 1,
+                itemCount: value.almss.length + (value.hasMoreData ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (index == value.almss.length) {
                     if (value.hasMoreData) {
@@ -91,8 +94,6 @@ class _AlmsHistoryPageState extends State<AlmsHistoryPage> {
                           color: AppColors.primaryColor,
                         ),
                       );
-                    } else {
-                      return SizedBox.shrink();
                     }
                   }
                   return AlmsListTile(alms: value.almss[index]);

@@ -25,12 +25,16 @@ class _AlmsPageState extends State<AlmsPage> {
     super.initState();
 
     if (mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await refreshAlmssAndTotalAlms();
-        _almsScrollController.addListener(() async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final almsProvider = context.read<AlmsProvider>();
+        almsProvider.fetchAlmss();
+        almsProvider.fetchTotalAlms();
+        _almsScrollController.addListener(() {
           if (_almsScrollController.position.pixels ==
-              _almsScrollController.position.maxScrollExtent) {
-            await context.read<AlmsProvider>().fetchAlmss();
+                  _almsScrollController.position.maxScrollExtent &&
+              almsProvider.hasMoreData &&
+              !almsProvider.isAlmsLoading) {
+            context.read<AlmsProvider>().fetchAlmss();
             print("fetch alms");
           }
         });
@@ -40,8 +44,8 @@ class _AlmsPageState extends State<AlmsPage> {
 
   Future<void> refreshAlmssAndTotalAlms() async {
     final almsProvider = context.read<AlmsProvider>();
-    await almsProvider.refreshAlmss();
-    await almsProvider.refreshTotalAlms();
+    almsProvider.refreshAlmss();
+    almsProvider.refreshTotalAlms();
   }
 
   @override
@@ -51,9 +55,7 @@ class _AlmsPageState extends State<AlmsPage> {
           title: "Wadaah", description: "Waqaf Dana Abadi Ayah Hebat"),
       body: RefreshIndicator(
         color: AppColors.primaryColor,
-        onRefresh: () async {
-          await refreshAlmssAndTotalAlms();
-        },
+        onRefresh: () => refreshAlmssAndTotalAlms(),
         child: Padding(
           padding: const EdgeInsets.only(
             top: PaddingSizes.small,
@@ -106,10 +108,6 @@ class _AlmsPageState extends State<AlmsPage> {
                                         foregroundColor: AppColors.redColor,
                                         disabledBackgroundColor:
                                             AppColors.halfRedColor),
-                                  );
-                                default:
-                                  return CircularProgressIndicator(
-                                    color: AppColors.primaryColor,
                                   );
                               }
                             },
@@ -229,18 +227,16 @@ class _AlmsPageState extends State<AlmsPage> {
                       child: ListView.builder(
                         controller: _almsScrollController,
                         physics: AlwaysScrollableScrollPhysics(),
-                        itemCount: value.almss.length + 1,
+                        itemCount:
+                            value.almss.length + (value.hasMoreData ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == value.almss.length) {
                             if (value.hasMoreData) {
-                              value.fetchAlmss();
                               return Center(
                                 child: CircularProgressIndicator(
                                   color: AppColors.primaryColor,
                                 ),
                               );
-                            } else {
-                              return SizedBox.shrink();
                             }
                           }
                           return AlmsListTile(alms: value.almss[index]);

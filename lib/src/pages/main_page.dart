@@ -29,13 +29,13 @@ class _MainPageState extends State<MainPage> {
   }
 
   final List<Widget> _pages = [
-    const HomePage(), // 0
-    const NewsPage(), // 1
-    const BookPage(), // 2
-    const WatchPage(), // 3
-    const AlmsPage(), // 4
-    const ForumsPage(), // 5
-    const ProfilePage(), // 6
+    const HomePage(),
+    const AlmsPage(),
+    const WatchPage(),
+    const NewsPage(),
+    const BookPage(),
+    const ForumsPage(),
+    const ProfilePage(),
   ];
 
   @override
@@ -137,17 +137,11 @@ class _MainPageState extends State<MainPage> {
             crossAxisSpacing: 12,
             children: [
               _buildMenuGridItem(context,
-                  icon: 'images/infaq-icon.png', label: 'Wadaah', index: 4),
+                  icon: 'images/book.png', label: 'Buku', index: 4),
               _buildMenuGridItem(context,
                   icon: 'images/forums-icon.png', label: 'Forum', index: 5),
               _buildMenuGridItem(context,
                   icon: 'images/profile-icon.png', label: 'Profile', index: 6),
-              _buildMenuGridItem(context,
-                  icon: 'images/book.png', label: 'Buku', index: 2),
-              _buildMenuGridItem(context,
-                  icon: 'images/watch.png', label: 'Watch', index: 3),
-              _buildMenuGridItem(context,
-                  icon: 'images/news-icon.png', label: 'Berita', index: 1),
             ],
           ),
           const SizedBox(height: 16),
@@ -220,17 +214,11 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: _buildIcon(1, 'images/news-icon.png'),
-            label: 'Berita',
-          ),
+              icon: _buildIcon(1, 'images/infaq-icon.png'), label: 'Wadaah'),
           BottomNavigationBarItem(
-            icon: _buildIcon(2, 'images/book.png'),
-            label: 'Buku',
-          ),
+              icon: _buildIcon(2, 'images/watch.png'), label: 'Watch'),
           BottomNavigationBarItem(
-            icon: _buildIcon(3, 'images/watch.png'),
-            label: 'Watch',
-          ),
+              icon: _buildIcon(3, 'images/news-icon.png'), label: 'Watch'),
           BottomNavigationBarItem(
             icon: _buildIcon(4, 'images/more.png'),
             label: 'More',

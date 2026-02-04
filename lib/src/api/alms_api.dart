@@ -12,7 +12,7 @@ import '../models/response/create_alms_response.dart';
 import '../utils/get_media_type.dart';
 
 class AlmsApi {
-  Future<AlmssResponse> fetchAlmss({int limit = 5, int page = 1}) async {
+  Future<AlmssResponse> fetchAlmss({int limit = 15, int page = 1}) async {
     String? token = await SharedPreferencesHelper.getToken();
     print(token);
     final Uri uri =

@@ -26,11 +26,17 @@ class AlmsProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get totalAlmsErrorMessage => _totalAlmsErrorMessage;
 
+  bool get isAlmsLoading => state == AlmsState.loading;
+  bool get isTotalAlmsLoading =>
+      _totalAmountAlmsState == TotalAlmsState.loading;
+
   final AlmsApi _almsApi = AlmsApi();
 
   // Fetch alms with pagination
   Future<void> fetchAlmss() async {
     if (!hasMoreData) return;
+
+    if (isAlmsLoading) return;
 
     try {
       print("masuk fetch alms provider");
@@ -54,6 +60,7 @@ class AlmsProvider extends ChangeNotifier {
 
       _state = AlmsState.loaded;
       _errorMessage = null;
+      notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();
       print(_errorMessage);
@@ -87,6 +94,8 @@ class AlmsProvider extends ChangeNotifier {
 
   Future<void> fetchTotalAlms() async {
     try {
+      if (isTotalAlmsLoading) return;
+
       print("masuk fetch total alms provider");
       // Set loading state
       _totalAmountAlmsState = TotalAlmsState.loading;
@@ -99,6 +108,7 @@ class AlmsProvider extends ChangeNotifier {
 
       _totalAmountAlmsState = TotalAlmsState.loaded;
       _totalAlmsErrorMessage = null;
+      notifyListeners();
     } catch (e) {
       _totalAlmsErrorMessage = e.toString();
       _totalAmountAlmsState = TotalAlmsState.error;
