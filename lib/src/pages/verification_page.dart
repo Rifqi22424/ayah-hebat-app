@@ -106,6 +106,7 @@ class _VerificationPageState extends State<VerificationPage> {
             Text(
               "Kode verifikasi telah dikirimkan melalui email ${widget.email}, Mohon periksa email Anda.",
               style: AppStyles.hintTextStyle,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: screenHeight * 0.0625),
             SizedBox(

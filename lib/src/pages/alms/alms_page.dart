@@ -52,7 +52,7 @@ class _AlmsPageState extends State<AlmsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarLeftBuilder(
-          title: "Wadaah", description: "Waqaf Dana Abadi Ayah Hebat"),
+          title: "WADA", description: "Wallet Dana Abadi"),
       body: RefreshIndicator(
         color: AppColors.primaryColor,
         onRefresh: () => refreshAlmssAndTotalAlms(),
@@ -138,7 +138,7 @@ class _AlmsPageState extends State<AlmsPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Waqaf Dana Abadi",
+                                  Text("Wallet Dana Abadi",
                                       style: AppStyles.heading2TextStyle),
                                   SizedBox(height: PaddingSizes.small),
                                   Text(

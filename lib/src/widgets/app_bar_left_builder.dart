@@ -7,6 +7,7 @@ class AppBarLeftBuilder extends StatelessWidget implements PreferredSizeWidget {
   final String? imagePath;
   final bool showLeadingButton;
   final VoidCallback? onLeadingButtonTapped;
+  final List<Widget>? actions;
 
   const AppBarLeftBuilder(
       {super.key,
@@ -14,7 +15,8 @@ class AppBarLeftBuilder extends StatelessWidget implements PreferredSizeWidget {
       required this.description,
       this.imagePath,
       this.showLeadingButton = false,
-      this.onLeadingButtonTapped});
+      this.onLeadingButtonTapped, 
+      this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class AppBarLeftBuilder extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
+      actions: actions,
     );
   }
 
