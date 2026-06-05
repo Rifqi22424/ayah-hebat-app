@@ -214,7 +214,7 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-              icon: _buildIcon(1, 'images/infaq-icon.png'), label: 'Wada'),
+              icon: _buildIcon(1, 'images/infaq-icon.png'), label: 'WADA'),
           BottomNavigationBarItem(
               icon: _buildIcon(2, 'images/watch.png'), label: 'Konten'),
           BottomNavigationBarItem(

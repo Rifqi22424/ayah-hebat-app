@@ -96,6 +96,28 @@ class KegiatanApi {
     }
   }
 
+  // Future<List<UserProfile>> getUsersRanking({required String time, int limit = 10, int offset = 0, required String token}) async {
+  //   final queryParameters = {
+  //     'limit': limit.toString(),
+  //     'offset': offset.toString(),
+  //   };
+
+  //   final response = await http.get(
+  //     Uri.parse('$serverPath/kegiatan/all-score/$time').replace(queryParameters: queryParameters),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //       'Authorization': 'Bearer $token'
+  //     }
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     List<dynamic> jsonResponse = json.decode(response.body);
+  //     List<UserProfile> usersRanking = 
+  //   }
+
+    
+  // }
+
   Future<List<Kegiatan>> getKegiatanByUserId() async {
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
