@@ -8,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../providers/book_category_provider.dart';
 import '../../providers/book_provider.dart';
+import '../../widgets/app_bar_left_builder.dart';
 
 class BookPage extends StatefulWidget {
   const BookPage({super.key});
@@ -296,7 +297,7 @@ class _BookPageState extends State<BookPage> {
                 //   child: Text("Buku Kosong"),
                 // );
                 return RefreshIndicator(
-                  color: AppColors.primaryColor,
+                    color: AppColors.primaryColor,
                     child: ListView(
                       children: [
                         Column(
@@ -516,25 +517,10 @@ class _BookPageState extends State<BookPage> {
   //   }
   // }
 
-  AppBar appBarBook() {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      shadowColor: Colors.transparent,
-      elevation: 0,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Pilih Buku Bacaan",
-            style: AppStyles.heading2TextStyle,
-          ),
-          SizedBox(height: 4),
-          Text(
-            "Pilih buku yang ingin di pinjam",
-            style: AppStyles.hintTextStyle,
-          )
-        ],
-      ),
+  AppBarLeftBuilder appBarBook() {
+    return AppBarLeftBuilder(
+      title: "Pilih Buku Bacaan",
+      description: "Pilih buku yang ingin di pinjam",
       actions: [
         Container(
             margin: EdgeInsets.only(right: 16),

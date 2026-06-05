@@ -26,6 +26,7 @@ class _SplashPageState extends State<SplashPage> {
       try {
         LoginResponse login = await authApi.login(email, pass);
         SharedPreferencesHelper.saveId(login.id);
+        print("login.token ${login.token}");
         SharedPreferencesHelper.saveToken(login.token);
         if (login.profile.nama != "") {
           Navigator.pushReplacementNamed(context, '/home');

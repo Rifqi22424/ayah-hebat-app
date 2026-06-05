@@ -1,3 +1,4 @@
+import 'package:ayahhebat/src/pages/alms/alms_history_page.dart';
 import 'package:ayahhebat/src/pages/announcement/detail_announcement_page.dart';
 import 'package:ayahhebat/src/pages/deleteAccount/input_verification_code_page.dart';
 import 'package:ayahhebat/src/pages/deleteAccount/send_verification_code_page.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../models/post_model.dart';
 import '../pages/add_book_page.dart';
+import '../pages/alms/send_alms_page.dart';
 import '../pages/announcement/announcement_page.dart';
 import '../pages/book/book_detail_page.dart';
 import '../pages/book/borrow_book_detail_page.dart';
@@ -89,11 +91,20 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => DetailInfaqPage(id: id));
       case "/sendInfaq":
         return MaterialPageRoute(builder: (context) => const SendInfaqPage());
-      case "/payMethodInfaq":
+         case "/payMethodInfaq":
         final args = settings.arguments as Map<String, dynamic>;
         final String redirectUrl = args['redirectUrl'];
         return MaterialPageRoute(
             builder: (context) => PayMethodInfaqPage(redirectUrl: redirectUrl));
+      // alms
+      case "/alms":
+        return MaterialPageRoute(
+            builder: (context) => const MainPage(index: 3));
+      case "/almsHistory":
+        return MaterialPageRoute(
+            builder: (context) => const AlmsHistoryPage());
+      case "/sendAlms":
+        return MaterialPageRoute(builder: (context) => const SendAlmsPage());
       case "/addProfile":
         return MaterialPageRoute(builder: (context) => const AddProfilePage());
       case "/editProfile":
