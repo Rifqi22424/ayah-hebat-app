@@ -19,6 +19,7 @@ import 'src/providers/borrow_books_provider.dart';
 import 'src/providers/comment_provider.dart';
 import 'src/providers/donation_book_provider.dart';
 import 'src/providers/donation_books_provider.dart';
+import 'src/providers/kuttab_location_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/providers/watch_provider.dart';
@@ -144,6 +145,7 @@ main() async {
         ChangeNotifierProvider(create: (_) => DonationBooksProvider()),
         ChangeNotifierProvider(create: (_) => DonationBookProvider()),
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
+        ChangeNotifierProvider(create: (_) => KuttabLocationProvider()),
         ChangeNotifierProvider(create: (_) => AllocationProvider()),
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
         ChangeNotifierProvider(create: (_) => WatchProvider()),

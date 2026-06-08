@@ -45,3 +45,6 @@ firebase_options.dart
 
 # FVM Version Cache
 .fvm/
+
+# kiro documentation
+.kiro/
