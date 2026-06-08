@@ -8,6 +8,7 @@ import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../widgets/app_bar_builder.dart';
+import '../../widgets/mobile_frame_builder.dart';
 import '../../widgets/setting_button_builder.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -55,7 +56,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: const AppBarBuilder(title: "Profile"),
-      body: Container(
+      body: MobileFrame(
+        child: Container(
         padding: const EdgeInsets.all(16),
         child: RefreshIndicator(
           color: AppColors.primaryColor,
@@ -274,6 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
+      ),
       ),
       // floatingActionButton: FloatingActionButton(
       //   heroTag: "btnSupport",

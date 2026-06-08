@@ -3,18 +3,20 @@
 import 'dart:io';
 
 import 'package:ayahhebat/main.dart';
-import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
+import '../../consts/app_styles.dart';
 import '../../mixins/validation_mixin.dart';
+import '../../utils/school_field.dart';
 import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
 import '../../widgets/label_builder.dart';
+import '../../widgets/mobile_frame_builder.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -35,6 +37,9 @@ class _EditProfilePageState extends State<EditProfilePage>
   TextEditingController tahunController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
+  // The original namaKuttab from the loaded profile, sent unchanged on submit.
+  String _originalNamaKuttab = '';
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedMedia;
   String? selectedMediaEmpty;
@@ -53,7 +58,9 @@ class _EditProfilePageState extends State<EditProfilePage>
         namaController.text = user.profile.nama;
         istriController.text = user.profile.namaIstri;
         anakController.text = user.profile.namaAnak;
-        namaKuttabController.text = user.profile.namaKuttab;
+        _originalNamaKuttab = user.profile.namaKuttab;
+        namaKuttabController.text =
+            SchoolField.extractBranch(user.profile.namaKuttab);
         tahunController.text = user.profile.tahunMasukKuttab.toString();
         bioController.text = user.profile.bio;
         downloadImageAndSaveLocally(user.profile.photo);
@@ -72,7 +79,7 @@ class _EditProfilePageState extends State<EditProfilePage>
     bool success = await ProfileApi().editProfile(
         namaController.text,
         bioController.text,
-        namaKuttabController.text,
+        _originalNamaKuttab,
         tahunController.text,
         istriController.text,
         anakController.text,
@@ -178,7 +185,8 @@ class _EditProfilePageState extends State<EditProfilePage>
         //   Navigator.pop(context);
         // },
       ),
-      body: SingleChildScrollView(
+      body: MobileFrame(
+        child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Container(
@@ -329,10 +337,25 @@ class _EditProfilePageState extends State<EditProfilePage>
                 SizedBox(height: screenHeight * 0.015),
                 const LabelBuilder(text: "Nama Kuttab"),
                 SizedBox(height: screenHeight * 0.015),
-                NamaKuttabForm(
-                    formController: namaKuttabController,
-                    hintText: "nama kuttab",
-                    keyboardType: TextInputType.text),
+                // Kuttab location is read-only; changes must go through admin.
+                TextFormField(
+                  controller: namaKuttabController,
+                  readOnly: true,
+                  style: AppStyles.labelTextStyle,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 12.0),
+                    hintStyle: AppStyles.hintTextStyle,
+                    helperText:
+                        'Lokasi Kuttab belum dapat diubah melalui halaman ini.',
+                    helperStyle: AppStyles.miniHintTextStyle,
+                    helperMaxLines: 2,
+                  ),
+                ),
                 SizedBox(height: screenHeight * 0.015),
                 const LabelBuilder(text: "Biodata"),
                 SizedBox(height: screenHeight * 0.015),
@@ -359,6 +382,7 @@ class _EditProfilePageState extends State<EditProfilePage>
             ),
           ),
         ),
+      ),
       ),
     );
   }

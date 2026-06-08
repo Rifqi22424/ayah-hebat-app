@@ -18,6 +18,7 @@ import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../models/entity/allocation_model.dart';
 import '../../widgets/app_bar_builder.dart';
+import '../../widgets/mobile_frame_builder.dart';
 
 class SendAlmsPage extends StatefulWidget {
   const SendAlmsPage({super.key});
@@ -120,7 +121,8 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
         },
       ),
       body: SafeArea(
-        child: Form(
+        child: MobileFrame(
+          child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -128,7 +130,7 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(child: Image.asset("images/payment-card.png")),
+                  Center(child: Image.asset("images/payment-card-bca.png")),
                   SizedBox(height: PaddingSizes.medium),
                   Text("Nominal Transfer", style: AppStyles.labelBoldTextStyle),
                   SizedBox(height: PaddingSizes.extrasmall),
@@ -345,6 +347,7 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
             ),
           ),
         ),
+      ),
       ),
       bottomNavigationBar: SafeArea(
           child: Padding(
