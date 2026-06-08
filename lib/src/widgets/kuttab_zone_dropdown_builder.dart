@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
-import '../consts/padding_sizes.dart';
-import '../mixins/validation_mixin.dart';
 import '../models/kuttab_zone_model.dart';
 import '../providers/kuttab_location_provider.dart';
 
@@ -13,7 +11,10 @@ import '../providers/kuttab_location_provider.dart';
 /// Renders a loading indicator while the provider is fetching, an error/empty
 /// message when locations are unavailable, and a [DropdownButtonFormField]
 /// once data is loaded.
-class KuttabZoneDropdown extends StatelessWidget with ValidationMixin {
+///
+/// Visual style matches the existing [FormBuilder] text fields in the profile
+/// form: circular-32 border, 16/12 content padding, Lato label text.
+class KuttabZoneDropdown extends StatelessWidget {
   const KuttabZoneDropdown({
     super.key,
     required this.value,
@@ -27,6 +28,25 @@ class KuttabZoneDropdown extends StatelessWidget with ValidationMixin {
   /// Custom validator. Defaults to a required-selection check with the message
   /// "Zona Kuttab wajib dipilih".
   final FormFieldValidator<KuttabZone>? validator;
+
+  // Shared border radius to match FormBuilder (circular 32).
+  static const _radius = Radius.circular(32);
+  static const _borderRadius = BorderRadius.all(_radius);
+
+  static const _baseBorder = OutlineInputBorder(
+    borderRadius: _borderRadius,
+    borderSide: BorderSide(color: AppColors.blueColor, width: 2.0),
+  );
+
+  static const _focusedBorder = OutlineInputBorder(
+    borderRadius: _borderRadius,
+    borderSide: BorderSide(color: AppColors.primaryColor, width: 2.0),
+  );
+
+  static const _errorBorder = OutlineInputBorder(
+    borderRadius: _borderRadius,
+    borderSide: BorderSide(color: Colors.red, width: 2.0),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +74,9 @@ class KuttabZoneDropdown extends StatelessWidget with ValidationMixin {
 
         return DropdownButtonFormField<KuttabZone>(
           initialValue: value,
+          // Suppress the default built-in arrow — we supply our own suffixIcon.
+          icon: const SizedBox.shrink(),
+          isExpanded: true,
           style: AppStyles.labelTextStyle,
           hint: Text('Pilih zona Kuttab', style: AppStyles.hintTextStyle),
           validator: validator ??
@@ -63,8 +86,18 @@ class KuttabZoneDropdown extends StatelessWidget with ValidationMixin {
               },
           decoration: InputDecoration(
             isDense: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(PaddingSizes.extraLarge),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            border: _baseBorder,
+            enabledBorder: _baseBorder,
+            focusedBorder: _focusedBorder,
+            errorBorder: _errorBorder,
+            focusedErrorBorder: _errorBorder,
+            hintStyle: AppStyles.hintTextStyle,
+            errorStyle: AppStyles.heading3RedTextStyle,
+            suffixIcon: const Icon(
+              Icons.keyboard_arrow_down,
+              color: AppColors.accentColor,
             ),
           ),
           items: provider.zones.map((KuttabZone zone) {
