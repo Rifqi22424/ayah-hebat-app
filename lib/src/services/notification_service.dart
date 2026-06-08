@@ -26,21 +26,16 @@ class PushNotifications {
 
   // get the fcm device token
   static Future getDeviceToken({int maxRetires = 3}) async {
+    // FCM device token is not needed on web for this build — skip entirely
+    // to avoid blocking startup with repeated 10-second retries.
+    if (kIsWeb) {
+      return null;
+    }
+
     try {
-      String? token;
-      if (kIsWeb) {
-        // get the device fcm token
-        token = await _firebaseMessaging.getToken(
-            vapidKey:
-                "BPA9r_00LYvGIV9GPqkpCwfIl3Es4IfbGqE9CSrm6oeYJslJNmicXYHyWOZQMPlORgfhG8RNGe7hIxmbLXuJ92k");
-        print("for web device token: $token");
-      } else {
-        // get the device fcm token
-        token = await _firebaseMessaging.getToken();
-        print("for android device token: $token");
-      }
-      // saveTokentoFirestore(token: token!);
-      print("token $token");
+      // get the device fcm token
+      final token = await _firebaseMessaging.getToken();
+      print("for android device token: $token");
       return token;
     } catch (e) {
       print("failed to get device token");

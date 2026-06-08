@@ -16,7 +16,6 @@ import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
 import '../../widgets/label_builder.dart';
-import '../../widgets/mobile_frame_builder.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -185,8 +184,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         //   Navigator.pop(context);
         // },
       ),
-      body: MobileFrame(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Container(
@@ -382,7 +380,6 @@ class _EditProfilePageState extends State<EditProfilePage>
             ),
           ),
         ),
-      ),
       ),
     );
   }

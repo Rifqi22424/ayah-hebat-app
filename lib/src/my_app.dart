@@ -1,5 +1,5 @@
-// import 'dart:async';
 import 'package:ayahhebat/main.dart';
+import 'package:ayahhebat/src/widgets/mobile_frame_builder.dart';
 import 'package:ayahhebat/src/widgets/no_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return ScrollConfiguration(
           behavior: NoGlowBehavior(),
-          child: child!,
+          child: MobileFrame(child: child!),
         );
       },
       theme: ThemeData(useMaterial3: false, fontFamily: 'Lato'),

@@ -18,7 +18,6 @@ import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../models/entity/allocation_model.dart';
 import '../../widgets/app_bar_builder.dart';
-import '../../widgets/mobile_frame_builder.dart';
 
 class SendAlmsPage extends StatefulWidget {
   const SendAlmsPage({super.key});
@@ -121,8 +120,7 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
         },
       ),
       body: SafeArea(
-        child: MobileFrame(
-          child: Form(
+        child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -347,7 +345,6 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
             ),
           ),
         ),
-      ),
       ),
       bottomNavigationBar: SafeArea(
           child: Padding(

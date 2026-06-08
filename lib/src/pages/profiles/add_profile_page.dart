@@ -22,7 +22,6 @@ import '../../widgets/form_builder.dart';
 import '../../widgets/kuttab_branch_dropdown_builder.dart';
 import '../../widgets/kuttab_zone_dropdown_builder.dart';
 import '../../widgets/label_builder.dart';
-import '../../widgets/mobile_frame_builder.dart';
 
 class AddProfilePage extends StatefulWidget {
   const AddProfilePage({super.key});
@@ -148,8 +147,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
 
     return Scaffold(
       body: SafeArea(
-        child: MobileFrame(
-          child: Form(
+        child: Form(
             key: _formKey,
             child: Container(
               padding: const EdgeInsets.all(15),
@@ -385,7 +383,6 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
             ),
           ),
         ),
-      ),
     );
   }
 }
