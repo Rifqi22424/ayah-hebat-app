@@ -19,13 +19,13 @@ class ProfileApi {
   }
 
   Future<bool> addProfile(
-    String nama,
-    String bio,
-    String namaKuttab,
-    String tahunMasukKuttab,
-    String namaIstri,
-    String namaAnak,
-    File? photo,
+    {required String nama,
+    required String namaIstri,
+    required String namaAnak,
+    required String bio,
+    required String tahunMasukKuttab,
+    required String namaKuttab,
+    File? photo,}
   ) async {
     try {
       final url = Uri.parse('$serverPath/profile/add-profile');
@@ -52,7 +52,7 @@ class ProfileApi {
 
       final response = await request.send();
 
-      print(response.statusCode);
+      print(await response.stream.bytesToString());
 
       if (response.statusCode == 200) {
         return true;
@@ -137,8 +137,13 @@ class ProfileApi {
       },
     );
 
+    print("response ${response.body}");
+    print("response ${response.statusCode}");
+    
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
+      print("responseData $responseData");
+      print("{response.statusCode} ${response.statusCode}");
       return UserProfile.getUserNProfilefromJson(responseData);
     } else {
       throw Exception(response.statusCode);

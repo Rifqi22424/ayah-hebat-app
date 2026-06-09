@@ -128,7 +128,7 @@ class _SendAlmsPageState extends State<SendAlmsPage> with ValidationMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(child: Image.asset("images/payment-card.png")),
+                  Center(child: Image.asset("images/payment-card-bca.png")),
                   SizedBox(height: PaddingSizes.medium),
                   Text("Nominal Transfer", style: AppStyles.labelBoldTextStyle),
                   SizedBox(height: PaddingSizes.extrasmall),

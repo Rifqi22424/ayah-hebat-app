@@ -5,8 +5,14 @@ class SettingButtonBuilder extends StatelessWidget {
   final String title;
   final VoidCallback onPressed;
 
+  final Color? bgColor;
+  final Color? textColor;
+  final Color? buttonColor;
+  final Color? arrowColor;
+  
+
   const SettingButtonBuilder(
-      {super.key, required this.title, required this.onPressed});
+      {super.key, required this.title, required this.onPressed, this.bgColor, this.textColor, this.buttonColor, this.arrowColor});
 
   @override
   Widget build(BuildContext context) {
@@ -14,23 +20,23 @@ class SettingButtonBuilder extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.grey, borderRadius: BorderRadius.circular(60)),
+            color: bgColor ?? AppColors.grey, borderRadius: BorderRadius.circular(60)),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 16, left: 14),
-            child: Text(title),
+            child: Text(title, style: TextStyle(color: textColor),),
           )),
           Container(
             height: 35,
             width: 35,
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: AppColors.textColor,
+                color: buttonColor ?? AppColors.textColor,
                 borderRadius: BorderRadius.circular(60)),
-            child: const Icon(
+            child: Icon(
               Icons.arrow_forward,
-              color: Colors.white,
+              color: arrowColor ?? Colors.white,
             ),
           )
         ]),

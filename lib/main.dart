@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:ayahhebat/src/providers/allocation_provider.dart';
 import 'package:ayahhebat/src/providers/alms_provider.dart';
 import 'package:ayahhebat/src/providers/infaq_provider.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +18,7 @@ import 'src/providers/borrow_books_provider.dart';
 import 'src/providers/comment_provider.dart';
 import 'src/providers/donation_book_provider.dart';
 import 'src/providers/donation_books_provider.dart';
+import 'src/providers/zone_branch_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
 import 'src/providers/watch_provider.dart';
@@ -26,7 +26,7 @@ import 'src/providers/playlist_provider.dart';
 import 'src/services/notification_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-// const serverPath = "https://p3gm9glm-3000.asse.devtunnels.ms";
+// const serverPath = "https://ntb7pc1l-3000.asse.devtunnels.ms";
 const serverPath = "https://backend.ayahhebat.mangcoding.com";
 // const serverPath = "https://mw2wdjms-3000.asse.devtunnels.ms";
 
@@ -144,6 +144,7 @@ main() async {
         ChangeNotifierProvider(create: (_) => DonationBooksProvider()),
         ChangeNotifierProvider(create: (_) => DonationBookProvider()),
         ChangeNotifierProvider(create: (_) => OfficeAddressProvider()),
+        ChangeNotifierProvider(create: (_) => ZoneBranchProvider()),
         ChangeNotifierProvider(create: (_) => AllocationProvider()),
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
         ChangeNotifierProvider(create: (_) => WatchProvider()),

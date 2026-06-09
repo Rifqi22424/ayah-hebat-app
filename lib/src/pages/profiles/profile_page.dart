@@ -266,6 +266,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: screenHeight * 0.02),
                 SettingButtonBuilder(
                   title: "Log out",
+                  bgColor: AppColors.redColor,
+                  textColor: AppColors.whiteColor,
+                  buttonColor: AppColors.whiteColor,
+                  arrowColor: AppColors.textColor,
                   onPressed: () {
                     showAlertDialog(context, "logOut");
                   },

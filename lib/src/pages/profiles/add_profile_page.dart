@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:ayahhebat/src/widgets/nama_kuttab_form_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
+import '../../consts/padding_sizes.dart';
 import '../../mixins/validation_mixin.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
@@ -27,7 +27,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   TextEditingController namaController = TextEditingController();
   TextEditingController istriController = TextEditingController();
   TextEditingController anakController = TextEditingController();
-  TextEditingController namaKuttabController = TextEditingController();
+  TextEditingController namaKuttabController = TextEditingController()..text = "Kuttab Alfatih";
   TextEditingController tahunController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
@@ -35,6 +35,14 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   String? selectedMedia;
   String? selectedMediaEmpty;
   bool isLoadingWidget = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch Kuttab zone/branch data once on init — do not rely on hardcoded value.
+    // context.read<KuttabLocationProvider>().fetchKuttabLocations();
+    downloadLocalPhoto();
+  }
 
   Future<void> _sendProfileData() async {
     setState(() {
@@ -62,14 +70,24 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
       return;
     }
 
+    // Compose namaKuttab from fixed school name + selected branch before submit.
+    // final KuttabBranch? selectedBranch =
+    //     context.read<KuttabLocationProvider>().selectedBranch;
+    // if (selectedBranch != null) {
+    //   namaKuttabController.text = SchoolField.compose(selectedBranch.name);
+    // }
+
     bool success = await ProfileApi().addProfile(
-        namaController.text,
-        bioController.text,
-        namaKuttabController.text,
-        tahunController.text,
-        istriController.text,
-        anakController.text,
-        photo);
+        nama: namaController.text,
+        namaIstri: istriController.text,
+        namaAnak: anakController.text,
+        tahunMasukKuttab: tahunController.text,
+        bio: bioController.text,
+        photo: photo,
+        namaKuttab: namaKuttabController.text
+      );
+
+    print("success $success" );
 
     final snackBar = SnackBar(
       content: Text(success
@@ -109,13 +127,6 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    namaKuttabController.text = "Kutab Alfatih Sukabumi";
-    downloadLocalPhoto();
-  }
-
   downloadLocalPhoto() async {
     ByteData byteData = await rootBundle.load('images/empty-profile.png');
     List<int> imageData = byteData.buffer.asUint8List();
@@ -133,189 +144,241 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
     return Scaffold(
       body: SafeArea(
         child: Form(
-          key: _formKey,
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.zero,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('images/ayah-hebat-logo.png',
-                          width: 200, height: 80)
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.01875),
-                  Text("Profile Anda", style: AppStyles.headingTextStyle),
-                  SizedBox(height: screenHeight * 0.0075),
-                  Text("Mohon isi data profile anda terlebih dahulu",
-                      style: AppStyles.hintTextStyle),
-                  SizedBox(height: screenHeight * 0.015),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SafeArea(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      (selectedMedia != null)
-                                          ? ListTile(
-                                              leading: const Icon(Icons.delete),
-                                              title:
-                                                  const Text('Hapus Profile'),
-                                              onTap: () {
-                                                _removeProfilePhoto();
-                                                Navigator.pop(context);
-                                              },
-                                            )
-                                          : Container(),
-                                      ListTile(
-                                        leading: const Icon(Icons.photo),
-                                        title: const Text('Pilih Foto'),
-                                        onTap: () {
-                                          _pickImageMedia(ImageSource.gallery);
-                                          Navigator.pop(context);
-                                        },
+            key: _formKey,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('images/ayah-hebat-logo.png',
+                            width: 200, height: 80)
+                      ],
+                    ),
+                    SizedBox(height: screenHeight * 0.01875),
+                    Text("Profile Anda", style: AppStyles.headingTextStyle),
+                    SizedBox(height: screenHeight * 0.0075),
+                    Text("Mohon isi data profile anda terlebih dahulu",
+                        style: AppStyles.hintTextStyle),
+                    SizedBox(height: screenHeight * 0.015),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SafeArea(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        (selectedMedia != null)
+                                            ? ListTile(
+                                                leading:
+                                                    const Icon(Icons.delete),
+                                                title: const Text(
+                                                    'Hapus Profile'),
+                                                onTap: () {
+                                                  _removeProfilePhoto();
+                                                  Navigator.pop(context);
+                                                },
+                                              )
+                                            : Container(),
+                                        ListTile(
+                                          leading: const Icon(Icons.photo),
+                                          title: const Text('Pilih Foto'),
+                                          onTap: () {
+                                            _pickImageMedia(
+                                                ImageSource.gallery);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: AppColors.accentColor,
+                                radius: 45,
+                                child: selectedMedia != null
+                                    ? ClipOval(
+                                        child: Image.file(
+                                        File(selectedMedia!),
+                                        height: 90,
+                                        width: 90,
+                                        fit: BoxFit.cover,
+                                      ))
+                                    : Image.asset(
+                                        'images/empty-profile.png',
+                                        height: 90,
+                                        width: 90,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
+                              ),
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.primaryColor),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: AppColors.textColor,
+                                    size: 20,
                                   ),
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        child: Stack(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: AppColors.accentColor,
-                              radius: 45,
-                              child: selectedMedia != null
-                                  ? ClipOval(
-                                      child: Image.file(
-                                      File(selectedMedia!),
-                                      height: 90,
-                                      width: 90,
-                                      fit: BoxFit.cover,
-                                    ))
-                                  : Image.asset(
-                                      'images/empty-profile.png',
-                                      height: 90,
-                                      width: 90,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primaryColor),
-                                child: const Icon(
-                                  Icons.camera_alt,
-                                  color: AppColors.textColor,
-                                  size: 20,
-                                ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
+                      ],
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    const LabelBuilder(text: "Nama Lengkap"),
+                    SizedBox(height: screenHeight * 0.015),
+                    FormBuilder(
+                      hintText: "Jhon Doe",
+                      formController: namaController,
+                      validator: validateNonNull,
+                      isPassword: false,
+                      isDescription: false,
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    const LabelBuilder(text: "Nama Istri"),
+                    SizedBox(height: screenHeight * 0.015),
+                    FormBuilder(
+                      hintText: "Aisyah",
+                      formController: istriController,
+                      validator: validateNonNull,
+                      isPassword: false,
+                      isDescription: false,
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    const LabelBuilder(text: "Nama Anak"),
+                    SizedBox(height: screenHeight * 0.015),
+                    FormBuilder(
+                      hintText: "Ujang",
+                      formController: anakController,
+                      validator: validateNonNull,
+                      isPassword: false,
+                      isDescription: false,
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // ── Kuttab school selection ──────────────────────────────
+                    const LabelBuilder(text: "Nama Kuttab"),
+                    SizedBox(height: screenHeight * 0.015),
+                    // Fixed school name label
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius:
+                            BorderRadius.circular(PaddingSizes.extraLarge),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Nama Lengkap"),
-                  SizedBox(height: screenHeight * 0.015),
-                  FormBuilder(
-                    hintText: "Jhon Doe",
-                    formController: namaController,
-                    validator: validateNonNull,
-                    isPassword: false,
-                    isDescription: false,
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Nama Istri"),
-                  SizedBox(height: screenHeight * 0.015),
-                  FormBuilder(
-                    hintText: "Aisyah",
-                    formController: istriController,
-                    validator: validateNonNull,
-                    isPassword: false,
-                    isDescription: false,
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Nama Anak"),
-                  SizedBox(height: screenHeight * 0.015),
-                  FormBuilder(
-                    hintText: "Ujang",
-                    formController: anakController,
-                    validator: validateNonNull,
-                    isPassword: false,
-                    isDescription: false,
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Nama Kuttab"),
-                  SizedBox(height: screenHeight * 0.015),
-                  NamaKuttabForm(
-                      formController: namaKuttabController,
-                      hintText: "Nama Kuttab",
-                      keyboardType: TextInputType.text),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Tahun Masuk Kuttab"),
-                  SizedBox(height: screenHeight * 0.015),
-                  FormBuilder(
-                    hintText: "2022",
-                    formController: tahunController,
-                    validator: validateTahun,
-                    isPassword: false,
-                    isDescription: false,
-                    keyboardType: TextInputType.number,
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  const LabelBuilder(text: "Biodata"),
-                  SizedBox(height: screenHeight * 0.015),
-                  FormBuilder(
-                    hintText:
-                        "Seorang pengusaha yang bersemangat, ayah dari dua anak, dan ingin memastikan bahwa keluarganya hidup dalam lingkungan yang penuh dengan nilai-nilai Islami.",
-                    formController: bioController,
-                    validator: validateNonNull,
-                    isPassword: false,
-                    isDescription: true,
-                    keyboardType: TextInputType.text,
-                  ),
-                  // Spacer(),
-                  SizedBox(height: screenHeight * 0.015),
-                  ButtonBuilder(
-                      isLoadingWidget: isLoadingWidget,
-                      onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          _sendProfileData();
-                        }
-                      },
-                      child: const Text("Save"))
-                ],
+                      child: Text(
+                        "Kuttab Alfatih",
+                        style: AppStyles.labelTextStyle,
+                      ),
+                    ),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // const LabelBuilder(text: "Zona Kuttab"),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // Consumer<KuttabLocationProvider>(
+                    //   builder: (context, provider, _) {
+                    //     return KuttabZoneDropdown(
+                    //       value: provider.selectedZone,
+                    //       onChanged: (KuttabZone? zone) {
+                    //         context
+                    //             .read<KuttabLocationProvider>()
+                    //             .setSelectedZone(zone);
+                    //       },
+                    //     );
+                    //   },
+                    // ),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // const LabelBuilder(text: "Lokasi Kuttab"),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // Consumer<KuttabLocationProvider>(
+                    //   builder: (context, provider, _) {
+                    //     return KuttabBranchDropdown(
+                    //       value: provider.selectedBranch,
+                    //       branches: provider.availableBranches,
+                    //       onChanged: (KuttabBranch? branch) {
+                    //         context
+                    //             .read<KuttabLocationProvider>()
+                    //             .setSelectedBranch(branch);
+                    //       },
+                    //     );
+                    //   },
+                    // ),
+                    // ── End Kuttab school selection ──────────────────────────
+
+                    SizedBox(height: screenHeight * 0.015),
+                    const LabelBuilder(text: "Tahun Masuk Kuttab"),
+                    SizedBox(height: screenHeight * 0.015),
+                    FormBuilder(
+                      hintText: "2022",
+                      formController: tahunController,
+                      validator: validateTahun,
+                      isPassword: false,
+                      isDescription: false,
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    const LabelBuilder(text: "Biodata"),
+                    SizedBox(height: screenHeight * 0.015),
+                    FormBuilder(
+                      hintText:
+                          "Seorang pengusaha yang bersemangat, ayah dari dua anak, dan ingin memastikan bahwa keluarganya hidup dalam lingkungan yang penuh dengan nilai-nilai Islami.",
+                      formController: bioController,
+                      validator: validateNonNull,
+                      isPassword: false,
+                      isDescription: true,
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    ButtonBuilder(
+                        isLoadingWidget: isLoadingWidget,
+                        onPressed: () async {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            // Extra guard: block if branch not yet selected.
+                            // final branch = context
+                            //     .read<KuttabLocationProvider>()
+                            //     .selectedBranch;
+                            // if (branch == null) return;
+                            _sendProfileData();
+                          }
+                        },
+                        child: const Text("Save"))
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
     );
   }
 }

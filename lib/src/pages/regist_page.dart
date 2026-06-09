@@ -1,7 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:ayahhebat/src/models/branch_model.dart';
+import 'package:ayahhebat/src/models/zone_model.dart';
+import 'package:ayahhebat/src/providers/zone_branch_provider.dart';
+import 'package:ayahhebat/src/widgets/kuttab_branch_dropdown_builder.dart';
+import 'package:ayahhebat/src/widgets/kuttab_zone_dropdown_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../api/auth_api.dart';
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
@@ -41,6 +47,12 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ZoneBranchProvider>().fetchZones();
   }
 
   @override
@@ -116,15 +128,68 @@ class _RegistPageState extends State<RegistPage> with ValidationMixin {
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: screenHeight * 0.015),
+              const LabelBuilder(text: "Zona Kuttab"),
+              SizedBox(height: screenHeight * 0.015),
+              Consumer<ZoneBranchProvider>(
+                builder: (context, provider, _) {
+                  return ZoneDropdown(
+                    value: provider.selectedZone,
+                    onChanged: (Zone? zone) {
+                      context
+                          .read<ZoneBranchProvider>()
+                          .setSelectedZone(zone);
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: screenHeight * 0.015),
+              const LabelBuilder(text: "Lokasi Kuttab"),
+              SizedBox(height: screenHeight * 0.015),
+              Consumer<ZoneBranchProvider>(
+                builder: (context, provider, _) {
+                  return BranchDropdown(
+                    value: provider.selectedBranch,
+                    branches: provider.availableBranches,
+                    onChanged: (Branch? branch) {
+                      context
+                          .read<ZoneBranchProvider>()
+                          .setSelectedBranch(branch);
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: screenHeight * 0.015),
               ButtonBuilder(
                   onPressed: () async {
                     if (_formKey.currentState?.validate() ?? false) {
                       try {
+                        final zoneBranchProvider = context.read<ZoneBranchProvider>();
+                      if (zoneBranchProvider.selectedZone == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Pilih zona terlebih dahulu'),
+                            backgroundColor: AppColors.redColor,
+                          ),
+                        );
+                        return;
+                      }
+                      if (zoneBranchProvider.selectedBranch == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Pilih cabang terlebih dahulu'),
+                            backgroundColor: AppColors.redColor,
+                          ),
+                        );
+                        return;
+                      }
+
                         bool registResponse = await authApi.register(
                           usernameController.text,
                           emailController.text,
                           passwordController.text,
                           confirmPasswordController.text,
+                          zoneBranchProvider.selectedZone!.id,
+                          zoneBranchProvider.selectedBranch!.id,
                         );
                         if (registResponse) {
                           SharedPreferencesHelper.saveEmail(

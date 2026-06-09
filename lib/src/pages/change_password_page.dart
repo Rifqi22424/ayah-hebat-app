@@ -71,13 +71,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>
       appBar: AppBarBuilder(
         title: "Ubah Kata Sandi",
         showBackButton: true,
-        showCancelButton: true,
+        // showCancelButton: true,
         onBackButtonPressed: () {
           Navigator.pop(context);
         },
-        onCancelButtonPressed: () {
-          Navigator.pop(context);
-        },
+        // onCancelButtonPressed: () {
+        //   Navigator.pop(context);
+        // },
       ),
       body: SafeArea(
         child: Form(
