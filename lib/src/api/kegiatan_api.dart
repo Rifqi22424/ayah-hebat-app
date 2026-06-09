@@ -96,6 +96,36 @@ class KegiatanApi {
     }
   }
 
+  /// Fetches ALL users with their scores — supports pagination via limit/offset.
+  /// Use this for the full ranking screen so 0-point users are included.
+  Future<List<UserProfile>> getAllScores(
+    String time,
+    String token, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final uri = Uri.parse('$serverPath/kegiatan/all-scores/$time')
+        .replace(queryParameters: {
+      'limit': limit.toString(),
+      'offset': offset.toString(),
+    });
+
+    final response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => UserProfile.fromJson(data)).toList();
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
   Future<List<Kegiatan>> getKegiatanByUserId() async {
     String? token = await SharedPreferencesHelper.getToken();
     final response = await http.get(

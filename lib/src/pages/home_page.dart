@@ -507,6 +507,38 @@ class _HomePageState extends State<HomePage> {
                                 AppColors.primaryColor),
                           ),
                         ))),
+                  if (topUsers.isNotEmpty)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16, bottom: 8),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/ranking');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: AppColors.yellowAccent,
+                              borderRadius: BorderRadius.circular(52),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('images/trophy.png',
+                                    height: 20, width: 20),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Lihat semua',
+                                  style: AppStyles.labelTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -21,6 +21,7 @@ import 'src/providers/donation_book_provider.dart';
 import 'src/providers/donation_books_provider.dart';
 import 'src/providers/office_address_provider.dart';
 import 'src/providers/post_provider.dart';
+import 'src/providers/ranking_provider.dart';
 import 'src/providers/watch_provider.dart';
 import 'src/providers/playlist_provider.dart';
 import 'src/services/notification_service.dart';
@@ -148,6 +149,7 @@ main() async {
         ChangeNotifierProvider(create: (_) => InfaqProvider()),
         ChangeNotifierProvider(create: (_) => WatchProvider()),
         ChangeNotifierProvider(create: (_) => PlaylistProvider()),
+        ChangeNotifierProvider(create: (_) => RankingProvider()),
         ChangeNotifierProvider(create: (_) => AlmsProvider()),
       ],
       child: const MyApp(),
