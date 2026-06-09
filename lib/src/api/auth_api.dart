@@ -7,18 +7,28 @@ import '../models/login_response_model.dart';
 
 class AuthApi {
   Future<bool> register(String username, String email, String password,
-      String confirmPassword) async {
+      String confirmPassword, int? zoneId, int? branchId) async {
+    final body = <String, dynamic>{
+        'username': username,
+        'email': email,
+        'password': password,
+        'confirmPassword': confirmPassword,
+      };
+
+      if (zoneId != null) {
+        body['zoneId'] = zoneId;
+      }
+
+      if (branchId != null) {
+        body['branchId'] = branchId;
+      }
+
     final response = await http.post(
       Uri.parse('$serverPath/auth/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'email': email,
-        'password': password,
-        'confirmPassword': confirmPassword,
-      }),
+      body: jsonEncode(body),
     );
 
     if (response.statusCode == 200) {

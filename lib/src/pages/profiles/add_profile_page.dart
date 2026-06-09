@@ -6,21 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../consts/padding_sizes.dart';
 import '../../mixins/validation_mixin.dart';
-import '../../models/kuttab_branch_model.dart';
-import '../../models/kuttab_zone_model.dart';
-import '../../providers/kuttab_location_provider.dart';
-import '../../utils/school_field.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
-import '../../widgets/kuttab_branch_dropdown_builder.dart';
-import '../../widgets/kuttab_zone_dropdown_builder.dart';
 import '../../widgets/label_builder.dart';
 
 class AddProfilePage extends StatefulWidget {
@@ -34,7 +27,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   TextEditingController namaController = TextEditingController();
   TextEditingController istriController = TextEditingController();
   TextEditingController anakController = TextEditingController();
-  TextEditingController namaKuttabController = TextEditingController();
+  TextEditingController namaKuttabController = TextEditingController()..text = "Kuttab Alfatih";
   TextEditingController tahunController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
@@ -47,7 +40,7 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
   void initState() {
     super.initState();
     // Fetch Kuttab zone/branch data once on init — do not rely on hardcoded value.
-    context.read<KuttabLocationProvider>().fetchKuttabLocations();
+    // context.read<KuttabLocationProvider>().fetchKuttabLocations();
     downloadLocalPhoto();
   }
 
@@ -78,20 +71,23 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
     }
 
     // Compose namaKuttab from fixed school name + selected branch before submit.
-    final KuttabBranch? selectedBranch =
-        context.read<KuttabLocationProvider>().selectedBranch;
-    if (selectedBranch != null) {
-      namaKuttabController.text = SchoolField.compose(selectedBranch.name);
-    }
+    // final KuttabBranch? selectedBranch =
+    //     context.read<KuttabLocationProvider>().selectedBranch;
+    // if (selectedBranch != null) {
+    //   namaKuttabController.text = SchoolField.compose(selectedBranch.name);
+    // }
 
     bool success = await ProfileApi().addProfile(
-        namaController.text,
-        bioController.text,
-        namaKuttabController.text,
-        tahunController.text,
-        istriController.text,
-        anakController.text,
-        photo);
+        nama: namaController.text,
+        namaIstri: istriController.text,
+        namaAnak: anakController.text,
+        tahunMasukKuttab: tahunController.text,
+        bio: bioController.text,
+        photo: photo,
+        namaKuttab: namaKuttabController.text
+      );
+
+    print("success $success" );
 
     final snackBar = SnackBar(
       content: Text(success
@@ -303,41 +299,41 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                             BorderRadius.circular(PaddingSizes.extraLarge),
                       ),
                       child: Text(
-                        SchoolField.schoolName,
+                        "Kuttab Alfatih",
                         style: AppStyles.labelTextStyle,
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const LabelBuilder(text: "Zona Kuttab"),
-                    SizedBox(height: screenHeight * 0.015),
-                    Consumer<KuttabLocationProvider>(
-                      builder: (context, provider, _) {
-                        return KuttabZoneDropdown(
-                          value: provider.selectedZone,
-                          onChanged: (KuttabZone? zone) {
-                            context
-                                .read<KuttabLocationProvider>()
-                                .setSelectedZone(zone);
-                          },
-                        );
-                      },
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const LabelBuilder(text: "Lokasi Kuttab"),
-                    SizedBox(height: screenHeight * 0.015),
-                    Consumer<KuttabLocationProvider>(
-                      builder: (context, provider, _) {
-                        return KuttabBranchDropdown(
-                          value: provider.selectedBranch,
-                          branches: provider.availableBranches,
-                          onChanged: (KuttabBranch? branch) {
-                            context
-                                .read<KuttabLocationProvider>()
-                                .setSelectedBranch(branch);
-                          },
-                        );
-                      },
-                    ),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // const LabelBuilder(text: "Zona Kuttab"),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // Consumer<KuttabLocationProvider>(
+                    //   builder: (context, provider, _) {
+                    //     return KuttabZoneDropdown(
+                    //       value: provider.selectedZone,
+                    //       onChanged: (KuttabZone? zone) {
+                    //         context
+                    //             .read<KuttabLocationProvider>()
+                    //             .setSelectedZone(zone);
+                    //       },
+                    //     );
+                    //   },
+                    // ),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // const LabelBuilder(text: "Lokasi Kuttab"),
+                    // SizedBox(height: screenHeight * 0.015),
+                    // Consumer<KuttabLocationProvider>(
+                    //   builder: (context, provider, _) {
+                    //     return KuttabBranchDropdown(
+                    //       value: provider.selectedBranch,
+                    //       branches: provider.availableBranches,
+                    //       onChanged: (KuttabBranch? branch) {
+                    //         context
+                    //             .read<KuttabLocationProvider>()
+                    //             .setSelectedBranch(branch);
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                     // ── End Kuttab school selection ──────────────────────────
 
                     SizedBox(height: screenHeight * 0.015),
@@ -369,10 +365,10 @@ class _AddProfilePageState extends State<AddProfilePage> with ValidationMixin {
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
                             // Extra guard: block if branch not yet selected.
-                            final branch = context
-                                .read<KuttabLocationProvider>()
-                                .selectedBranch;
-                            if (branch == null) return;
+                            // final branch = context
+                            //     .read<KuttabLocationProvider>()
+                            //     .selectedBranch;
+                            // if (branch == null) return;
                             _sendProfileData();
                           }
                         },

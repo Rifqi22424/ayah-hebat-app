@@ -1,8 +1,8 @@
+import 'package:ayahhebat/src/models/branch_model.dart';
 import 'package:flutter/material.dart';
 
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
-import '../models/kuttab_branch_model.dart';
 
 /// Dropdown for selecting a Kuttab branch.
 ///
@@ -12,8 +12,8 @@ import '../models/kuttab_branch_model.dart';
 ///
 /// Visual style matches the existing [FormBuilder] text fields in the profile
 /// form: circular-32 border, 16/12 content padding, Lato label text.
-class KuttabBranchDropdown extends StatelessWidget {
-  const KuttabBranchDropdown({
+class BranchDropdown extends StatelessWidget {
+  const BranchDropdown({
     super.key,
     required this.value,
     required this.branches,
@@ -21,13 +21,13 @@ class KuttabBranchDropdown extends StatelessWidget {
     this.validator,
   });
 
-  final KuttabBranch? value;
-  final List<KuttabBranch> branches;
-  final ValueChanged<KuttabBranch?> onChanged;
+  final Branch? value;
+  final List<Branch> branches;
+  final ValueChanged<Branch?> onChanged;
 
   /// Custom validator. Defaults to a required-selection check with the message
   /// "Lokasi Kuttab wajib dipilih".
-  final FormFieldValidator<KuttabBranch>? validator;
+  final FormFieldValidator<Branch>? validator;
 
   // Shared border radius to match FormBuilder (circular 32).
   static const _radius = Radius.circular(32);
@@ -50,7 +50,7 @@ class KuttabBranchDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<KuttabBranch>(
+    return DropdownButtonFormField<Branch>(
       initialValue: value,
       // Suppress the default built-in arrow — we supply our own suffixIcon.
       icon: const SizedBox.shrink(),
@@ -78,8 +78,8 @@ class KuttabBranchDropdown extends StatelessWidget {
           color: AppColors.accentColor,
         ),
       ),
-      items: branches.map((KuttabBranch branch) {
-        return DropdownMenuItem<KuttabBranch>(
+      items: branches.map((Branch branch) {
+        return DropdownMenuItem<Branch>(
           value: branch,
           child: Text(branch.name),
         );

@@ -1,10 +1,10 @@
+import 'package:ayahhebat/src/models/zone_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../consts/app_colors.dart';
 import '../consts/app_styles.dart';
-import '../models/kuttab_zone_model.dart';
-import '../providers/kuttab_location_provider.dart';
+import '../providers/zone_branch_provider.dart';
 
 /// Dropdown for selecting a Kuttab zone.
 ///
@@ -14,20 +14,20 @@ import '../providers/kuttab_location_provider.dart';
 ///
 /// Visual style matches the existing [FormBuilder] text fields in the profile
 /// form: circular-32 border, 16/12 content padding, Lato label text.
-class KuttabZoneDropdown extends StatelessWidget {
-  const KuttabZoneDropdown({
+class ZoneDropdown extends StatelessWidget {
+  const ZoneDropdown({
     super.key,
     required this.value,
     required this.onChanged,
     this.validator,
   });
 
-  final KuttabZone? value;
-  final ValueChanged<KuttabZone?> onChanged;
+  final Zone? value;
+  final ValueChanged<Zone?> onChanged;
 
   /// Custom validator. Defaults to a required-selection check with the message
   /// "Zona Kuttab wajib dipilih".
-  final FormFieldValidator<KuttabZone>? validator;
+  final FormFieldValidator<Zone>? validator;
 
   // Shared border radius to match FormBuilder (circular 32).
   static const _radius = Radius.circular(32);
@@ -50,10 +50,10 @@ class KuttabZoneDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<KuttabLocationProvider>(
+    return Consumer<ZoneBranchProvider>(
       builder: (context, provider, _) {
-        if (provider.state == KuttabLocationState.initial ||
-            provider.state == KuttabLocationState.loading) {
+        if (provider.state == ZoneBranchState.initial ||
+            provider.state == ZoneBranchState.loading) {
           return const Center(
             child: CircularProgressIndicator(
               color: AppColors.primaryColor,
@@ -61,8 +61,8 @@ class KuttabZoneDropdown extends StatelessWidget {
           );
         }
 
-        if (provider.state == KuttabLocationState.error ||
-            (provider.state == KuttabLocationState.loaded &&
+        if (provider.state == ZoneBranchState.error ||
+            (provider.state == ZoneBranchState.loaded &&
                 provider.zones.isEmpty)) {
           return Center(
             child: Text(
@@ -72,7 +72,7 @@ class KuttabZoneDropdown extends StatelessWidget {
           );
         }
 
-        return DropdownButtonFormField<KuttabZone>(
+        return DropdownButtonFormField<Zone>(
           initialValue: value,
           // Suppress the default built-in arrow — we supply our own suffixIcon.
           icon: const SizedBox.shrink(),
@@ -100,8 +100,8 @@ class KuttabZoneDropdown extends StatelessWidget {
               color: AppColors.accentColor,
             ),
           ),
-          items: provider.zones.map((KuttabZone zone) {
-            return DropdownMenuItem<KuttabZone>(
+          items: provider.zones.map((Zone zone) {
+            return DropdownMenuItem<Zone>(
               value: zone,
               child: Text(zone.name),
             );

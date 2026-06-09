@@ -11,7 +11,6 @@ import '../../api/profile_api.dart';
 import '../../consts/app_colors.dart';
 import '../../consts/app_styles.dart';
 import '../../mixins/validation_mixin.dart';
-import '../../utils/school_field.dart';
 import '../../widgets/app_bar_builder.dart';
 import '../../widgets/button_builder.dart';
 import '../../widgets/form_builder.dart';
@@ -51,15 +50,14 @@ class _EditProfilePageState extends State<EditProfilePage>
     downloadLocalPhoto();
   }
 
-  _fetchUserProfile() {
+  void _fetchUserProfile() {
     ProfileApi().getUserNProfile().then((user) {
       setState(() {
         namaController.text = user.profile.nama;
         istriController.text = user.profile.namaIstri;
         anakController.text = user.profile.namaAnak;
         _originalNamaKuttab = user.profile.namaKuttab;
-        namaKuttabController.text =
-            SchoolField.extractBranch(user.profile.namaKuttab);
+        namaKuttabController.text = user.profile.namaKuttab;
         tahunController.text = user.profile.tahunMasukKuttab.toString();
         bioController.text = user.profile.bio;
         downloadImageAndSaveLocally(user.profile.photo);
